@@ -7,7 +7,7 @@ install:
   tags:
   - docker-executor
   script:
-  - apt-add-repository --yes --update ppa:ansible/ansible && apt-get install ansible
+  - apt-add-repository --yes --update ppa:ansible/ansible && apt-get -y install ansible
 
 build:
   tags:
