@@ -1,0 +1,90 @@
+---
+
+# for debian only: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=863199
+- name: create directory /usr/share/man/man1 (bugs.debian=863199)
+  shell: mkdir -p /usr/share/man/man1
+  when: ansible_distribution == 'Debian'
+
+- name: Install autoconf automake build-essential ca-certificates curl libkrb5-dev libtool pkg-config unzip file default-jdk default-jre-headless
+  apt:
+    name:
+        - autoconf 
+        - automake 
+        - build-essential 
+        - ca-certificates 
+        - curl 
+        - libkrb5-dev 
+        - libtool 
+        - pkg-config 
+        - unzip
+        - file
+        - default-jdk
+        - default-jre-headless
+    state: latest
+    force: yes 
+    update_cache: yes
+  when: build_tango == 'yes'
+
+- name: Build zeromq
+  shell: |
+    ZEROMQ_DOWNLOAD_URL=https://archive.org/download/zeromq_{{ZEROMQ_VERSION}}/zeromq-{{ZEROMQ_VERSION}}.tar.gz \
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p /usr/src/zeromq \
+    && cd /usr/src/zeromq \
+    && curl -fsSL "$ZEROMQ_DOWNLOAD_URL" -o zeromq.tar.gz \
+    && tar xf zeromq.tar.gz -C /usr/src/zeromq --strip-components=1 \
+    && ./configure --enable-static=no \
+    && make -C /usr/src/zeromq -j$(nproc) \
+    && make -C /usr/src/zeromq install \
+    && rm -r /usr/src/zeromq
+  when: build_tango == 'yes'
+
+- name: Build omniorb
+  shell: |
+    OMNIORB_DOWNLOAD_URL=https://svwh.dl.sourceforge.net/project/omniorb/omniORB/omniORB-{{OMNIORB_VERSION}}/omniORB-{{OMNIORB_VERSION_DETAIL}}.tar.bz2 \
+      && OMNIORB_PATCH_URL=http://ftp.esrf.fr/pub/cs/tango/Patches/dii_race.patch \
+      && rm -rf /var/lib/apt/lists/* \
+      && mkdir -p /usr/src/omniorb \
+      && cd /usr/src/omniorb \
+      && curl -fsSL "$OMNIORB_DOWNLOAD_URL" -o omniorb.tar.bz2 \
+      && curl -fsSL "$OMNIORB_PATCH_URL" -o dii_race.patch \
+      && tar xf omniorb.tar.bz2 -C /usr/src/omniorb --strip-components=1 \
+      && patch -p0 < dii_race.patch \
+      && ./configure --enable-static=no \
+      && make -C /usr/src/omniorb -j$(nproc) \
+      && make -C /usr/src/omniorb install \
+      && rm -r /usr/src/omniorb
+  when: build_tango == 'yes'
+
+- name: Build TANGO 
+  shell: |
+    TANGO_DOWNLOAD_URL=https://netcologne.dl.sourceforge.net/project/tango-cs/tango-{{TANGO_VERSION}}.tar.gz \
+        && mkdir -p /usr/share/man/man1 \
+        && rm -rf /var/lib/apt/lists/* \
+        && mkdir -p /usr/src/tango \
+        && cd /usr/src/tango \
+        && curl -fsSL "$TANGO_DOWNLOAD_URL" -o tango.tar.gz \
+        && tar xf tango.tar.gz -C /usr/src/tango --strip-components=1 \
+        && ./configure --with-zmq=/usr/local --with-omni=/usr/local --with-mysqlclient-prefix=/usr --enable-static=no \
+        && make -C /usr/src/tango -j$(nproc) \
+        && make -C /usr/src/tango install \
+        && ldconfig \
+        && rm -r /usr/src/tango
+
+    # what for?
+    rm -rf /var/lib/apt/lists/* /etc/apt/apt.conf.d/30proxy
+
+    # what for?
+    sed -i -e '/^assistive_technologies=/s/^/#/' /etc/java-*-openjdk/accessibility.properties
+
+    getent passwd tango  > /dev/null
+    if [ $? -eq 0 ]; then
+        echo "tango user already created"
+    else
+        echo "creating tango user"
+        useradd --create-home --home-dir /home/tango tango
+        mkdir --parents /etc/sudoers.d
+        echo "tango ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/tango \
+        && chmod 0440 /etc/sudoers.d/tango
+    fi
+  when: build_tango == 'yes'

@@ -1,0 +1,21 @@
+---
+
+- name: Install vscode
+  apt:
+    deb: "https://go.microsoft.com/fwlink/?LinkID=760868"
+    force: yes
+  when: install_ide == 'yes'
+
+- name: Download Pycharm
+  get_url:
+    url: "https://download.jetbrains.com/python/pycharm-{{pycharm_version}}.tar.gz"
+    dest:  ~/pycharm-{{pycharm_version}}.tar.gz
+    mode: 0644
+    force: yes
+  when: install_ide == 'yes'
+
+- name: Install Pycharm
+  shell: |
+    tar xfz pycharm-{{pycharm_version}}.tar.gz -C /opt/
+    echo run pycharm located with /opt/pycharm-{{pycharm_version}}/bin/pycharm.sh
+  when: install_ide == 'yes'

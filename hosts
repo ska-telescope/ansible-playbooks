@@ -1,0 +1,5 @@
+[development]
+ubuntu18:32786 ansible_user=root
+ubuntu16:32785 ansible_user=root
+debian:32782 ansible_user=root
+#192.168.1.149   ansible_user=osboxes    ansible_become_pass=osboxes.org

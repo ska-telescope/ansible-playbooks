@@ -1,0 +1,22 @@
+---
+
+- name: deploy_tangoenv
+  hosts: development
+  vars:
+    build_tango: 'yes'
+    install_mysql: 'yes'
+    start_mysql_server: 'yes'
+    install_pytango: 'yes'
+    install_ide: 'yes'
+    pycharm_version: 'community-2018.3.3'
+    TANGO_VERSION: '9.2.5a'
+    ZEROMQ_VERSION: '4.0.5'
+    OMNIORB_VERSION: '4.2.1'
+    OMNIORB_VERSION_DETAIL: '4.2.1-2'
+    #vscode version 1.30
+  become: yes
+  roles:
+    - mysqlserver
+    - tango
+    - pytango
+    - ide
