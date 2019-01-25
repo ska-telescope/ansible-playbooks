@@ -22,19 +22,19 @@ build:
   - ssh-keygen -f $HOME/.ssh/id_rsa_dev -N ''
   - echo '***************************** docker stop-rm    *****************************'
   - docker stop debian_test || true && docker rm debian_test || true
-  - echo '***************************** docker rmi        *****************************'
-  - docker rmi debian_ssh || true
   - echo '***************************** docker build      *****************************'
   - docker build . -f Dockerfile_debian -t debian_ssh
   - echo '***************************** docker run        *****************************'
   - docker run -d -P --name debian_test debian_ssh
   - docker port debian_test 22
   - port=$(docker port debian_test 22 | cut -d':' -f2)
+  - docker inspect -f '{{range .NetworkSettings.Networks}}{{.Gateway}}{{end}}' gateone
+  - ip=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.Gateway}}{{end}}' gateone)
   - echo '***************************** docker cp         *****************************'
   - docker cp $HOME/.ssh/id_rsa_dev.pub debian_test:/root/.ssh/authorized_keys
   - echo '***************************** docker exec       *****************************'
   - docker exec debian_test chown root:root /root/.ssh/authorized_keys
   - echo '***************************** install python    *****************************'
   - ssh root@localhost -o "StrictHostKeyChecking no" -p $port 'apt-get update && apt-get -y install python'
-  - echo -e '[development] \nlocalhost:$port' > hosts
+  - echo -e '[development] \n$ip:$port' > hosts
   - ansible-playbook -i hosts deploy_tangoenv.yml --extra-vars="ansible_ssh_common_args='-o StrictHostKeyChecking=no'"
