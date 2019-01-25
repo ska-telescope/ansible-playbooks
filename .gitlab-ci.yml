@@ -33,8 +33,6 @@ build:
   - docker cp $HOME/.ssh/id_rsa_dev.pub debian_test:/root/.ssh/authorized_keys
   - echo '***************************** docker exec       *****************************'
   - docker exec debian_test chown root:root /root/.ssh/authorized_keys
-  - echo '***************************** docker ssh-keygen *****************************'
-  - ssh-keygen -f "$HOME/.ssh/known_hosts" -R "[localhost]:$port"
   - echo '***************************** install python    *****************************'
   - ssh root@localhost -o "StrictHostKeyChecking no" -p $port 'apt-get update && apt-get -y install python'
   - echo -e '[development] \nlocalhost:$port' > hosts
