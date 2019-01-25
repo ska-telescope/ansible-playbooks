@@ -1,20 +1,9 @@
 image: ska-registry.av.it.pt/ska-docker/tango-builder:latest
 
-stages:
-    - install
-    - build
-
-install:
-  stage: install
+test:
   tags:
   - docker-executor
   script:
   - apt-add-repository --yes --update ppa:ansible/ansible 
   - apt-get -y install ansible
-
-build:
-  stage: build
-  tags:
-  - docker-executor
-  script:
   - ansible-playbook -i hosts deploy_tangoenv.yml
