@@ -28,6 +28,7 @@ build:
   - docker build . -f Dockerfile_debian -t debian_ssh
   - echo '***************************** docker run        *****************************'
   - docker run -d -P --name debian_test debian_ssh
+  - docker port debian_test 22
   - port=$(docker port debian_test 22 | cut -d':' -f2)
   - echo '***************************** docker cp         *****************************'
   - docker cp $HOME/.ssh/id_rsa_dev.pub debian_test:/root/.ssh/authorized_keys
