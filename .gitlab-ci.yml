@@ -1,4 +1,4 @@
-image: ubuntu:18.04
+image: ska-registry.av.it.pt/ska-docker/tango-builder:latest
 
 stages:
     - install
@@ -9,7 +9,6 @@ install:
   tags:
   - docker-executor
   script:
-  - apt-get update 
   - apt-add-repository --yes --update ppa:ansible/ansible 
   - apt-get -y install ansible
 
