@@ -3,13 +3,14 @@ image: ubuntu:18.04
 before_script:
     - apt-get update
     - apt-get install -y bash python apt-transport-https ca-certificates curl software-properties-common
-    - apt-add-repository --yes --update ppa:ansible/ansible 
-    - apt-get -y install ansible
+    
 
 test_ubuntu_latest:
   tags:
   - docker-executor
   script:  
+  - apt-add-repository --yes --update ppa:ansible/ansible 
+  - apt-get -y install ansible
   - ansible-playbook -i hosts deploy_tangoenv.yml
   
   
@@ -18,6 +19,8 @@ test_ubuntu_16:
   tags:
   - docker-executor
   script:
+  - apt-add-repository --yes --update ppa:ansible/ansible 
+  - apt-get -y install ansible
   - ansible-playbook -i hosts deploy_tangoenv.yml
   
   
@@ -26,4 +29,5 @@ test_debian_stretch-slim:
   tags:
   - docker-executor
   script:
+  - apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 93C4A3FD7BB9C367
   - ansible-playbook -i hosts deploy_tangoenv.yml
