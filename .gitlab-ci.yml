@@ -29,7 +29,7 @@ test_debian_stretch-slim:
   tags:
   - docker-executor
   script:
-  - apt-get install -y gnupg2
+  - apt-get install -y gnupg1 gnupg2
   - apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 93C4A3FD7BB9C367
   - apt-get update
   - apt-get install ansible
