@@ -2,7 +2,7 @@ image: ubuntu:18.04
 
 before_script:
     - apt-get update
-    - apt-get install -y make bash git curl python-pip apt-transport-https ca-certificates curl software-properties-common
+    - apt-get install -y bash python apt-transport-https ca-certificates curl software-properties-common
     - apt-add-repository --yes --update ppa:ansible/ansible 
     - apt-get -y install ansible
 
