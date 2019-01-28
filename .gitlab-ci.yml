@@ -1,9 +1,29 @@
-image: ska-registry.av.it.pt/ska-docker/tango-builder:latest
+image: ubuntu:18.04
 
-test:
+before_script:
+    - apt-get update
+    - apt-get install -y make bash git curl python-pip apt-transport-https ca-certificates curl software-properties-common
+    - apt-add-repository --yes --update ppa:ansible/ansible 
+    - apt-get -y install ansible
+
+test_ubuntu_latest:
+  tags:
+  - docker-executor
+  script:  
+  - ansible-playbook -i hosts deploy_tangoenv.yml
+  
+  
+test_ubuntu_16:
+  image: ubuntu:16.04
   tags:
   - docker-executor
   script:
-  - apt-add-repository --yes --update ppa:ansible/ansible 
-  - apt-get -y install ansible
+  - ansible-playbook -i hosts deploy_tangoenv.yml
+  
+  
+test_debian_stretch-slim:
+  image: debian:stretch-slim
+  tags:
+  - docker-executor
+  script:
   - ansible-playbook -i hosts deploy_tangoenv.yml
