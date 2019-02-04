@@ -1,0 +1,111 @@
+- name: Add Docker GPG key Ubuntu
+  apt_key: url=https://download.docker.com/linux/ubuntu/gpg
+  when: 
+    - ansible_distribution == 'Ubuntu'
+    - install_ska_docker == 'yes'
+
+- name: Add Docker GPG key Debian
+  apt_key: url=https://download.docker.com/linux/debian/gpg
+  when: 
+    - ansible_distribution == 'Debian'
+    - install_ska_docker == 'yes'
+
+
+- name: Add Docker APT repository Ubuntu
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ansible_distribution_release}} stable
+  when: 
+    - ansible_distribution == 'Ubuntu'
+    - install_ska_docker == 'yes'
+
+- name: Add Docker APT repository Ubuntu
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/debian {{ansible_distribution_release}} stable
+  when: 
+    - ansible_distribution == 'Debian'
+    - install_ska_docker == 'yes'
+
+- file:
+    path: 
+      - /var/lib/apt/lists/lock
+      - /var/cache/apt/archives/lock
+      - /var/lib/dpkg/lock
+    state: absent
+
+- name: Install list of packages 
+  apt:
+    name:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - software-properties-common
+    update_cache: yes
+  when: 
+  - install_ska_docker == 'yes'
+
+- name: Install list of packages Ubuntu
+  apt:
+    name:
+    - gnupg-agent
+    update_cache: yes
+  when: 
+    - ansible_distribution == 'Ubuntu'
+    - install_ska_docker == 'yes'
+
+- name: Install list of packages Debian
+  apt:
+    name: 
+      - gnupg2
+    update_cache: yes
+  when: 
+    - ansible_distribution == 'Debian'
+    - install_ska_docker == 'yes'
+
+- name: Install docker
+  apt:
+    name: 
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    update_cache: yes
+  when:
+    - install_ska_docker == 'yes'
+
+- name: Creates directory /usr/src/ska-docker
+  file:
+    path: /usr/src/ska-docker
+    state: absent
+  when: 
+    - install_ska_docker == 'yes'
+
+- name: Creates directory /usr/src/ska-docker
+  file:
+    path: /usr/src/ska-docker
+    state: directory
+  when: 
+    - install_ska_docker == 'yes'
+
+- git:
+    repo: 'https://github.com/ska-telescope/ska-docker.git'
+    dest: /usr/src/ska-docker
+    update: yes
+    ssh_opts: "-o StrictHostKeyChecking=no"
+  when: 
+    - install_ska_docker == 'yes'
+
+- name: Install Docker Compose
+  get_url:
+    url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64
+    dest: "/usr/local/bin/docker-compose"
+    mode: 0755
+    validate_certs: no
+  when: 
+    - install_ska_docker == 'yes'
+
+- name: Start the tango system
+  shell: |
+    cd /usr/src/ska-docker/docker-compose 
+    make up
+  when:
+    - start_tango == 'yes'
+    - install_ska_docker == 'yes'
