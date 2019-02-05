@@ -1,0 +1,71 @@
+# 
+# Docker compose file for TANGO database and database device server
+#
+# Defines:
+#   - tangodb: MariaDB database with TANGO schema
+#   - databaseds: TANGO database device server
+#
+# Requires:
+#   - None
+#
+version: '2'
+volumes:
+  tangodb: {}
+        
+services:
+  tangodb:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-db:latest
+    container_name: tangodb
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=tango
+      - MYSQL_USER=tango
+      - MYSQL_PASSWORD=tango
+    volumes:
+      - tangodb:/var/lib/mysql
+
+  databaseds:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-cpp:latest
+    container_name: databaseds
+    hostname: databaseds
+    ports:
+      - "10000:10000"
+    depends_on:
+      - tangodb
+    environment:
+      - MYSQL_HOST=tangodb:3306 
+      - MYSQL_DATABASE=tango
+      - MYSQL_USER=tango
+      - MYSQL_PASSWORD=tango
+      - TANGO_HOST=databaseds:10000 
+    entrypoint:
+      - /usr/local/bin/wait-for-it.sh
+      - tangodb:3306
+      - --timeout=30
+      - --strict
+      - --
+      - /usr/local/bin/DataBaseds
+      - "2"
+      - -ORBendPoint
+      - giop:tcp::10000
+
+  tangotest:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-java:latest
+    container_name: tangotest
+    ports:
+      - "15000:15000"
+    depends_on:
+      - databaseds
+    environment:
+      - TANGO_HOST=databaseds:10000
+    entrypoint:
+      - /usr/local/bin/wait-for-it.sh
+      - databaseds:10000
+      - --timeout=30
+      - --strict
+      - --
+      - /usr/local/bin/TangoTest
+      - test
+      - -ORBendPoint
+      - giop:tcp::15000
+
