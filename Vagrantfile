@@ -12,6 +12,7 @@ Vagrant.configure("2") do |config|
     config.vm.provision "ansible_local" do |ansible|
        ansible.verbose = "vvv"
        ansible.inventory_path = "hosts"
+       ansible.config_file = "ansible-local.cfg"
        ansible.limit = "development"
        ansible.playbook = "deploy_tangoenv.yml"
      end
