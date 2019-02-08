@@ -45,7 +45,7 @@ There are 4 roles within this playbook
 * pytango: install the pytango project (with virtual env and pipenv)
 * ide: install pycharm and vscode
 
-TESTED OS (using a box needs at least 4GB RAM):
+TESTED OS (using a box requires at least 4GB RAM):
 * ubuntu:18.04
 * ubuntu:16.04
 * debian:stretch-slim
