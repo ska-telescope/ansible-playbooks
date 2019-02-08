@@ -102,13 +102,12 @@
   when: 
     - install_ska_docker == 'yes'
 
-- name: copy tango_ports_exposed.yml
-  copy:
-    src: "{{playbook_dir}}/roles/ska-docker/files/tango_ports_exposed.yml"
-    dest:  /usr/src/ska-docker/docker-compose/tango_ports_exposed.yml
-    mode: 0644
+- git:
+    repo: 'https://github.com/ska-telescope/ska-docker.git'
+    dest: /usr/src/ska-docker
+    update: yes
+    ssh_opts: "-o StrictHostKeyChecking=no"
   when: 
-    - start_tango == 'yes'
     - install_ska_docker == 'yes'
 
 - name: Copy environment_tango.sh
@@ -137,7 +136,7 @@
 - name: Start the tango system
   shell: |
     cd /usr/src/ska-docker/docker-compose 
-    docker-compose -f tango_ports_exposed.yml up -d
+    make up
   when:
     - start_tango == 'yes'
     - install_ska_docker == 'yes'
