@@ -1,5 +1,23 @@
 ---
 
+- name: Install Desktop Environment (Ubuntu)
+  apt:
+    name: 
+      - ubuntu-desktop
+    update_cache: yes
+  when:
+    - install_ide == 'yes'
+    - ansible_distribution == 'Ubuntu'
+
+- name: Install Desktop Environment (Ubuntu)
+  apt:
+    name: 
+      - task-gnome-desktop
+    update_cache: yes
+  when:
+    - install_ide == 'yes'
+    - ansible_distribution == 'Debian'
+
 - name: Install vscode
   apt:
     deb: "https://go.microsoft.com/fwlink/?LinkID=760868"

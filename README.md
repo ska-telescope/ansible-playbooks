@@ -26,8 +26,11 @@ The following variables can be set:
 ```
     build_tango: default('yes')
     install_mysql: default('yes')
+    start_mysql_server: default ('yes')
     install_pytango: default('yes')
     install_ide: default('yes')
+    install_ska_docker: 'yes'
+    start_tango: 'yes'
 ```
 
 For example:
