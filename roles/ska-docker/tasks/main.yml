@@ -10,6 +10,22 @@
     - ansible_distribution == 'Debian'
     - install_ska_docker == 'yes'
 
+- name: Install list of packages 
+  apt:
+    name:
+    - apt-transport-https
+  when: 
+  - install_ska_docker == 'yes'
+
+- name: Install list of packages 
+  apt:
+    name:
+    - ca-certificates
+    - curl
+    - software-properties-common
+    update_cache: yes
+  when: 
+  - install_ska_docker == 'yes'
 
 - name: Add Docker APT repository Ubuntu
   apt_repository:
@@ -18,7 +34,7 @@
     - ansible_distribution == 'Ubuntu'
     - install_ska_docker == 'yes'
 
-- name: Add Docker APT repository Ubuntu
+- name: Add Docker APT repository Debian
   apt_repository:
     repo: deb [arch=amd64] https://download.docker.com/linux/debian {{ansible_distribution_release}} stable
   when: 
@@ -31,17 +47,6 @@
       - /var/cache/apt/archives/lock
       - /var/lib/dpkg/lock
     state: absent
-
-- name: Install list of packages 
-  apt:
-    name:
-    - apt-transport-https
-    - ca-certificates
-    - curl
-    - software-properties-common
-    update_cache: yes
-  when: 
-  - install_ska_docker == 'yes'
 
 - name: Install list of packages Ubuntu
   apt:

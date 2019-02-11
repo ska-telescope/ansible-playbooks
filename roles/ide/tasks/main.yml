@@ -9,11 +9,10 @@
     - install_ide == 'yes'
     - ansible_distribution == 'Ubuntu'
 
-- name: Install Desktop Environment (Ubuntu)
+- name: Install Desktop Environment (Debian)
   apt:
     name: 
       - task-gnome-desktop
-    update_cache: yes
   when:
     - install_ide == 'yes'
     - ansible_distribution == 'Debian'
