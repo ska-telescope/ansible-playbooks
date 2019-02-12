@@ -27,7 +27,7 @@
         - default-jre-headless
   when: 
     - build_tango == 'yes'
-    - ansible_distribution == 'Ubuntu'
+    - ansible_distribution == 'Debian'
 
 - name: Install dependencies
   apt:
