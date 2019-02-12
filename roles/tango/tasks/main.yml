@@ -1,13 +1,21 @@
 ---
-
 # for debian only: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=863199
 - name: create directory /usr/share/man/man1 (bugs.debian=863199)
   shell: mkdir -p /usr/share/man/man1
   when: ansible_distribution == 'Debian'
+  
+- name: Add Java APT repository
+  apt_repository:
+    repo: ppa:openjdk-r/ppa
+  when: 
+    - build_tango == 'yes'
 
-- name: Install autoconf automake build-essential ca-certificates curl libkrb5-dev libtool pkg-config unzip file default-jdk default-jre-headless
+- name: Install dependencies
   apt:
     name:
+        - python
+        - python-dev 
+        - python-pkgconfig
         - autoconf 
         - automake 
         - build-essential 
@@ -18,13 +26,12 @@
         - pkg-config 
         - unzip
         - file
-        - default-jdk
-        - default-jre-headless
+        - openjdk-8-jdk
+        - openjdk-8-jre
     state: latest
-    force: yes 
     update_cache: yes
   when: build_tango == 'yes'
-
+  
 - name: Build zeromq
   shell: |
     ZEROMQ_DOWNLOAD_URL=https://archive.org/download/zeromq_{{ZEROMQ_VERSION}}/zeromq-{{ZEROMQ_VERSION}}.tar.gz \
@@ -58,6 +65,7 @@
 
 - name: Build TANGO 
   shell: |
+    update-java-alternatives -s java-1.8.0-openjdk-amd64
     TANGO_DOWNLOAD_URL=https://netcologne.dl.sourceforge.net/project/tango-cs/tango-{{TANGO_VERSION}}.tar.gz \
         && mkdir -p /usr/share/man/man1 \
         && rm -rf /var/lib/apt/lists/* \

@@ -19,8 +19,8 @@
     #vscode version 1.30
   become: yes
   roles:
+    - ide
     - mysqlserver
     - tango
     - pytango
-    - ide
     - ska-docker

@@ -13,6 +13,7 @@
   apt:
     name: 
       - task-gnome-desktop
+    update_cache: yes
   when:
     - install_ide == 'yes'
     - ansible_distribution == 'Debian'
@@ -23,16 +24,22 @@
     force: yes
   when: install_ide == 'yes'
 
+- name: Create directory pycharm
+  file:
+    path: /usr/src/pycharm
+    state: directory
+  
 - name: Download Pycharm
   get_url:
     url: "https://download.jetbrains.com/python/pycharm-{{pycharm_version}}.tar.gz"
-    dest:  ~/pycharm-{{pycharm_version}}.tar.gz
+    dest:  /usr/src/pycharm/pycharm-{{pycharm_version}}.tar.gz
     mode: 0644
     force: yes
   when: install_ide == 'yes'
 
 - name: Install Pycharm
   shell: |
+    cd /usr/src/pycharm/
     tar xfz pycharm-{{pycharm_version}}.tar.gz -C /opt/
     echo run pycharm located with /opt/pycharm-{{pycharm_version}}/bin/pycharm.sh
   when: install_ide == 'yes'
