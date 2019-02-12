@@ -4,11 +4,30 @@
   shell: mkdir -p /usr/share/man/man1
   when: ansible_distribution == 'Debian'
   
-- name: Add Java APT repository
+- name: Add Java APT repository Ubuntu
   apt_repository:
     repo: ppa:openjdk-r/ppa
   when: 
     - build_tango == 'yes'
+    - ansible_distribution == 'Ubuntu'
+
+- name: Install dependencies Ubuntu
+  apt:
+    name:
+        - openjdk-8-jdk
+        - openjdk-8-jre
+  when: 
+    - build_tango == 'yes'
+    - ansible_distribution == 'Ubuntu'
+
+- name: Install dependencies Ubuntu
+  apt:
+    name:
+        - default-jdk
+        - default-jre-headless
+  when: 
+    - build_tango == 'yes'
+    - ansible_distribution == 'Ubuntu'
 
 - name: Install dependencies
   apt:
@@ -26,8 +45,6 @@
         - pkg-config 
         - unzip
         - file
-        - openjdk-8-jdk
-        - openjdk-8-jre
     state: latest
     update_cache: yes
   when: build_tango == 'yes'
