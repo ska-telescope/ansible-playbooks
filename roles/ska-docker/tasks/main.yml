@@ -76,6 +76,13 @@
   when:
     - install_ska_docker == 'yes'
 
+- name: Post installation Docker
+  shell: |
+    groupadd docker
+    usermod -aG docker $USER
+  when: 
+    - install_ska_docker == 'yes'
+
 - name: Creates directory /usr/src/ska-docker
   file:
     path: /usr/src/ska-docker
