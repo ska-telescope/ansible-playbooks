@@ -1,0 +1,13 @@
+# - debug: var=ansible_all_ipv4_addresses
+- debug: var=ansible_default_ipv4.address
+# - debug: var=ansible_eth0.ipv4.address
+- debug: var=ansible_hostname
+
+- name: "Build hosts file"
+  lineinfile: 
+      path: /etc/hosts 
+      regexp: '.*{{ ansible_hostname }}' 
+      line: "{{ansible_default_ipv4.address}}\t{{ ansible_hostname }}" 
+      state: present
+  when: 
+    - update_hosts == 'yes'
