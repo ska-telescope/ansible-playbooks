@@ -39,11 +39,12 @@ For example:
 ```
 
 ## Structure of the Playbook
-There are 4 roles within this playbook
+There are 5 roles within this playbook
 * mysqlserver: install the mysql server service
 * tango: install the TANGO-controls framework (if the mysql service is available it creates also the database)
 * pytango: install the pytango project (with virtual env and pipenv)
 * ide: install pycharm and vscode
+* ska-docker: install the ska-docker project locally
 
 TESTED OS (using a box requires at least 4GB RAM):
 * ubuntu:18.04
