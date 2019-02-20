@@ -11,3 +11,4 @@
       state: present
   when: 
     - update_hosts == 'yes'
+    - ansible_default_ipv4 is defined
