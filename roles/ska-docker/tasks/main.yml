@@ -76,11 +76,19 @@
   when:
     - install_ska_docker == 'yes'
 
-- name: Post installation Docker
+- name: Post installation Docker (ansible_user_id)
   shell: |
     groupadd -f docker
     usermod -a -G docker {{ ansible_user_id }}
+    usermod -a -G docker {{ ansible_ssh_user }}
   when: 
+    - install_ska_docker == 'yes'
+    
+- name: Post installation Docker (ansible_ssh_user)
+  shell: |
+    usermod -a -G docker {{ ansible_ssh_user }}
+  when: 
+    - ansible_ssh_user is defined
     - install_ska_docker == 'yes'
 
 - name: Creates directory /usr/src/ska-docker
@@ -114,15 +122,6 @@
   when: 
     - install_ska_docker == 'yes'
 
-# - name: copy tango_ports_exposed.yml
-#   copy:
-#     src: "{{playbook_dir}}/roles/ska-docker/files/tango_ports_exposed.yml"
-#     dest:  /usr/src/ska-docker/docker-compose/tango_ports_exposed.yml
-#     mode: 0644
-#   when: 
-#     - start_tango == 'yes'
-#     - install_ska_docker == 'yes'
-
 - name: Copy environment_tango.sh
   copy:
     src: "{{playbook_dir}}/roles/ska-docker/files/environment_tango.sh"
@@ -130,7 +129,6 @@
     mode: 0755
     force: yes
   when: 
-    - start_tango == 'yes'
     - install_ska_docker == 'yes'
 
 # is it working?
