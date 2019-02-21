@@ -75,6 +75,37 @@
     update_cache: yes
   when:
     - install_ska_docker == 'yes'
+    
+- name: Check that the ansible_user_id.docker file exists
+  stat:
+    path: '/home/{{ ansible_user_id }}/.docker/config.json'
+  register: stat_result
+    
+- name: .docker permission 
+  file:
+    path: '/home/{{ ansible_user_id }}/.docker/config.json'
+    owner: '{{ ansible_user_id }}'
+    group: '{{ ansible_user_id }}'
+    mode: 0744
+  when: 
+    - install_ska_docker == 'yes'
+    - stat_result.stat.exists == True
+    
+- name: Check that the ansible_ssh_user.docker file exists
+  stat:
+    path: '/home/{{ ansible_ssh_user }}/.docker/config.json'
+  register: stat_result2
+  
+- name: .docker permission 
+  file:
+    path: '/home/{{ ansible_ssh_user }}/.docker/config.json'
+    owner: '{{ ansible_ssh_user }}'
+    group: '{{ ansible_ssh_user }}'
+    mode: 0744
+  when: 
+    - ansible_ssh_user is defined
+    - install_ska_docker == 'yes'
+    - stat_result2.stat.exists == True
 
 - name: Post installation Docker (ansible_user_id)
   shell: |
