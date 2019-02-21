@@ -17,7 +17,7 @@ Vagrant.configure("2") do |config|
        ansible.config_file = "ansible-local.cfg"
        ansible.limit = "development"
        ansible.playbook = "deploy_tangoenv.yml"
-	   ansible.become = true
+       ansible.become = true
      end
  end
  
