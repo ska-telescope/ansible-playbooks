@@ -80,7 +80,6 @@
   shell: |
     groupadd -f docker
     usermod -a -G docker {{ ansible_user_id }}
-    usermod -a -G docker {{ ansible_ssh_user }}
   when: 
     - install_ska_docker == 'yes'
     
