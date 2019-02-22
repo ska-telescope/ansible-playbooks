@@ -75,42 +75,28 @@
     update_cache: yes
   when:
     - install_ska_docker == 'yes'
-    
-- name: Check that the ansible_user_id.docker file exists
-  stat:
-    path: '/home/{{ ansible_user_id }}/.docker/config.json'
-  register: stat_result
-    
-- name: .docker permission 
-  file:
-    path: '/home/{{ ansible_user_id }}/.docker/config.json'
-    owner: '{{ ansible_user_id }}'
-    group: '{{ ansible_user_id }}'
-    mode: 0744
-  when: 
-    - install_ska_docker == 'yes'
-    - stat_result.stat.exists == True
-    
-- name: Check that the ansible_ssh_user.docker file exists
-  stat:
-    path: '/home/{{ ansible_ssh_user }}/.docker/config.json'
-  register: stat_result2
-  
-- name: .docker permission 
-  file:
-    path: '/home/{{ ansible_ssh_user }}/.docker/config.json'
-    owner: '{{ ansible_ssh_user }}'
-    group: '{{ ansible_ssh_user }}'
-    mode: 0744
-  when: 
-    - ansible_ssh_user is defined
-    - install_ska_docker == 'yes'
-    - stat_result2.stat.exists == True
 
-- name: Post installation Docker (ansible_user_id)
+- name: Post installation Docker
   shell: |
-    groupadd -f docker
-    usermod -a -G docker {{ ansible_user_id }}
+    groupadd -f docker 
+    getent passwd vagrant  > /dev/null
+    if [ $? -eq 0 ]; then
+      usermod -a -G docker vagrant 
+      if [ -e '/home/vagrant/.docker/config.json' ]; then 
+        chmod 0744 '/home/vagrant/.docker/config.json' 
+      fi
+    fi 
+    getent passwd tango  > /dev/null
+    if [ $? -eq 0 ]; then
+      usermod -a -G docker tango 
+      if [ -e '/home/tango/.docker/config.json' ]; then
+        chmod 0744 '/home/tango/.docker/config.json' 
+      fi
+    fi 
+    usermod -a -G docker {{ ansible_user_id }} 
+    if [ -e '/home/{{ ansible_user_id }}/.docker/config.json' ]; then  
+      chmod 0744 '/home/{{ ansible_user_id }}/.docker/config.json' 
+    fi
   when: 
     - install_ska_docker == 'yes'
     
