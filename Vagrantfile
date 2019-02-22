@@ -1,8 +1,6 @@
 Vagrant.configure("2") do |config|
     config.vm.box = "ubuntu/bionic64"
     config.vm.synced_folder ".", "/vagrant"
-    config.ssh.username = "vagrant"
-    config.ssh.password = "vagrant"
     config.vm.provider "virtualbox" do |v|
        v.gui = true
        v.name = "TANGO-dev"
