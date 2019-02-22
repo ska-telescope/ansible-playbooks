@@ -9,7 +9,7 @@
     install_pytango: 'yes'
     install_ide: 'yes'
     install_ska_docker: 'yes'
-    start_tango: 'no'
+    start_tango: 'yes'
     update_hosts: 'yes'
     pycharm_version: 'community-2018.3.3'
     TANGO_VERSION: '9.2.5a'
