@@ -31,7 +31,7 @@ The following variables can be set:
     install_ide: default('yes')
     install_ska_docker: default('yes')
     start_tango: default('yes')
-	update_hosts: default('yes')    
+    update_hosts: default('yes')    
 ```
 
 For example:
