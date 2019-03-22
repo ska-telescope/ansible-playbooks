@@ -1,0 +1,12 @@
+---
+
+- name: deploy_integrationenv
+  hosts: development
+  vars:
+    start_mysql_server: 'no'
+    install_ska_docker: 'yes'
+    start_tango: 'no'
+  become: yes
+  roles:
+    - ska-docker
+    - integration

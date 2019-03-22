@@ -1,0 +1,53 @@
+# 
+
+- file:
+    path: 
+      - /var/lib/apt/lists/lock
+      - /var/cache/apt/archives/lock
+      - /var/lib/dpkg/lock
+    state: absent
+
+- name: Install apt-transport-https 
+  apt:
+    name:
+    - apt-transport-https
+    - curl
+    update_cache: yes
+
+- name: Add kubectl GPG
+  apt_key: url=https://packages.cloud.google.com/apt/doc/apt-key.gpg
+
+- name: Add sources.list.d/kubernetes.list
+  shell: |
+    echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" |  tee -a /etc/apt/sources.list.d/kubernetes.list
+
+- name: Install kubectl
+  apt:
+    name:
+    - kubectl
+    update_cache: yes
+
+- name: Check if minikube is installed
+  stat: 
+    path: /usr/local/bin/minikube
+  register: minikube_installed
+
+# download certificate from google?
+
+- name: Install minikube
+  shell: |
+    curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.34.1/minikube-linux-amd64 && chmod +x minikube && mv minikube /usr/local/bin/
+  when: minikube_installed.stat.exists == false
+
+- name: Setting on minukube
+  shell: |
+    chown -R ${USER} /home/${USER}/.minikube
+    chgrp -R ${USER} /home/${USER}/.minikube
+    chown -R ${USER} /home/${USER}/.kube
+    chgrp -R ${USER} /home/${USER}/.kube
+  when: minikube_installed.stat.exists == false
+
+- name: Start minikube
+  shell: |
+    minikube start --vm-driver=none --extra-config=kubelet.resolv-conf=/var/run/systemd/resolve/resolv.conf
+
