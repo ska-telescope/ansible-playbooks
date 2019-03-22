@@ -1,7 +1,7 @@
 ---
 
 - name: deploy_integrationenv
-  hosts: development
+  hosts: integration
   vars:
     start_mysql_server: 'no'
     install_ska_docker: 'yes'
