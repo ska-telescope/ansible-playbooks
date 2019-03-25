@@ -37,6 +37,10 @@
     curl -kLo minikube https://storage.googleapis.com/minikube/releases/v0.34.1/minikube-linux-amd64 && chmod +x minikube && mv minikube /usr/local/bin/
   when: minikube_installed.stat.exists == false
 
+- name: Start minikube
+  shell: |
+    minikube start --vm-driver=none --extra-config=kubelet.resolv-conf=/var/run/systemd/resolve/resolv.conf
+
 - name: Setting on minukube
   shell: |
     chown -R ${USER} /home/${USER}/.minikube
@@ -44,8 +48,3 @@
     chown -R ${USER} /home/${USER}/.kube
     chgrp -R ${USER} /home/${USER}/.kube
   when: minikube_installed.stat.exists == false
-
-- name: Start minikube
-  shell: |
-    minikube start --vm-driver=none --extra-config=kubelet.resolv-conf=/var/run/systemd/resolve/resolv.conf
-
