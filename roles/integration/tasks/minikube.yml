@@ -65,7 +65,6 @@
     chgrp -R ${USER} /home/${USER}/.minikube
     chown -R ${USER} /home/${USER}/.kube
     chgrp -R ${USER} /home/${USER}/.kube
-  when: minikube_installed.stat.exists == false
 
 - name: Install helm
   shell: |
