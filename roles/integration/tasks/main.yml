@@ -35,4 +35,5 @@
   shell: |
     cd /usr/src/k8s-integration
     make deploy KUBE_NAMESPACE=integration
+    kubectl get all,pv,pvc -n integration
 
