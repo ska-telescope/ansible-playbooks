@@ -37,6 +37,17 @@
     curl -kLo minikube https://storage.googleapis.com/minikube/releases/v0.34.1/minikube-linux-amd64 && chmod +x minikube && mv minikube /usr/local/bin/
   when: minikube_installed.stat.exists == false
 
+- name: Check if /etc/gdm3 exists
+  stat: 
+    path: /etc/gdm3
+  register: gdm3Dir
+
+- name: Creates directory /etc/gdm3
+  file:
+    path: /etc/gdm3
+    state: directory
+  when: gdm3Dir.stat.exists == false
+
 - name: Copy /etc/gdm3/custom.conf
   copy:
     src: "{{playbook_dir}}/roles/integration/files/custom.conf"
