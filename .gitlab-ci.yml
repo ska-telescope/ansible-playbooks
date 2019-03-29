@@ -3,7 +3,15 @@ image: ubuntu:18.04
 before_script:
     - apt-get update
     - apt-get install -y bash python apt-transport-https ca-certificates curl software-properties-common
-    
+
+
+trigger:
+  image: appropriate/curl
+  tags:
+  - docker-executor
+  script:
+  - curl -X POST -F token=$K8S_INTEGRATION_TOKEN -F ref=$K8S_INTEGRATION_TARGET_BRANCH https://gitlab.com/api/v4/projects/$K8S_INTEGRATION_PROJ_ID/trigger/pipeline
+
 
 test_ubuntu_latest:
   tags:
