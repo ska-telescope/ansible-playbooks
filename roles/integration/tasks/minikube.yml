@@ -66,3 +66,7 @@
     chown -R ${USER} /home/${USER}/.kube
     chgrp -R ${USER} /home/${USER}/.kube
   when: minikube_installed.stat.exists == false
+
+- name: Install helm
+  shell: |
+    curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash
