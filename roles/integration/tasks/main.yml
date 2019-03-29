@@ -9,7 +9,7 @@
 
 - name: Check if k8s-integration exists
   stat: 
-    path: /usr/src/k8s-integration
+    path: /usr/src/k8s-integration/Makefile
   register: k8sDir
 
 - name: Stop the integrated system
