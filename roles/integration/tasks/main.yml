@@ -1,6 +1,12 @@
 #
 - import_tasks: minikube.yml
 
+- name: Install make
+  apt:
+    name:
+    - make
+    update_cache: yes
+
 - name: Check if k8s-integration exists
   stat: 
     path: /usr/src/k8s-integration
