@@ -1,13 +1,18 @@
-image: ubuntu:18.04
-
-before_script:
-    - apt-get update
-    - apt-get install -y bash python apt-transport-https ca-certificates curl software-properties-common
-    
-
-test_ubuntu_latest:
+trigger:
+  image: appropriate/curl
   tags:
   - docker-executor
+  script:
+  - curl -X POST -F token=$K8S_INTEGRATION_TOKEN -F ref=$K8S_INTEGRATION_TARGET_BRANCH https://gitlab.com/api/v4/projects/$K8S_INTEGRATION_PROJ_ID/trigger/pipeline
+
+
+test_ubuntu_latest:
+  image: ubuntu:18.04
+  tags:
+  - docker-executor
+  before_script:
+  - apt-get update
+  - apt-get install -y bash python apt-transport-https ca-certificates curl software-properties-common
   script:  
   - apt-add-repository --yes --update ppa:ansible/ansible 
   - apt-get -y install ansible
@@ -18,6 +23,9 @@ test_ubuntu_16:
   image: ubuntu:16.04
   tags:
   - docker-executor
+  before_script:
+  - apt-get update
+  - apt-get install -y bash python apt-transport-https ca-certificates curl software-properties-common
   script:
   - apt-add-repository --yes --update ppa:ansible/ansible 
   - apt-get -y install ansible
@@ -28,6 +36,9 @@ test_debian_stretch-slim:
   image: debian:stretch-slim
   tags:
   - docker-executor
+  before_script:
+  - apt-get update
+  - apt-get install -y bash python apt-transport-https ca-certificates curl software-properties-common
   script:
   - echo "deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main" >> /etc/apt/sources.list
   - apt-get install gnupg2 -y
