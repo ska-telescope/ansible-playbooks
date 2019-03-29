@@ -1,10 +1,3 @@
-image: ubuntu:18.04
-
-before_script:
-    - apt-get update
-    - apt-get install -y bash python apt-transport-https ca-certificates curl software-properties-common
-
-
 trigger:
   image: appropriate/curl
   tags:
@@ -14,8 +7,12 @@ trigger:
 
 
 test_ubuntu_latest:
+  image: ubuntu:18.04
   tags:
   - docker-executor
+  before_script:
+  - apt-get update
+  - apt-get install -y bash python apt-transport-https ca-certificates curl software-properties-common
   script:  
   - apt-add-repository --yes --update ppa:ansible/ansible 
   - apt-get -y install ansible
@@ -26,6 +23,9 @@ test_ubuntu_16:
   image: ubuntu:16.04
   tags:
   - docker-executor
+  before_script:
+  - apt-get update
+  - apt-get install -y bash python apt-transport-https ca-certificates curl software-properties-common
   script:
   - apt-add-repository --yes --update ppa:ansible/ansible 
   - apt-get -y install ansible
@@ -36,6 +36,9 @@ test_debian_stretch-slim:
   image: debian:stretch-slim
   tags:
   - docker-executor
+  before_script:
+  - apt-get update
+  - apt-get install -y bash python apt-transport-https ca-certificates curl software-properties-common
   script:
   - echo "deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main" >> /etc/apt/sources.list
   - apt-get install gnupg2 -y
