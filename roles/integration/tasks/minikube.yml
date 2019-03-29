@@ -61,10 +61,10 @@
 
 - name: Setting on minukube
   shell: |
-    chown -R {{ ansible_user_id }} /home/{{ ansible_user_id }}/.minikube
-    chgrp -R {{ ansible_user_id }} /home/{{ ansible_user_id }}/.minikube
-    chown -R {{ ansible_user_id }} /home/{{ ansible_user_id }}/.kube
-    chgrp -R {{ ansible_user_id }} /home/{{ ansible_user_id }}/.kube
+    chown -R ubuntu /home/ubuntu/.minikube
+    chgrp -R ubuntu /home/ubuntu/.minikube
+    chown -R ubuntu /home/ubuntu/.kube
+    chgrp -R ubuntu /home/ubuntu/.kube
 
 - name: Install helm
   shell: |
