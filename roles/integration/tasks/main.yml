@@ -4,19 +4,19 @@
 - name: Check if k8s-integration exists
   stat: 
     path: /usr/src/k8s-integration
-  register: dir_k8s-integration
+  register: k8sDir
 
 - name: Stop the integrated system
   shell: |
     cd /usr/src/k8s-integration
     make delete KUBE_NAMESPACE=integration
-  when: dir_k8s-integration.stat.exists == true
+  when: k8sDir.stat.exists == true
 
 - name: Creates directory /usr/src/k8s-integration
   file:
     path: /usr/src/k8s-integration
     state: directory
-  when: dir_k8s-integration.stat.exists == false
+  when: k8sDir.stat.exists == false
 
 - git:
     repo: 'https://github.com/ska-telescope/k8s-integration.git'
