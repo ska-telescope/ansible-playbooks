@@ -1,11 +1,3 @@
-trigger:
-  image: appropriate/curl
-  tags:
-  - docker-executor
-  script:
-  - curl -X POST -F token=$K8S_INTEGRATION_TOKEN -F ref=$K8S_INTEGRATION_TARGET_BRANCH https://gitlab.com/api/v4/projects/$K8S_INTEGRATION_PROJ_ID/trigger/pipeline
-
-
 test_ubuntu_latest:
   image: ubuntu:18.04
   tags:
@@ -46,3 +38,10 @@ test_debian_stretch-slim:
   - apt-get update
   - apt-get -y install ansible
   - ansible-playbook -i hosts deploy_tangoenv.yml --extra-vars "install_ska_docker='no' start_tango='no' install_ide='no'"
+
+trigger:
+  image: appropriate/curl
+  tags:
+  - docker-executor
+  script:
+  - curl -X POST -F token=$K8S_INTEGRATION_TOKEN -F ref=$K8S_INTEGRATION_TARGET_BRANCH https://gitlab.com/api/v4/projects/$K8S_INTEGRATION_PROJ_ID/trigger/pipeline
