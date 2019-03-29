@@ -17,12 +17,13 @@
   when: 
   - install_ska_docker == 'yes'
 
-- name: Install ca-certificates curl software-properties-common
+- name: Install ca-certificates curl software-properties-common make
   apt:
     name:
     - ca-certificates
     - curl
     - software-properties-common
+    - make
     update_cache: yes
   when: 
   - install_ska_docker == 'yes'
