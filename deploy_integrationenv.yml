@@ -6,6 +6,7 @@
     start_mysql_server: 'no'
     install_ska_docker: 'yes'
     start_tango: 'no'
+    docker_compose_version: '1.23.2'
   become: yes
   roles:
     - ska-docker
