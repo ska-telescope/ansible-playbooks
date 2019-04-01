@@ -32,7 +32,7 @@
     ssh_opts: "-o StrictHostKeyChecking=no"
 
 - name: Start the integrated system
-  become_user: ubuntu
+  become_user: "{{ ansible_user }}"
   shell: |
     cd /usr/src/k8s-integration
     make deploy KUBE_NAMESPACE=integration

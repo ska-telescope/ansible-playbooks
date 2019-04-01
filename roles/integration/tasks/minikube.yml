@@ -33,7 +33,7 @@
   register: minikube_installed
 
 - name: Install minikube
-  become_user: ubuntu
+  become_user: "{{ ansible_user }}"
   shell: |
     curl -kLo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube
   when: minikube_installed.stat.exists == false
@@ -62,16 +62,16 @@
     force: yes
 
 - name: Start minikube
-  become_user: ubuntu
+  become_user: "{{ ansible_user }}"
   shell: |
     sudo -E minikube start --vm-driver=none --extra-config=kubelet.resolv-conf=/var/run/systemd/resolve/resolv.conf
 
 - name: Setting on minukube
   shell: |
-    chown -R ubuntu /home/ubuntu/.minikube
-    chgrp -R ubuntu /home/ubuntu/.minikube
-    chown -R ubuntu /home/ubuntu/.kube
-    chgrp -R ubuntu /home/ubuntu/.kube
+    chown -R {{ ansible_user }} /home/{{ ansible_user }}/.minikube
+    chgrp -R {{ ansible_user }} /home/{{ ansible_user }}/.minikube
+    chown -R {{ ansible_user }} /home/{{ ansible_user }}/.kube
+    chgrp -R {{ ansible_user }} /home/{{ ansible_user }}/.kube
 
 - name: Install helm
   shell: |
