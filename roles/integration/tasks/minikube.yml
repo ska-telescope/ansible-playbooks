@@ -33,8 +33,14 @@
   register: minikube_installed
 
 - name: Install minikube
+  become_user: ubuntu
   shell: |
-    curl -kLo minikube https://storage.googleapis.com/minikube/releases/v0.34.1/minikube-linux-amd64 && chmod +x minikube && mv minikube /usr/local/bin/
+    curl -kLo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube
+  when: minikube_installed.stat.exists == false
+
+- name: Move minikube
+  shell: |
+    mv minikube /usr/local/bin/
   when: minikube_installed.stat.exists == false
 
 - name: Check if /etc/gdm3 exists
@@ -56,8 +62,9 @@
     force: yes
 
 - name: Start minikube
+  become_user: ubuntu
   shell: |
-    minikube start --vm-driver=none --extra-config=kubelet.resolv-conf=/var/run/systemd/resolve/resolv.conf
+    sudo -E minikube start --vm-driver=none --extra-config=kubelet.resolv-conf=/var/run/systemd/resolve/resolv.conf
 
 - name: Setting on minukube
   shell: |

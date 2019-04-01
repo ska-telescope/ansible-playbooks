@@ -1,2 +1,5 @@
 [development]
 localhost ansible_connection=local
+
+[integration]
+192.168.93.33  ansible_user=ubuntu
