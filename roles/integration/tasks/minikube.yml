@@ -61,6 +61,13 @@
     mode: 0755
     force: yes
 
+- name: Remove cluster
+  shell: |
+    minikube delete
+  when: 
+  - remove_cluster == 'yes'
+  - minikube_installed.stat.exists == true
+
 - name: Start minikube
   become_user: "{{ ansible_user }}"
   shell: |

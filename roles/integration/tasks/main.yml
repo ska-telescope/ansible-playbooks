@@ -17,7 +17,9 @@
     cd /usr/src/k8s-integration
     make delete KUBE_NAMESPACE=integration
   ignore_errors: yes 
-  when: k8sDir.stat.exists == true
+  when: 
+  - k8sDir.stat.exists == true
+  - stop_integrated_system == 'yes'
 
 - name: Creates directory /usr/src/k8s-integration
   file:
