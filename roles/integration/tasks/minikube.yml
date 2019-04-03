@@ -62,8 +62,9 @@
     force: yes
 
 - name: Remove cluster
+  become_user: "{{ ansible_user }}"
   shell: |
-    minikube delete
+    sudo -E minikube delete
   when: 
   - remove_cluster == 'yes'
   - minikube_installed.stat.exists == true
