@@ -85,3 +85,10 @@
 - name: Install helm
   shell: |
     curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash
+
+- name: Copy /etc/kubernetes/addons/ingress-dp.yaml
+  copy:
+    src: "{{playbook_dir}}/roles/integration/files/ingress-dp.yaml"
+    dest: /etc/kubernetes/addons/ingress-dp.yaml
+    mode: 0755
+    force: yes
