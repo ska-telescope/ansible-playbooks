@@ -11,6 +11,7 @@
     stop_integrated_system: 'no'
     start_integrated_system: 'yes'
     deploy: 'yes'
+    logs: 'yes'
   become: yes
   roles:
     - ska-docker

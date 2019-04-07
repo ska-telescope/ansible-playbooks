@@ -18,3 +18,8 @@
   import_tasks: start.yml
   when: 
   - deploy == 'yes'
+
+- name: Logs
+  import_tasks: logs.yml
+  when: 
+  - logs == 'yes'
