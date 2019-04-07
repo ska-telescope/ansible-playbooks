@@ -1,0 +1,6 @@
+- name: Remove cluster
+  become_user: "{{ ansible_user }}"
+  shell: |
+    sudo -E minikube delete
+  when: 
+  - remove_cluster == 'yes'

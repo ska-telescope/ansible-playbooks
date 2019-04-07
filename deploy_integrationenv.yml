@@ -9,6 +9,7 @@
     docker_compose_version: '1.23.2'
     remove_cluster: 'no'
     stop_integrated_system: 'no'
+    deploy: 'yes'
   become: yes
   roles:
     - ska-docker

@@ -1,0 +1,29 @@
+- name: Install make
+  apt:
+    name:
+    - make
+    update_cache: yes
+
+- name: Check if k8s-integration exists
+  stat: 
+    path: /usr/src/k8s-integration/Makefile
+  register: k8sDir
+
+- name: Creates directory /usr/src/k8s-integration
+  file:
+    path: /usr/src/k8s-integration
+    state: directory
+  when: k8sDir.stat.exists == false
+
+- git:
+    repo: 'https://github.com/ska-telescope/k8s-integration.git'
+    dest: /usr/src/k8s-integration
+    update: yes
+    ssh_opts: "-o StrictHostKeyChecking=no"
+
+- name: Start the integrated system
+  become_user: "{{ ansible_user }}"
+  shell: |
+    cd /usr/src/k8s-integration
+    make deploy KUBE_NAMESPACE=integration
+    kubectl get all,pv,pvc,ingress -n integration
