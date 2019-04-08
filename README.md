@@ -54,12 +54,13 @@ TESTED OS (using a box requires at least 4GB RAM):
 * debian:stretch-slim
 
 ## Integration Environment
-It is possible to install the integration environment locally with minikube. 
+It is possible to install the integration environment locally with minikube (change user and password). 
+
 Add the following lines in the file hosts:
 ``` 
 
 [integration]
-localhost ansible_user=dev ansible_connection=local
+localhost ansible_user=*user* ansible_connection=local
 ```
 
 Call the playbook with the following command: 
