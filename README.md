@@ -40,7 +40,7 @@ For example:
 ```
 
 ## Structure of the Playbook
-There are 6 roles within this playbook
+For the development environment, there are 6 roles within this playbook:
 * mysqlserver: install the mysql server service
 * tango: install the TANGO-controls framework (if the mysql service is available it creates also the database)
 * pytango: install the pytango project (with virtual env and pipenv)
@@ -52,3 +52,21 @@ TESTED OS (using a box requires at least 4GB RAM):
 * ubuntu:18.04
 * ubuntu:16.04
 * debian:stretch-slim
+
+## Integration Environment
+It is possible to install the integration environment locally with minikube. 
+Add the following lines in the file hosts:
+``` 
+
+[integration]
+localhost ansible_user=dev ansible_connection=local
+```
+
+Call the playbook with the following command: 
+``` 
+
+ansible-playbook -i hosts deploy_integrationenv.yml --extra-vars "ansible_become_pass=*password*"
+``` 
+
+At the following link will be setup the webjive webapplication: http://localhost/testdb
+
