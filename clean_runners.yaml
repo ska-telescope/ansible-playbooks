@@ -1,0 +1,9 @@
+---
+
+- name: clean_runners
+  hosts: runner
+  vars:
+    docker_compose_version: '1.23.2'
+  become: yes
+  roles:
+    - runner

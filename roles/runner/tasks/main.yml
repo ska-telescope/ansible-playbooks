@@ -1,0 +1,8 @@
+---
+# tasks file for runner
+- name: stop all docker containers
+  shell: docker stop $(docker ps -a -q)
+  ignore_errors: true
+
+- name: Remove all stopped containers, all networks not used by at least one container, all dangling images, all dangling build cache
+  shell: docker system prune -f
