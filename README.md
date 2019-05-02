@@ -53,8 +53,6 @@ TESTED OS (using a box requires at least 4GB RAM):
 * ubuntu:16.04
 * debian:stretch-slim
 
-.. inclusion-marker-integration-environment
-
 ## Integration Environment
 It is possible to install the integration environment locally with minikube (change user and password). 
 
