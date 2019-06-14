@@ -1,0 +1,28 @@
+---
+- name: List projects  
+  command: ls -v {{ directory }}
+  register: projects
+
+- name: Linting each chart
+  shell: helm lint
+  args:
+    chdir: "{{ directory }}/{{ item }}"
+  with_items: "{{ projects.stdout_lines }}"
+  register: output
+  ignore_errors: yes
+
+- debug:
+    msg: "{{ item.stdout_lines | join(' ') }}"
+  with_items: "{{ output.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+
+- name: Set fail flag
+  set_fact:
+    flag: "failed"
+  when: item.failed
+  with_items: "{{ output.results }}"
+  no_log: True
+
+- fail: msg="The execution has failed because of errors."
+  when: flag is defined and flag == "failed"

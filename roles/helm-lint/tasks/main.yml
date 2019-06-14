@@ -1,0 +1,11 @@
+---
+# tasks file for helm-lint
+- name: Linting through charts
+  import_tasks: multiple_charts.yml
+  when: 
+  - multiple_charts == 'yes'
+
+- name: Linting on chart
+  import_tasks: one_chart.yml
+  when: 
+  - multiple_charts == 'no'
