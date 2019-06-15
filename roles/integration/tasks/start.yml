@@ -21,6 +21,14 @@
     update: yes
     ssh_opts: "-o StrictHostKeyChecking=no"
 
+- name: Linting the chart
+  import_role:
+    name: helm-lint
+    tasks_from: one_chart
+  when: helm_lint is defined and helm_lint == "true"
+  vars:
+    directory: /usr/src/k8s-integration/chart
+
 - name: Start the integrated system
   become_user: "{{ ansible_user }}"
   shell: |
