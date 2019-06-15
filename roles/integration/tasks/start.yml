@@ -25,7 +25,7 @@
   import_role:
     name: helm-lint
     tasks_from: one_chart
-  when: helm_lint is defined and helm_lint == "true"
+  when: helm_lint is defined and helm_lint == "yes"
   vars:
     directory: /usr/src/k8s-integration/chart
 
