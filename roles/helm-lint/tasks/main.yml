@@ -1,5 +1,18 @@
 ---
 # tasks file for helm-lint
+- name: Install curl
+  apt:
+    name: curl
+    state: latest
+  when: 
+  - install_helm == 'yes'
+
+- name: Install helm
+  shell: |
+    curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash
+  when: 
+  - install_helm == 'yes'
+
 - name: Linting through charts
   import_tasks: multiple_charts.yml
   when: 
