@@ -25,4 +25,4 @@
   no_log: True
 
 - fail: msg="The execution has failed because of errors."
-  when: flag is defined and flag == "failed"
+  when: flag is defined and flag == "failed" and throw_errors is defined and throw_errors == "true"

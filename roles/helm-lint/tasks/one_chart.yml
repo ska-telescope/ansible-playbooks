@@ -3,3 +3,17 @@
   shell: helm lint
   args:
     chdir: "{{ directory }}"
+  register: output
+  ignore_errors: yes
+
+- debug:
+    msg: "{{ output.stdout_lines | join(' ') }}"
+
+- name: Set fail flag
+  set_fact:
+    flag: "failed"
+  when: output.failed
+  no_log: True
+
+- fail: msg="The execution has failed because of errors."
+  when: flag is defined and flag == "failed" and throw_errors is defined and throw_errors == "true"
