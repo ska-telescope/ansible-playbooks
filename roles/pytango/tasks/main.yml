@@ -32,6 +32,13 @@
     update_cache: yes
   when: install_pytango == 'yes'
 
+- name: Temporary fix - install libtango
+  apt:
+    name:
+      - libtango8v5
+      - libtango9
+  ignore_errors: True
+
 - name: Copy environment.sh
   copy:
     src: "{{playbook_dir}}/roles/pytango/files/environment.sh"
