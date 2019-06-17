@@ -35,13 +35,13 @@
 - name: Temporary fix - install libtango8v5 for Ubuntu-16
   apt:
     name:
-      - libtango8v5
+      - libtango8-dev
   ignore_errors: True
 
 - name: Temporary fix - install libtango9 for Ubuntu-18
   apt:
     name:
-      - libtango9
+      - libtango-dev
   ignore_errors: True
 
 - name: Copy environment.sh
