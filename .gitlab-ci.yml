@@ -1,5 +1,10 @@
+stages:
+  - build
+  - trigger
+
 test_ubuntu_latest:
   image: ubuntu:18.04
+  stage: build
   tags:
   - docker-executor
   before_script:
@@ -13,6 +18,7 @@ test_ubuntu_latest:
   
 test_ubuntu_16:
   image: ubuntu:16.04
+  stage: build
   tags:
   - docker-executor
   before_script:
@@ -26,6 +32,7 @@ test_ubuntu_16:
   
 test_debian_stretch-slim:
   image: debian:stretch-slim
+  stage: build
   tags:
   - docker-executor
   before_script:
@@ -41,6 +48,7 @@ test_debian_stretch-slim:
 
 trigger:
   image: appropriate/curl
+  stage: trigger
   tags:
   - docker-executor
   script:
