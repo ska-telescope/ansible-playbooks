@@ -65,7 +65,7 @@
 
 - name: Build omniorb
   shell: |
-    OMNIORB_DOWNLOAD_URL=https://svwh.dl.sourceforge.net/project/omniorb/omniORB/omniORB-{{OMNIORB_VERSION}}/omniORB-{{OMNIORB_VERSION_DETAIL}}.tar.bz2 \
+    OMNIORB_DOWNLOAD_URL=https://nexus.engageska-portugal.pt/repository/raw/omniORB/omniORB-{{OMNIORB_VERSION}}/omniORB-{{OMNIORB_VERSION}}.tar.bz2 \
       && OMNIORB_PATCH_URL=http://ftp.esrf.fr/pub/cs/tango/Patches/dii_race.patch \
       && rm -rf /var/lib/apt/lists/* \
       && mkdir -p /usr/src/omniorb \
@@ -83,7 +83,7 @@
 - name: Build TANGO 
   shell: |
     update-java-alternatives -s java-1.8.0-openjdk-amd64
-    TANGO_DOWNLOAD_URL=https://netcologne.dl.sourceforge.net/project/tango-cs/tango-{{TANGO_VERSION}}.tar.gz \
+    TANGO_DOWNLOAD_URL=https://nexus.engageska-portugal.pt/repository/raw/tango-cs/tango-{{TANGO_VERSION}}.tar.gz \
         && mkdir -p /usr/share/man/man1 \
         && rm -rf /var/lib/apt/lists/* \
         && mkdir -p /usr/src/tango \
