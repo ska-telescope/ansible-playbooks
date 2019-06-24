@@ -90,7 +90,7 @@ The aim of these instructions, scripts, and playbook+roles is to provide a canne
 * Tools: `kubectl` and `helm` configured with a local [Tiller-less Helm](https://rimusz.net/tillerless-helm)
 * A running Ingress Controller
 * [Network Policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/) implemented with Calico as the Pod network
-* This project mounted into the Guest OS at `/vagrant` so that the associated Helm Charts can be run
+* This project mounted into the Guest OS at `/vagrant`
 
 
 make
@@ -147,6 +147,8 @@ Once Vagrant and VirtualBox are installed, launching a guest OS and installing M
 ```
 make vagrant_up
 ```
+
+The default action is to run the `deploy_tangoenv.yml` playbook creating a virtual machine named `tango-dev`.  To create a vanilla Minikube+Vagrant system, add vars `V_NAME=minikube-vm V_PLAYBOOK=deploy_minikube.yml`.
 
 Once successfully completed, inspect Minikube by ssh'ing onto the box with `vagrant ssh`, where all the usual `kubectl` capabilities are available:
 ```
