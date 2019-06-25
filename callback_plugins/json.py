@@ -6,7 +6,7 @@ class CallbackModule(CallbackBase):
 
     CALLBACK_VERSION = 2.0
     CALLBACK_TYPE = 'stdout'
-    CALLBACK_NAME = 'json_cb'
+    CALLBACK_NAME = 'json'
 
     def __init__(self):
         self.tasks = {}
