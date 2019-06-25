@@ -10,6 +10,8 @@
 - name: Install helm
   shell: |
     curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash
+  args:
+    warn: false
   when: 
   - install_helm == 'yes'
 
