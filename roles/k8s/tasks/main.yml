@@ -14,6 +14,7 @@
 
 - name: set facts for minikube
   set_fact:
+    "minikube_use_calico": "{{ use_calico|bool }}"
     "minikube_use_nginx": "{{ use_nginx|bool }}"
     "user_home": "{{ lookup('env','HOME') }}"
     "minikube_check": !unsafe >-
@@ -104,6 +105,25 @@
       become: "{{ 'true' if minikube_driver == 'none' else 'false' }}"
       become_method: sudo
       become_flags: '-E -S -n'
+      when: "minikube_use_calico"
+
+    - name: Start Minikube with option vm-driver={{ minikube_driver }}
+      shell: >
+        minikube start  --disk-size  {{ minikube_disk_size }}
+        --memory  {{ minikube_memory }}
+        --cpus {{ minikube_cpus }}
+        --extra-config=kubelet.resolv-conf={{ minikube_resolver }}
+        --vm-driver={{ minikube_driver }}
+      environment:
+        MINIKUBE_WANTUPDATENOTIFICATION: false
+        MINIKUBE_WANTREPORTERRORPROMPT: false
+        MINIKUBE_HOME: "{{ user_home }}"
+        CHANGE_MINIKUBE_NONE_USER: true
+        KUBECONFIG: "{{ user_home }}/.kube/config"
+      become: "{{ 'true' if minikube_driver == 'none' else 'false' }}"
+      become_method: sudo
+      become_flags: '-E -S -n'
+      when: "not minikube_use_calico"
 
       # host: Running kubelet: Running apiserver: Running kubectl: Correctly Configured: pointing to minikube-vm
     - name: After minikube configuration, we check minikube status
@@ -119,21 +139,25 @@
       shell: 'kubectl apply -f {{ calico_etcd_url }} && sleep 3'
       args:
         executable: /bin/bash
+      when: "minikube_use_calico"
 
     - name: Get the etcd endpoint
       shell: "kubectl get service -o json --namespace=kube-system calico-etcd | jq  -r .spec.clusterIP"
       args:
         executable: /bin/bash
       register: etcd_endpoints_check
+      when: "minikube_use_calico"
 
     - name: set etcd_endpoint fact
       set_fact:
         "etcd_endpoint": "{{ etcd_endpoints_check.stdout }}"
+      when: "minikube_use_calico"
 
     - name: Get the calico resource definition
       get_url:
         url: '{{ calico_resource_yaml }}'
         dest: '/tmp/calico.yaml'
+      when: "minikube_use_calico"
 
     - name: Configure calico to point to our etcd
       lineinfile:
@@ -141,17 +165,20 @@
         regexp: '^(.*?)etcd_endpoints: "http://<ETCD_IP>:<ETCD_PORT>"'
         line: '\1etcd_endpoints: "http://{{ etcd_endpoint }}:6666"'
         backrefs: yes
+      when: "minikube_use_calico"
 
     - name: Launch calico
       shell: 'kubectl apply -f /tmp/calico.yaml'
       args:
         executable: /bin/bash
+      when: "minikube_use_calico"
 
     - name: Tidy up Calico tmp
       file:
         path: '/tmp/calico.yaml'
         state: absent
       become: yes
+      when: "minikube_use_calico"
 
   when: "not ('minikube-vm' and 'host: Running' and 'kubelet: Running' and 'apiserver: Running' in starting_minikube_status.stdout)"
 

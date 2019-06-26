@@ -22,6 +22,7 @@ V_IP ?= 172.16.0.92  ## Vagrant private network IP
 
 # Minikube
 DRIVER ?= true  ## Run Minikube via 'kvm2' driver (true) or 'none' (false)
+USE_CALICO ?= true  ## Use Calico for Pod Networking
 USE_NGINX ?= false  ## Use NGINX as the Ingress Controller
 
 # define overides for above variables in here
@@ -42,6 +43,7 @@ vars: ## Vagrant and DISPLAY variables
 	@echo "V_MEMORY: $(V_MEMORY)"
 	@echo "V_CPUS: $(V_CPUS)"
 	@echo "DRIVER: $(DRIVER)"
+	@echo "USE_CALICO: $(USE_CALICO)"
 	@echo "USE_NGINX: $(USE_NGINX)"
 	@echo "V_IP: $(V_IP)"
 	@echo "INGRESS_HOST: $(INGRESS_HOST)"
@@ -104,6 +106,8 @@ vagrant_up: vars  ## startup minikube in vagrant
 	V_CPUS=$(V_CPUS) \
 	V_IP=$(V_IP) \
 	V_GUI=$(V_GUI) \
+	USE_CALICO=$(USE_CALICO) \
+	USE_NGINX=$(USE_NGINX) \
 		vagrant up
 
 vagrant_down: vars  ## destroy vagrant instance
@@ -115,15 +119,17 @@ vagrant_down: vars  ## destroy vagrant instance
 	V_CPUS=$(V_CPUS) \
 	V_IP=$(V_IP) \
 	V_GUI=$(V_GUI) \
+	USE_CALICO=$(USE_CALICO) \
+	USE_NGINX=$(USE_NGINX) \
 		vagrant destroy -f
 
 minikube:  ## Ansible playbook for install and launching Minikube
 	PYTHONUNBUFFERED=1 ANSIBLE_FORCE_COLOR=true ANSIBLE_CONFIG='ansible-local.cfg' \
 	ansible-playbook --inventory=hosts \
-					 -v \
-	                 --limit=development \
-					 --extra-vars='{"use_driver": $(DRIVER), "use_nginx": $(USE_NGINX), "minikube_disk_size": $(FORMATTED_DISK_SIZE), "minikube_memory": $(V_MEMORY), "minikube_cpus": $(V_CPUS)}' \
-					 deploy_minikube.yml
+	 -v \
+   --limit=development \
+	 --extra-vars='{"use_driver": $(DRIVER), "use_calico": $(USE_CALICO), "use_nginx": $(USE_NGINX), "minikube_disk_size": $(FORMATTED_DISK_SIZE), "minikube_memory": $(V_MEMORY), "minikube_cpus": $(V_CPUS)}' \
+	 deploy_minikube.yml
 
 help:  ## show this help.
 	@echo "make targets:"
