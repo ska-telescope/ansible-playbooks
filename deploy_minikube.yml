@@ -1,0 +1,38 @@
+---
+
+- name: Add kvm2 driver
+  hosts:
+    - development
+  become: yes
+  roles:
+    - role: driver
+      when: use_driver|bool
+
+# not all tasks should be run as root
+- name: Install Docker
+  hosts:
+    - development
+  roles:
+    - docker
+
+- name: Deploy minikube
+  hosts:
+    - development
+  become: yes
+  roles:
+    - kubectl
+    - minikube
+
+# not all tasks should be run as root
+- name: Install helm
+  hosts:
+    - development
+  roles:
+    - helm
+
+# not all tasks should be run as root
+- name: Launch Kubernetes
+  hosts:
+    - development
+  roles:
+    - k8s
