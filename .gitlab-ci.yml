@@ -8,10 +8,10 @@ test_ubuntu_latest:
   tags:
   - docker-executor
   before_script:
-  - export DEBIAN_FRONTEND=readline
-  - export RUNLEVEL=1
+  - export TERM=linux
+  - export DEBIAN_FRONTEND=noninteractive
   - apt-get update
-  - apt-get install -y bash python apt-transport-https ca-certificates curl software-properties-common
+  - apt-get install -y bash python apt-transport-https ca-certificates curl software-properties-common python-apt
   script:  
   - apt-add-repository --yes --update ppa:ansible/ansible 
   - apt-get -y install ansible
@@ -24,10 +24,10 @@ test_ubuntu_16:
   tags:
   - docker-executor
   before_script:
-  - export DEBIAN_FRONTEND=readline
-  - export RUNLEVEL=1
+  - export TERM=linux
+  - export DEBIAN_FRONTEND=noninteractive
   - apt-get update
-  - apt-get install -y bash python apt-transport-https ca-certificates curl software-properties-common
+  - apt-get install -y bash python apt-transport-https ca-certificates curl software-properties-common python-apt
   script:
   - apt-add-repository --yes --update ppa:ansible/ansible 
   - apt-get -y install ansible
@@ -40,10 +40,10 @@ test_debian_stretch-slim:
   tags:
   - docker-executor
   before_script:
-  - export DEBIAN_FRONTEND=readline
-  - export RUNLEVEL=1
+  - export TERM=linux
+  - export DEBIAN_FRONTEND=noninteractive
   - apt-get update
-  - apt-get install -y bash python apt-transport-https ca-certificates curl software-properties-common
+  - apt-get install -y bash python apt-transport-https ca-certificates curl software-properties-common python-apt
   script:
   - echo "deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main" >> /etc/apt/sources.list
   - apt-get install gnupg2 -y

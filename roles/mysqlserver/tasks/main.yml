@@ -10,7 +10,6 @@
         - mysql-server
         - mysql-client
         - python-mysqldb
-        - python-apt
     state: latest
     force: yes 
     update_cache: yes
