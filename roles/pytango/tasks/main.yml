@@ -19,7 +19,7 @@
     force: yes
   when: install_pytango == 'yes'
 
-- name: Install libboost-python-dev python3-dev python3-pip python-apt virtualenv libtango-dev apt for pytango
+- name: Install libboost-python-dev python3-dev python3-pip python-apt virtualenv apt for pytango
   apt:
     name:
         - libboost-python-dev 
@@ -27,7 +27,6 @@
         - python3-pip
         - python-apt
         - virtualenv
-        - libtango-dev
     state: latest
     force: yes 
     update_cache: yes
