@@ -65,15 +65,12 @@
 
 - name: Build omniorb
   shell: |
-    OMNIORB_DOWNLOAD_URL=https://nexus.engageska-portugal.pt/repository/raw/omniORB/omniORB-{{OMNIORB_VERSION}}/omniORB-{{OMNIORB_VERSION}}.tar.bz2 \
-      && OMNIORB_PATCH_URL=http://ftp.esrf.fr/pub/cs/tango/Patches/dii_race.patch \
+    OMNIORB_DOWNLOAD_URL=https://nexus.engageska-portugal.pt/repository/raw/omniorb/omniORB-{{OMNIORB_VERSION}}.tar.bz2 \
       && rm -rf /var/lib/apt/lists/* \
       && mkdir -p /usr/src/omniorb \
       && cd /usr/src/omniorb \
       && curl -fsSL "$OMNIORB_DOWNLOAD_URL" -o omniorb.tar.bz2 \
-      && curl -fsSL "$OMNIORB_PATCH_URL" -o dii_race.patch \
       && tar xf omniorb.tar.bz2 -C /usr/src/omniorb --strip-components=1 \
-      && patch -p0 < dii_race.patch \
       && ./configure --enable-static=no \
       && make -C /usr/src/omniorb -j$(nproc) \
       && make -C /usr/src/omniorb install \
