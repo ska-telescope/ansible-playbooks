@@ -8,6 +8,8 @@ test_ubuntu_latest:
   tags:
   - docker-executor
   before_script:
+  - export DEBIAN_FRONTEND=readline
+  - export RUNLEVEL=1
   - apt-get update
   - apt-get install -y bash python apt-transport-https ca-certificates curl software-properties-common
   script:  
@@ -22,6 +24,8 @@ test_ubuntu_16:
   tags:
   - docker-executor
   before_script:
+  - export DEBIAN_FRONTEND=readline
+  - export RUNLEVEL=1
   - apt-get update
   - apt-get install -y bash python apt-transport-https ca-certificates curl software-properties-common
   script:
@@ -36,6 +40,8 @@ test_debian_stretch-slim:
   tags:
   - docker-executor
   before_script:
+  - export DEBIAN_FRONTEND=readline
+  - export RUNLEVEL=1
   - apt-get update
   - apt-get install -y bash python apt-transport-https ca-certificates curl software-properties-common
   script:

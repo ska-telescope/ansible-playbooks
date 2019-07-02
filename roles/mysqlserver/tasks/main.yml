@@ -10,6 +10,7 @@
         - mysql-server
         - mysql-client
         - python-mysqldb
+        - python-apt
     state: latest
     force: yes 
     update_cache: yes
@@ -59,7 +60,3 @@
   when: 
     - install_mysql == 'yes' 
     - start_mysql_server == 'yes'
-
-- name: Start MySql Server
-  shell: service mysql start 
-  when: start_mysql_server == 'yes'
