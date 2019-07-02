@@ -147,7 +147,6 @@
   when: 
     - install_ska_docker == 'yes'
 
-# is it working?
 - name: Stop MySql Server (if running)
   service: 
     name: mysql 
@@ -155,10 +154,6 @@
     enabled: no
   when: 
     - start_mysql_server == 'yes'
-
-- name: Stop MySql Server (if running)
-  shell: service mysql stop 
-  when: start_mysql_server == 'yes'
 
 - name: Start the tango system
   shell: |
