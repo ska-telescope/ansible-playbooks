@@ -51,7 +51,7 @@
   
 - name: Build zeromq
   shell: |
-    ZEROMQ_DOWNLOAD_URL=https://archive.org/download/zeromq_{{ZEROMQ_VERSION}}/zeromq-{{ZEROMQ_VERSION}}.tar.gz \
+    ZEROMQ_DOWNLOAD_URL=https://nexus.engageska-portugal.pt/repository/raw/zeromq/zeromq-{{ZEROMQ_VERSION}}.tar.gz \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir -p /usr/src/zeromq \
     && cd /usr/src/zeromq \

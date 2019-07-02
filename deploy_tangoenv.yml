@@ -13,7 +13,7 @@
     update_hosts: 'yes'
     pycharm_version: 'community-2018.3.3'
     TANGO_VERSION: '9.2.5a'
-    ZEROMQ_VERSION: '4.0.5'
+    ZEROMQ_VERSION: '4.0.8'
     OMNIORB_VERSION: '4.2.3'
     docker_compose_version: '1.23.2'
     #vscode version 1.30
