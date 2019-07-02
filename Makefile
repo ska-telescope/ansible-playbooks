@@ -9,7 +9,7 @@ XAUTHORITYx ?= ${XAUTHORITY}
 INGRESS_HOST ?= integration.engageska-portugal.pt ## Ingress HTTP hostname
 
 # Vagrant
-VAGRANT_VERSION = 2.2.4
+VAGRANT_VERSION = 2.2.5
 V_NAME ?= tango-dev  ## Virtualbox instance name
 V_PLAYBOOK ?= deploy_tangoenv.yml  ## Ansible playbook run in Vagrant
 V_BOX ?= ubuntu/bionic64  ## Vagrant Box
@@ -87,7 +87,7 @@ vagrant_install:  ## install vagrant and vagrant-disksize on Ubuntu
 	if [ "0$${MAJ}" -ge "2" ] || [ "0$${MIN}" -ge "1" ]; then \
 	  echo "Vagrant is OK - "`vagrant version`; \
 	else \
-	  cd /tmp/ && wget https://releases.hashicorp.com/vagrant/$(VAGRANT_VERSION)/vagrant_$(VAGRANT_VERSION)_x86_64.deb && \
+	  cd /tmp/ && wget https://nexus.engageska-portugal.pt/repository/raw/vagrant/vagrant_$(VAGRANT_VERSION)_x86_64.deb && \
 	   sudo dpkg -i /tmp/vagrant_$(VAGRANT_VERSION)_x86_64.deb && \
 	  rm -f /tmp/vagrant_$(VAGRANT_VERSION)_x86_64.deb; \
 	fi
