@@ -2,7 +2,7 @@ stages:
   - build
   - trigger
 
-test_ubuntu_latest:
+test_ubuntu_18:
   image: ubuntu:18.04
   stage: build
   tags:
@@ -17,7 +17,6 @@ test_ubuntu_latest:
   - apt-add-repository --yes --update ppa:ansible/ansible 
   - apt-get -y install ansible
   - ansible-playbook -i hosts deploy_tangoenv.yml --extra-vars "install_ska_docker='no' start_tango='no' install_ide='no'"
-  
   
 test_ubuntu_16:
   image: ubuntu:16.04
@@ -35,6 +34,24 @@ test_ubuntu_16:
   - apt-get -y install ansible
   - ansible-playbook -i hosts deploy_tangoenv.yml --extra-vars "install_ska_docker='no' start_tango='no' install_ide='no'"
   
+test_debian_buster-slim:
+  image: debian:buster-slim
+  stage: build
+  tags:
+  - docker-executor
+  before_script:
+  - export TERM=linux
+  - export DEBIAN_FRONTEND=noninteractive
+  - export RUNLEVEL=1
+  - apt-get update
+  - apt-get install -y bash python apt-transport-https ca-certificates curl software-properties-common python-apt
+  script:
+  - echo "deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main" >> /etc/apt/sources.list
+  - apt-get install gnupg2 -y
+  - apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 93C4A3FD7BB9C367
+  - apt-get update
+  - apt-get -y install ansible
+  - ansible-playbook -i hosts deploy_tangoenv.yml --extra-vars "install_ska_docker='no' start_tango='no' install_ide='no'"
   
 test_debian_stretch-slim:
   image: debian:stretch-slim
