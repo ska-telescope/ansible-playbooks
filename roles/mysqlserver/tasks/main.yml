@@ -1,22 +1,21 @@
 ---
 
-- name: Install python python-dev python-pkgconfig python3-pymysql default-mysql-server default-mysql-client python-mysqldb
+- name: Install python python-dev python-pkgconfig python3-pymysql mysql-server mysql-client python-mysqldb
   apt:
     name:
         - python
         - python-dev 
         - python-pkgconfig
         - python3-pymysql
-        - default-mysql-server
-        - default-mysql-client
+        - mysql-server
+        - mysql-client
         - python-mysqldb
     state: latest
     force: yes 
     update_cache: yes
-  when:
-    - install_mysql == 'yes'
+  when: install_mysql == 'yes'
 
-- name: install default-libmysqlclient-dev
+- name: install libmysqlclient-dev (Debian)
   apt:
     name:
         - default-libmysqlclient-dev
@@ -24,6 +23,18 @@
     force: yes 
     update_cache: yes
   when: 
+    - ansible_distribution == 'Debian'
+    - install_mysql == 'yes'
+
+- name: install libmysqlclient-dev (Ubuntu)
+  apt:
+    name:
+        - libmysqlclient-dev
+    state: latest
+    force: yes 
+    update_cache: yes
+  when: 
+    - ansible_distribution == 'Ubuntu'
     - install_mysql == 'yes'
 
 - name: copy .my.cnf
