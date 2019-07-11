@@ -10,7 +10,6 @@ test_ubuntu_18:
   before_script:
   - export TERM=linux
   - export DEBIAN_FRONTEND=noninteractive
-  - export RUNLEVEL=1
   - apt-get update
   - apt-get install -y bash python apt-transport-https ca-certificates curl software-properties-common python-apt
   script:  
@@ -26,7 +25,6 @@ test_ubuntu_16:
   before_script:
   - export TERM=linux
   - export DEBIAN_FRONTEND=noninteractive
-  - export RUNLEVEL=1
   - apt-get update
   - apt-get install -y bash python apt-transport-https ca-certificates curl software-properties-common python-apt
   script:
@@ -61,7 +59,6 @@ test_debian_stretch-slim:
   before_script:
   - export TERM=linux
   - export DEBIAN_FRONTEND=noninteractive
-  - export RUNLEVEL=1
   - apt-get update
   - apt-get install -y bash python apt-transport-https ca-certificates curl software-properties-common python-apt
   script:
