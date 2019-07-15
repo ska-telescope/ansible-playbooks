@@ -20,8 +20,8 @@
       --registration-token "{{token}}" \
       --executor "shell" \
       --docker-image alpine:latest \
-      --description "docker-runner" \
-      --tag-list "shell,engageska,ska-docker" \
+      --description "{{name}}" \
+      --tag-list "{taglist}" \
       --run-untagged="true" \
       --locked="false" \
       --access-level="not_protected"
