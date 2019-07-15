@@ -21,7 +21,7 @@
       --executor "shell" \
       --docker-image alpine:latest \
       --description "{{name}}" \
-      --tag-list "{taglist}" \
+      --tag-list "{{taglist}}" \
       --run-untagged="true" \
       --locked="false" \
       --access-level="not_protected"
