@@ -1,0 +1,7 @@
+---
+- name: deploy_runners
+  hosts: runners
+  become: yes
+  tasks: 
+    - include: roles/runner/tasks/install.yml
+

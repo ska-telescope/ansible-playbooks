@@ -1,0 +1,37 @@
+- name: Add GitLab’s official repository
+  shell: curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh | sudo bash
+
+- name: Install the latest version of GitLab Runner
+  apt:
+    name:
+    - gitlab-runner
+    update_cache: yes
+
+- name: Check that the /etc/gitlab-runner/config.toml exists
+  stat:
+    path: /etc/gitlab-runner/config.toml
+  register: stat_config
+
+- name: Add GitLab’s official repository
+  shell: |
+    gitlab-runner register \
+      --non-interactive \
+      --url "https://gitlab.com/" \
+      --registration-token "{{token}}" \
+      --executor "shell" \
+      --docker-image alpine:latest \
+      --description "docker-runner" \
+      --tag-list "shell,engageska,ska-docker" \
+      --run-untagged="true" \
+      --locked="false" \
+      --access-level="not_protected"
+  when: stat_config.stat.exists == False
+
+- name: Install GitLab runner service
+  shell: |
+    gitlab-runner install --user {{ansible_user}}
+  when: stat_config.stat.exists == False
+
+- name: Run GitLab runner service
+  shell: |
+    gitlab-runner run &
