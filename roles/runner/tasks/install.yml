@@ -34,4 +34,4 @@
 
 - name: Run GitLab runner service
   shell: |
-    gitlab-runner run &
+    gitlab-runner start

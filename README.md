@@ -72,9 +72,23 @@ ansible-playbook -i hosts deploy_integrationenv.yml --extra-vars "ansible_become
 At the following link will be setup the webjive webapplication: http://localhost/testdb
 
 
+## GitLab Runner Environment
+It is possible to install the gitlab runner environment locally. Make sure the docker environment is installed and it has at least 50GB disk space. 
 
-[![Documentation Status](https://readthedocs.org/projects/ska-docker/badge/?version=latest)](https://developer.skatelescope.org/projects/k8s-integration/en/latest/?badge=latest)
+Add the following lines in the file hosts:
+``` 
 
+[runners]
+localhost ansible_user=*user* ansible_connection=local
+```
+
+Call the playbook with the following command: 
+``` 
+
+ansible-playbook -vvv deploy_runners.yaml --extra-vars "token='<token from your gitlab repository>' name='runnerXXX' taglist='tag1,tag2,tag3'" -i hosts
+``` 
+
+To check the gitlab-runner is working, go into gitlab project page and check the CI/CD settings (Runners section).
 
 Ansible Playbook for Kubernetes
 ===============================
