@@ -55,4 +55,26 @@
     virtualenv -p /usr/bin/python3 /venv
     pip3 install pipenv
     pipenv install --dev
-  when: install_pytango == 'yes'
+  when: 
+    - ansible_distribution_release != "buster"
+    - install_pytango == 'yes'
+
+- name: Install pytango on virtualenv with pipenv
+  shell: |
+    cd /build_pytango_dir
+    export LC_ALL=C.UTF-8 \
+      LANG=C.UTF-8 \
+      PIPENV_TIMEOUT=900 \
+      PATH=/venv/bin:$PATH \
+      VIRTUAL_ENV=/venv \
+      PIPENV_VERBOSITY=-1 \
+      PIPENV_NOSPIN=1
+    rm -r -f /venv
+    pwd
+    virtualenv -p /usr/bin/python3 /venv
+    pip3 install pipenv
+    ln -s /usr/lib/x86_64-linux-gnu/libboost_python3-py37.so /usr/lib/x86_64-linux-gnu/libboost_python-py37.so
+    pipenv install --dev
+  when: 
+    - ansible_distribution_release == "buster"
+    - install_pytango == 'yes'
