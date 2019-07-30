@@ -1,6 +1,5 @@
 ---
-
-- name: Install python python-dev python-pkgconfig python3-pymysql mysql-server mysql-client python-mysqldb
+- name: Install python python-dev python-pkgconfig python3-pymysql mysql-server mysql-client python-mysqldb (Ubuntu 16.04) (WARNING package names are deprecated on modern distros)
   apt:
     name:
         - python
@@ -13,20 +12,12 @@
     state: latest
     force: yes 
     update_cache: yes
-  when: install_mysql == 'yes'
-
-- name: install libmysqlclient-dev (Debian)
-  apt:
-    name:
-        - default-libmysqlclient-dev
-    state: latest
-    force: yes 
-    update_cache: yes
   when: 
-    - ansible_distribution == 'Debian'
+    - ansible_distribution == 'Ubuntu'
+    - ansible_distribution_version == '16.04'
     - install_mysql == 'yes'
 
-- name: install libmysqlclient-dev (Ubuntu)
+- name: install libmysqlclient-dev (Ubuntu 16.04) (WARNING package names are deprecated on modern distros)
   apt:
     name:
         - libmysqlclient-dev
@@ -35,6 +26,35 @@
     update_cache: yes
   when: 
     - ansible_distribution == 'Ubuntu'
+    - ansible_distribution_version == '16.04'
+    - install_mysql == 'yes'
+
+- name: Install python python-dev python-pkgconfig python3-pymysql default-mysql-server default-mysql-client python-mysqldb
+  apt:
+    name:
+        - python
+        - python-dev 
+        - python-pkgconfig
+        - python3-pymysql
+        - default-mysql-server
+        - default-mysql-client
+        - python-mysqldb
+    state: latest
+    force: yes 
+    update_cache: yes
+  when:
+    - ansible_distribution_version != '16.04'
+    - install_mysql == 'yes'
+
+- name: install default-libmysqlclient-dev
+  apt:
+    name:
+        - default-libmysqlclient-dev
+    state: latest
+    force: yes 
+    update_cache: yes
+  when: 
+    - ansible_distribution_version != '16.04'
     - install_mysql == 'yes'
 
 - name: copy .my.cnf
