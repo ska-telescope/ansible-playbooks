@@ -1,4 +1,5 @@
 ---
+
 - name: Install python python-dev python-pkgconfig python3-pymysql mysql-server mysql-client python-mysqldb (Ubuntu 16.04) (WARNING package names are deprecated on modern distros)
   apt:
     name:
