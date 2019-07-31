@@ -1,0 +1,6 @@
+---
+- name: clean_k8s
+  hosts: localhost
+  become: yes
+  tasks: 
+    - include: roles/kubectl/tasks/remove.yml

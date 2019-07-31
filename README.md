@@ -178,6 +178,15 @@ Clean up with:
 $ make vagrant_down
 ```
 
+Kubernetes Cluster
+==================
+
+Kubernetes environment can be reset using the following command:
+``` 
+
+ansible-playbook reset_k8s.yml
+``` 
+
 Minikube Direct
 ===============
 
