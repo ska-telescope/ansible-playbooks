@@ -1,0 +1,9 @@
+---
+
+- name: Reset test environment/delete namespace 
+  shell: kubectl delete namespaces --all
+  ignore_errors: True
+
+- name: Make sure the persistent volumes are removed
+  shell: kubectl delete --all pv,pvc
+  ignore_errors: True
