@@ -76,11 +76,11 @@ At the following link will be setup the webjive webapplication: http://localhost
 It is possible to install the gitlab runner environment locally. Make sure the docker environment is installed and it has at least 50GB disk space. 
 
 Add the following lines in the file hosts:
-``` 
+<pre>
 
 [runners]
-localhost ansible_user=*user* ansible_connection=local
-```
+localhost ansible_user=<b>user</b> ansible_connection=local
+</pre>
 
 Call the playbook with the following command: 
 ``` 
