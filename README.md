@@ -13,9 +13,9 @@ Steps to make it work with RSA KEY:
     ansible-playbook -i hosts deploy_tangoenv.yml 
 ```
 or with password: 
-```
-    ansible-playbook -i hosts deploy_tangoenv.yml --extra-vars "ansible_become_pass=`*password*`"
-```
+<pre>
+    ansible-playbook -i hosts deploy_tangoenv.yml --extra-vars "ansible_become_pass=<b>password</b>"
+</pre>
 
 To work with pytango, activate the virtualenv:
 ``` 
