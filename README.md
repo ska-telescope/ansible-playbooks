@@ -79,7 +79,7 @@ Add the following lines in the file hosts:
 <pre>
 
 [runners]
-localhost ansible_user=<b>user</b> ansible_connection=local
+localhost ansible_user=<b>USER</b> ansible_connection=local
 </pre>
 
 Call the playbook with the following command: 
