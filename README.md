@@ -14,7 +14,7 @@ Steps to make it work with RSA KEY:
 ```
 or with password: 
 <pre>
-    ansible-playbook -i hosts deploy_tangoenv.yml --extra-vars "ansible_become_pass=<b>password</b>"
+    ansible-playbook -i hosts deploy_tangoenv.yml --extra-vars "ansible_become_pass=<b>PASSWORD</b>"
 </pre>
 
 To work with pytango, activate the virtualenv:
@@ -54,20 +54,20 @@ TESTED OS (using a box requires at least 4GB RAM):
 * debian:stretch-slim
 
 ## Integration Environment
-It is possible to install the integration environment locally with minikube (change user and password). 
+It is possible to install the integration environment locally with minikube (**CHANGE USER AND PASSWORD**). 
 
 Add the following lines in the file hosts:
-``` 
+<pre>
 
 [integration]
-localhost ansible_user=*user* ansible_connection=local
-```
+localhost ansible_user=<b>USER</b> ansible_connection=local
+</pre>
 
 Call the playbook with the following command: 
-``` 
+<pre>
 
-ansible-playbook -i hosts deploy_integrationenv.yml --extra-vars "ansible_become_pass=*password*"
-``` 
+ansible-playbook -i hosts deploy_integrationenv.yml --extra-vars "ansible_become_pass=<b>PASSWORD</b>"
+</pre>
 
 At the following link will be setup the webjive webapplication: http://localhost/testdb
 
