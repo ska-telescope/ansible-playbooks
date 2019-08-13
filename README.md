@@ -8,13 +8,13 @@ Steps to make it work with RSA KEY:
 ``` 
     apt-add-repository --yes --update ppa:ansible/ansible && apt-get install ansible
 ```
-4. Lunch ansible:
+4. Launch ansible:
 ``` 
     ansible-playbook -i hosts deploy_tangoenv.yml 
 ```
 or with password: 
 ```
-    ansible-playbook -i hosts deploy_tangoenv.yml --extra-vars "ansible_become_pass=*password*"
+    ansible-playbook -i hosts deploy_tangoenv.yml --extra-vars "ansible_become_pass=**password**"
 ```
 
 To work with pytango, activate the virtualenv:
