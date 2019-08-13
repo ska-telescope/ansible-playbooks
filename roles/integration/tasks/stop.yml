@@ -7,7 +7,7 @@
   become_user: "{{ ansible_user }}"
   shell: |
     cd /usr/src/k8s-integration
-    make delete KUBE_NAMESPACE=integration
+    make delete_all KUBE_NAMESPACE=integration
     kubectl delete -f resources/traefik-minikube.yaml
   when: 
   - k8sDir.stat.exists == true
