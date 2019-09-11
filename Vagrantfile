@@ -13,6 +13,8 @@ vnginx = (if !ENV.key?('USE_NGINX') || ENV['USE_NGINX'] == 'true' then true else
 vplaybook  = ENV['V_PLAYBOOK'] || "deploy_tangoenv.yml"
 
 Vagrant.configure("2") do |config|
+  config.vagrant.plugins = ["vagrant-disksize"]
+
   config.vm.box = vbox
   config.disksize.size = vsize
   config.vm.synced_folder ".", "/vagrant"
