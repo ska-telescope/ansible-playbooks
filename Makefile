@@ -91,11 +91,6 @@ vagrant_install:  ## install vagrant and vagrant-disksize on Ubuntu
 	   sudo dpkg -i /tmp/vagrant_$(VAGRANT_VERSION)_x86_64.deb && \
 	  rm -f /tmp/vagrant_$(VAGRANT_VERSION)_x86_64.deb; \
 	fi
-	@vagrant plugin list | grep vagrant-disksize >/dev/null; RES=$$? && \
-	if [ "$${RES}" -eq "1" ]; then \
-	  vagrant plugin install vagrant-disksize; \
-	fi
-	@vagrant plugin list
 
 vagrant_up: vars  ## startup minikube in vagrant
 	V_NAME=$(V_NAME) \
