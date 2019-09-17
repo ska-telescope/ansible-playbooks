@@ -35,7 +35,7 @@
 - name: Install minikube
   become_user: "{{ ansible_user }}"
   shell: |
-    curl -kLo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube
+    curl -kLo minikube https://storage.googleapis.com/minikube/releases/v1.2.0/minikube-linux-amd64 && chmod +x minikube
   when: minikube_installed.stat.exists == false
 
 - name: Move minikube
