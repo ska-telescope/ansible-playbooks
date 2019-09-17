@@ -31,8 +31,9 @@
 
 - name: Change file ownership, group and permissions
   file:
-    path: /usr/src
+    path: /usr/src/k8s-integration
     owner: '{{ ansible_user }}'
+    group: '{{ ansible_user }}'
 
 - name: Start the integrated system
   become_user: "{{ ansible_user }}"
