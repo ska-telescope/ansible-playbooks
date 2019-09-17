@@ -73,7 +73,6 @@
   become_user: "{{ ansible_user }}"
   shell: |
     sudo -E minikube start --vm-driver=none --extra-config=kubelet.resolv-conf=/var/run/systemd/resolve/resolv.conf
-    sudo -E minikube addons enable ingress
 
 - name: Setting on minukube
   shell: |
