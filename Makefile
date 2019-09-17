@@ -3,7 +3,7 @@ MAKEPATH := $(abspath $(lastword $(MAKEFILE_LIST)))
 BASEDIR := $(notdir $(patsubst %/,%,$(dir $(MAKEPATH))))
 
 # find IP addresses of this machine, setting THIS_HOST to the first address found
-THIS_HOST := $(shell ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | head -n1)
+THIS_HOST := $(shell (ip a 2> /dev/null || ifconfig) | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | head -n1)
 DISPLAY := $(THIS_HOST):0
 XAUTHORITYx ?= ${XAUTHORITY}
 INGRESS_HOST ?= integration.engageska-portugal.pt ## Ingress HTTP hostname
@@ -91,11 +91,6 @@ vagrant_install:  ## install vagrant and vagrant-disksize on Ubuntu
 	   sudo dpkg -i /tmp/vagrant_$(VAGRANT_VERSION)_x86_64.deb && \
 	  rm -f /tmp/vagrant_$(VAGRANT_VERSION)_x86_64.deb; \
 	fi
-	@vagrant plugin list | grep vagrant-disksize >/dev/null; RES=$$? && \
-	if [ "$${RES}" -eq "1" ]; then \
-	  vagrant plugin install vagrant-disksize; \
-	fi
-	@vagrant plugin list
 
 vagrant_up: vars  ## startup minikube in vagrant
 	V_NAME=$(V_NAME) \
