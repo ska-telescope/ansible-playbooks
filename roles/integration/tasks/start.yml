@@ -29,6 +29,11 @@
   vars:
     directory: /usr/src/k8s-integration/chart
 
+- name: Change file ownership, group and permissions
+  file:
+    path: /usr/src
+    owner: '{{ ansible_user }}'
+
 - name: Start the integrated system
   become_user: "{{ ansible_user }}"
   shell: |

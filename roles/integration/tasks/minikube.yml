@@ -35,7 +35,7 @@
 - name: Install minikube
   become_user: "{{ ansible_user }}"
   shell: |
-    curl -kLo minikube https://storage.googleapis.com/minikube/releases/v0.35.0/minikube-linux-amd64 && chmod +x minikube
+    curl -kLo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube
   when: minikube_installed.stat.exists == false
 
 - name: Move minikube
@@ -85,10 +85,3 @@
 - name: Install helm
   shell: |
     curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash
-
-- name: Copy /etc/kubernetes/addons/ingress-dp.yaml
-  copy:
-    src: "{{playbook_dir}}/roles/integration/files/ingress-dp.yaml"
-    dest: /etc/kubernetes/addons/ingress-dp.yaml
-    mode: 0755
-    force: yes
