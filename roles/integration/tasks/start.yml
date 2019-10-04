@@ -16,7 +16,7 @@
   when: skampiDir.stat.exists == false
 
 - git:
-    repo: 'https://github.com/ska-telescope/skampi.git'
+    repo: 'https://gitlab.com/ska-telescope/skampi.git'
     dest: /usr/src/skampi
     update: yes
     ssh_opts: "-o StrictHostKeyChecking=no"
