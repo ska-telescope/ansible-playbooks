@@ -1,5 +1,20 @@
-- name: Check if k8s-integration exists
+- name: Check if skampi exists
   stat: 
+    path: /usr/src/skampi/Makefile
+  register: skampiDir
+
+- name: Stop the integrated system
+  become_user: "{{ ansible_user }}"
+  shell: |
+    cd /usr/src/skampi
+    make delete_all KUBE_NAMESPACE=integration
+    kubectl delete -f resources/traefik-minikube.yaml
+  when: 
+  - skampiDir.stat.exists == true
+  - stop_integrated_system == 'yes'
+
+- name: Check if k8s-integration exists
+  stat:
     path: /usr/src/k8s-integration/Makefile
   register: k8sDir
 
@@ -9,6 +24,6 @@
     cd /usr/src/k8s-integration
     make delete_all KUBE_NAMESPACE=integration
     kubectl delete -f resources/traefik-minikube.yaml
-  when: 
-  - k8sDir.stat.exists == true
-  - stop_integrated_system == 'yes'
+  when:
+    - k8sDir.stat.exists == true
+    - stop_integrated_system == 'yes'
