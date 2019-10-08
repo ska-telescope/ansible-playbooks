@@ -4,20 +4,20 @@
     - make
     update_cache: yes
 
-- name: Check if k8s-integration exists
+- name: Check if skampi exists
   stat: 
-    path: /usr/src/k8s-integration/Makefile
-  register: k8sDir
+    path: /usr/src/skampi/Makefile
+  register: skampiDir
 
-- name: Creates directory /usr/src/k8s-integration
+- name: Creates directory /usr/src/skampi
   file:
-    path: /usr/src/k8s-integration
+    path: /usr/src/skampi
     state: directory
-  when: k8sDir.stat.exists == false
+  when: skampiDir.stat.exists == false
 
 - git:
-    repo: 'https://github.com/ska-telescope/k8s-integration.git'
-    dest: /usr/src/k8s-integration
+    repo: 'https://gitlab.com/ska-telescope/skampi.git'
+    dest: /usr/src/skampi
     update: yes
     ssh_opts: "-o StrictHostKeyChecking=no"
 
@@ -27,7 +27,7 @@
     tasks_from: one_chart
   when: helm_lint is defined and helm_lint == "yes"
   vars:
-    directory: /usr/src/k8s-integration/chart
+    directory: /usr/src/skampi/chart
 
 - name: Change file ownership, group and permissions
   file:
@@ -38,7 +38,7 @@
 - name: Start the integrated system
   become_user: "{{ ansible_user }}"
   shell: |
-    cd /usr/src/k8s-integration
+    cd /usr/src/skampi
     kubectl apply -f resources/traefik-minikube.yaml
     make deploy_all KUBE_NAMESPACE=integration 
     kubectl get all,pv,pvc,ingress -n integration
