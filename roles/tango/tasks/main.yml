@@ -20,7 +20,7 @@
     - build_tango == 'yes'
     - ansible_distribution == 'Ubuntu'
 
-- name: Install dependencies Ubuntu
+- name: Install dependencies Debian
   apt:
     name:
         - default-jdk
