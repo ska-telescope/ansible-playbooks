@@ -30,6 +30,7 @@
   shell: curl https://pyenv.run | bash
   args:
     creates: "{{ localhome }}/.pyenv"
+    warn: false
 
 - name: Add path etc to .bashrc.
   become: yes
