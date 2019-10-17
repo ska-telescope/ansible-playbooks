@@ -1,4 +1,11 @@
 ---
+
+# common variables
+aptcachetime: 3600
+locale: "en_US.UTF-8"
+localuser: "{{ lookup('env','USER') }}"
+localhome: "{{ lookup('env','HOME') }}"
+
 # core software versions to deploy
 kubectl_version: 'v1.15.0'
 kvm2_driver_version: 'v1.1.1'

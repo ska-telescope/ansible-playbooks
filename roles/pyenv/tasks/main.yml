@@ -1,0 +1,64 @@
+---
+
+- name: Install needed packages
+  apt:
+    pkg:
+      - git
+      - git-core
+      - build-essential
+      - libssl-dev
+      - zlib1g-dev
+      - libbz2-dev
+      - libreadline-dev
+      - libsqlite3-dev
+      - wget
+      - curl
+      - llvm
+      - libncurses5-dev
+      - libncursesw5-dev
+      - xz-utils
+      - tk-dev
+      - libffi-dev
+      - liblzma-dev
+      - python-openssl
+    state: present
+    update_cache: yes
+    cache_valid_time: "{{ aptcachetime }}"
+
+- name: Install pyenv
+  become: yes
+  shell: curl https://pyenv.run | bash
+  args:
+    creates: "{{ localhome }}/.pyenv"
+    warn: false
+
+- name: Add path etc to .bashrc.
+  become: yes
+  lineinfile:
+    dest: "{{ localhome }}/.bashrc"
+    state: present
+    create: yes
+    line: "{{ item }}"
+  with_items:
+    - 'export PYENV_ROOT="$HOME/.pyenv"'
+    - 'export PATH="$PYENV_ROOT/bin:$PATH"'
+    - 'eval "$(pyenv init -)"'
+    - 'eval "$(pyenv virtualenv-init -)"'
+
+- name: Install default python version
+  become: yes
+  shell: "{{ localhome }}/.pyenv/bin/pyenv install {{ PYTHON_VERSION }}"
+  args:
+    creates: "{{ localhome }}/.pyenv/versions/{{ PYTHON_VERSION }}"
+
+- name: Activate global pyenv's python version
+  become: yes
+  shell: "{{ localhome }}/.pyenv/bin/pyenv global {{ PYTHON_VERSION }}"
+
+# - name: Copy environment.sh
+#   copy:
+#     src: "{{playbook_dir}}/roles/pytango/files/environment.sh"
+#     dest: /etc/profile.d/environment.sh
+#     mode: 0755
+#     force: yes
+#   when: install_pytango == 'yes'
