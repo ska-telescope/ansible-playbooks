@@ -21,12 +21,14 @@
       - libffi-dev
       - liblzma-dev
       - python-openssl
+      - sudo
     state: present
     update_cache: yes
     cache_valid_time: "{{ aptcachetime }}"
 
 - name: Install pyenv
   become: yes
+  become_user: "{{ localuser }}"
   shell: curl https://pyenv.run | bash
   args:
     creates: "{{ localhome }}/.pyenv"
@@ -34,6 +36,7 @@
 
 - name: Add path etc to .bashrc.
   become: yes
+  become_user: "{{ localuser }}"
   lineinfile:
     dest: "{{ localhome }}/.bashrc"
     state: present
@@ -47,18 +50,12 @@
 
 - name: Install default python version
   become: yes
+  become_user: "{{ localuser }}"
   shell: "{{ localhome }}/.pyenv/bin/pyenv install {{ PYTHON_VERSION }}"
   args:
     creates: "{{ localhome }}/.pyenv/versions/{{ PYTHON_VERSION }}"
 
 - name: Activate global pyenv's python version
   become: yes
+  become_user: "{{ localuser }}"
   shell: "{{ localhome }}/.pyenv/bin/pyenv global {{ PYTHON_VERSION }}"
-
-# - name: Copy environment.sh
-#   copy:
-#     src: "{{playbook_dir}}/roles/pytango/files/environment.sh"
-#     dest: /etc/profile.d/environment.sh
-#     mode: 0755
-#     force: yes
-#   when: install_pytango == 'yes'
