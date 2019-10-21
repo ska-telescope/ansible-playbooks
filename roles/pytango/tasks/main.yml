@@ -40,7 +40,7 @@
     force: yes
   when: install_pytango == 'yes'
 
-- name: Install pytango on virtualenv with pipenv (Python 3.6)
+- name: Install pytango on virtualenv with pipenv 
   shell: |
     cd /build_pytango_dir
     export LC_ALL=C.UTF-8 \
@@ -59,7 +59,7 @@
     - ansible_distribution_release != "buster"
     - install_pytango == 'yes'
 
-- name: Install pytango on virtualenv with pipenv (Python 3.7)
+- name: Install pytango on virtualenv with pipenv
   shell: |
     cd /build_pytango_dir
     export LC_ALL=C.UTF-8 \

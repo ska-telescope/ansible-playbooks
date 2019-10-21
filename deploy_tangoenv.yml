@@ -4,8 +4,8 @@
   hosts: development
   vars:
     build_tango: 'yes'
-    install_mysql: 'yes'
-    start_mysql_server: 'yes'
+    install_mysql: 'no'
+    start_mysql_server: 'no'
     install_pytango: 'yes'
     install_ide: 'yes'
     install_ska_docker: 'yes'
@@ -13,14 +13,14 @@
     update_hosts: 'yes'
     pycharm_version: 'community-2018.3.3'
     PYTHON_VERSION: '3.7.3'
-    TANGO_VERSION: '9.2.5a'
-    ZEROMQ_VERSION: '4.0.8'
+    TANGO_VERSION: '9.3.3'
+    LIBZEROMQ_VERSION: '4.3.2'
+    CPPZEROMQ_VERSION: '4.4.1'
     OMNIORB_VERSION: '4.2.3'
     docker_compose_version: '1.23.2'
     #vscode version 1.30
   become: yes
   roles:
-    - pyenv
     - ide
     - mysqlserver
     - tango
