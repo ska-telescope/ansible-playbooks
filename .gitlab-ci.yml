@@ -15,7 +15,7 @@ test_ubuntu_18:
   script:  
   - apt-add-repository --yes --update ppa:ansible/ansible 
   - apt-get -y install ansible
-  - ansible-playbook -i hosts deploy_tangoenv.yml --extra-vars "install_ska_docker='no' start_tango='no' install_ide='no'"
+  - ansible-playbook -vvv -i hosts deploy_tangoenv.yml --extra-vars "install_ska_docker='no' start_tango='no' install_ide='no'"
   
 test_ubuntu_16:
   image: ubuntu:16.04
