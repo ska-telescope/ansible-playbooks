@@ -97,18 +97,18 @@
 - name: Build TANGO 
   shell: |
     update-java-alternatives -s java-1.8.0-openjdk-amd64
-    TANGO_DOWNLOAD_URL=https://nexus.engageska-portugal.pt/repository/raw/tango-cs/tango-{{TANGO_VERSION}}.tar.gz \
-        && mkdir -p /usr/share/man/man1 \
-        && rm -rf /var/lib/apt/lists/* \
-        && mkdir -p /usr/src/tango \
-        && cd /usr/src/tango \
-        && curl -fsSL "$TANGO_DOWNLOAD_URL" -o tango.tar.gz \
-        && tar xf tango.tar.gz -C /usr/src/tango --strip-components=1 \
-        && ./configure --with-zmq=/usr/local --with-omni=/usr/local --with-mysqlclient-prefix=/usr --enable-static=no \
-        && make -C /usr/src/tango -j$(nproc) \
-        && make -C /usr/src/tango install \
-        && ldconfig \
-        && rm -r /usr/src/tango
+    TANGO_DOWNLOAD_URL=https://nexus.engageska-portugal.pt/repository/raw/tango-cs/tango-{{TANGO_VERSION}}-rc2.tar.gz \
+    && mkdir -p /usr/share/man/man1 \
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p /usr/src/tango \
+    && cd /usr/src/tango \
+    && curl -fsSL "$TANGO_DOWNLOAD_URL" -o tango.tar.gz \
+    && tar xf tango.tar.gz -C /usr/src/tango --strip-components=1 \
+    && ./configure --with-zmq=/usr/local --with-omni=/usr/local --with-mysqlclient-prefix=/usr --enable-static=no \
+    && make -C /usr/src/tango -j$(nproc) \
+    && make -C /usr/src/tango install \
+    && ldconfig \
+    && rm -r /usr/src/tango
 
     # what for?
     rm -rf /var/lib/apt/lists/* /etc/apt/apt.conf.d/30proxy
