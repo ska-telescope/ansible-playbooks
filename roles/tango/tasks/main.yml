@@ -45,6 +45,7 @@
         - pkg-config 
         - unzip
         - file
+        - cmake
     state: latest
     update_cache: yes
   when: build_tango == 'yes'
