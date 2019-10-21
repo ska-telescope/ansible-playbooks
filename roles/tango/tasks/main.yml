@@ -45,22 +45,39 @@
         - pkg-config 
         - unzip
         - file
+        - cmake
     state: latest
     update_cache: yes
   when: build_tango == 'yes'
   
-- name: Build zeromq
-  shell: |
-    ZEROMQ_DOWNLOAD_URL=https://nexus.engageska-portugal.pt/repository/raw/zeromq/zeromq-{{ZEROMQ_VERSION}}.tar.gz \
+- name: Build lib zeromq
+  shell: |   
+    ZEROMQ_DOWNLOAD_URL=https://github.com/zeromq/libzmq/archive/v{{LIBZEROMQ_VERSION}}.tar.gz \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir -p /usr/src/zeromq \
     && cd /usr/src/zeromq \
-    && curl -fsSL "$ZEROMQ_DOWNLOAD_URL" -o zeromq.tar.gz \
+    && curl -kfsSL "$ZEROMQ_DOWNLOAD_URL" -o zeromq.tar.gz \
     && tar xf zeromq.tar.gz -C /usr/src/zeromq --strip-components=1 \
+    && ./autogen.sh \
     && ./configure --enable-static=no \
     && make -C /usr/src/zeromq -j$(nproc) \
     && make -C /usr/src/zeromq install \
     && rm -r /usr/src/zeromq
+  when: build_tango == 'yes'
+
+- name: Build cpp zeromq
+  shell: |   
+    CPPZMQ_DOWNLOAD_URL=https://github.com/zeromq/cppzmq/archive/v{{CPPZEROMQ_VERSION}}.tar.gz \
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p /usr/src/cppzmq \
+    && cd /usr/src/cppzmq \
+    && curl -kfsSL "$CPPZMQ_DOWNLOAD_URL" -o cppzmq.tar.gz \
+    && tar xf cppzmq.tar.gz -C /usr/src/cppzmq --strip-components=1 \
+    && mkdir -p build \
+    && cd build \
+    && cmake .. \
+    && make -j4 install \
+    && rm -r /usr/src/cppzmq
   when: build_tango == 'yes'
 
 - name: Build omniorb
