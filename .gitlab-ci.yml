@@ -30,7 +30,7 @@ test_ubuntu_16:
   script:
   - apt-add-repository --yes --update ppa:ansible/ansible 
   - apt-get -y install ansible
-  - ansible-playbook -i hosts deploy_tangoenv.yml --extra-vars "install_ska_docker='no' start_tango='no' install_ide='no'"
+  - ansible-playbook -vvv -i hosts deploy_tangoenv.yml --extra-vars "install_ska_docker='no' start_tango='no' install_ide='no'"
 
 test_debian_stretch-slim:
   image: debian:stretch-slim
@@ -48,7 +48,7 @@ test_debian_stretch-slim:
   - apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 93C4A3FD7BB9C367
   - apt-get update
   - apt-get -y install ansible
-  - ansible-playbook -i hosts deploy_tangoenv.yml --extra-vars "install_ska_docker='no' start_tango='no' install_ide='no'"
+  - ansible-playbook -vvv -i hosts deploy_tangoenv.yml --extra-vars "install_ska_docker='no' start_tango='no' install_ide='no'"
 
 test_debian_buster-slim:
   image: debian:buster-slim
@@ -66,12 +66,4 @@ test_debian_buster-slim:
   - apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 93C4A3FD7BB9C367
   - apt-get update
   - apt-get -y install ansible
-  - ansible-playbook -i hosts deploy_tangoenv.yml --extra-vars "install_ska_docker='no' start_tango='no' install_ide='no'"
-
-trigger:
-  image: appropriate/curl
-  stage: trigger
-  tags:
-  - docker-executor
-  script:
-  - curl -X POST -F token=$K8S_INTEGRATION_TOKEN -F ref=$K8S_INTEGRATION_TARGET_BRANCH https://gitlab.com/api/v4/projects/$K8S_INTEGRATION_PROJ_ID/trigger/pipeline
+  - ansible-playbook -vvv -i hosts deploy_tangoenv.yml --extra-vars "install_ska_docker='no' start_tango='no' install_ide='no'"

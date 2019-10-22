@@ -24,7 +24,6 @@
     - ide
     - mysqlserver
     - tango
-    - pyenv
     - pytango
     - ska-docker
     - updatehosts
