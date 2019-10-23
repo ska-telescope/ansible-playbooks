@@ -27,6 +27,7 @@
         - python3-pip
         - python-apt
         - virtualenv
+        - zlib1g-dev
     state: latest
     force: yes 
     update_cache: yes
