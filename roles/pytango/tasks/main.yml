@@ -45,13 +45,13 @@
     path: /usr/local/bin/python3.7
   register: python_exe
 
-- name: Install Python 3.7.3
+- name: Install Python {{PYTHON_VERSION}}
   shell: |
     mkdir -p /usr/src/python
     cd /usr/src/python
-    curl https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz --output python37.tgz
+    curl https://www.python.org/ftp/python/{{PYTHON_VERSION}}/Python-{{PYTHON_VERSION}}.tgz --output python37.tgz
     tar xf python37.tgz
-    cd Python-3.7.3/
+    cd Python-{{PYTHON_VERSION}}/
     ./configure
     make
     make install
