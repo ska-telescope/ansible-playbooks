@@ -46,6 +46,7 @@
         - unzip
         - file
         - cmake
+        - zlib1g-dev
     state: latest
     update_cache: yes
   when: build_tango == 'yes'
@@ -75,7 +76,7 @@
     && tar xf cppzmq.tar.gz -C /usr/src/cppzmq --strip-components=1 \
     && mkdir -p build \
     && cd build \
-    && cmake .. \
+    && cmake -DCPPZMQ_BUILD_TESTS=OFF .. \
     && make -j4 install \
     && rm -r /usr/src/cppzmq
   when: build_tango == 'yes'
