@@ -27,27 +27,6 @@
     force: yes
   when: install_pytango == 'yes'
 
-- name: Check if python3.7 exists
-  stat: 
-    path: /usr/local/bin/python3.7
-  register: python_exe
-
-- name: Install Python {{PYTHON_VERSION}}
-  shell: |
-    mkdir -p /usr/src/python
-    cd /usr/src/python
-    curl https://www.python.org/ftp/python/{{PYTHON_VERSION}}/Python-{{PYTHON_VERSION}}.tgz --output python37.tgz
-    tar xf python37.tgz
-    cd Python-{{PYTHON_VERSION}}/
-    ./configure
-    make
-    make install
-    rm -r /usr/src/python
-  when: 
-    - ansible_distribution_release != "buster"
-    - install_pytango == 'yes'
-    - python_exe.stat.exists == false
-
 - name: Install dependencies for pytango
   apt:
     name:
@@ -70,6 +49,27 @@
     force: yes 
     update_cache: yes
   when: install_pytango == 'yes'
+
+- name: Check if python3.7 exists
+  stat: 
+    path: /usr/local/bin/python3.7
+  register: python_exe
+
+- name: Install Python {{PYTHON_VERSION}}
+  shell: |
+    mkdir -p /usr/src/python
+    cd /usr/src/python
+    curl https://www.python.org/ftp/python/{{PYTHON_VERSION}}/Python-{{PYTHON_VERSION}}.tgz --output python37.tgz
+    tar xf python37.tgz
+    cd Python-{{PYTHON_VERSION}}/
+    ./configure
+    make
+    make install
+    rm -r /usr/src/python
+  when: 
+    - ansible_distribution_release != "buster"
+    - install_pytango == 'yes'
+    - python_exe.stat.exists == false
 
 - name: Install pytango on virtualenv with pipenv 
   shell: |
