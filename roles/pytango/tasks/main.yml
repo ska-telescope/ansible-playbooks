@@ -27,7 +27,7 @@
     force: yes
   when: install_pytango == 'yes'
 
-- name: Install dependencies for pytango
+- name: Install dependencies
   apt:
     name:
         - libboost-python-dev 
@@ -71,7 +71,28 @@
     - install_pytango == 'yes'
     - python_exe.stat.exists == false
 
-- name: Install pytango on virtualenv with pipenv 
+- name: Check libboost
+  shell: |
+    if test -f "/usr/lib/x86_64-linux-gnu/libboost_python3-py37.so"; then
+        ln -sf /usr/lib/x86_64-linux-gnu/libboost_python3-py37.so /usr/lib/x86_64-linux-gnu/libboost_python-py37.so
+        ln -sf /usr/lib/x86_64-linux-gnu/libboost_python3-py37.so /usr/local/lib/libboost_python-py37.so
+    fi
+
+    if test -f "/usr/lib/x86_64-linux-gnu/libboost_python3-py36.so"; then
+        ln -sf /usr/lib/x86_64-linux-gnu/libboost_python3-py36.so /usr/lib/x86_64-linux-gnu/libboost_python-py37.so
+        ln -sf /usr/lib/x86_64-linux-gnu/libboost_python3-py36.so /usr/local/lib/libboost_python-py37.so
+    fi
+
+    if test -f "/usr/lib/x86_64-linux-gnu/libboost_python-py35.so"; then
+        ln -sf /usr/lib/x86_64-linux-gnu/libboost_python-py35.so /usr/lib/x86_64-linux-gnu/libboost_python-py37.so
+        ln -sf /usr/lib/x86_64-linux-gnu/libboost_python-py35.so /usr/local/lib/libboost_python-py37.so
+    fi
+
+    if test -f "/usr/lib/x86_64-linux-gnu/libz.so"; then
+        ln -sf /usr/lib/x86_64-linux-gnu/libz.so /usr/lib/libz.so
+    fi
+
+- name: Install pytango
   shell: |
     cd /build_pytango_dir
     export LC_ALL=C.UTF-8 \
@@ -85,30 +106,6 @@
     pwd
     virtualenv -p /usr/local/bin/python3.7 /venv
     pip3 install pipenv
-    ln -sf /usr/lib/x86_64-linux-gnu/libz.so /usr/lib/libz.so
-    ln -sf /usr/lib/x86_64-linux-gnu/libboost_python3-py36.so /usr/lib/x86_64-linux-gnu/libboost_python-py37.so
-    ln -sf /usr/lib/x86_64-linux-gnu/libboost_python3-py36.so /usr/local/lib/libboost_python-py37.so
     pipenv install --dev
   when: 
-    - ansible_distribution_release != "buster"
-    - install_pytango == 'yes'
-
-- name: Install pytango on virtualenv with pipenv
-  shell: |
-    cd /build_pytango_dir
-    export LC_ALL=C.UTF-8 \
-      LANG=C.UTF-8 \
-      PIPENV_TIMEOUT=900 \
-      PATH=/venv/bin:$PATH \
-      VIRTUAL_ENV=/venv \
-      PIPENV_VERBOSITY=-1 \
-      PIPENV_NOSPIN=1
-    rm -r -f /venv
-    pwd
-    virtualenv -p /usr/bin/python3 /venv
-    pip3 install pipenv
-    ln -s /usr/lib/x86_64-linux-gnu/libboost_python3-py37.so /usr/lib/x86_64-linux-gnu/libboost_python-py37.so
-    pipenv install --dev
-  when: 
-    - ansible_distribution_release == "buster"
     - install_pytango == 'yes'
