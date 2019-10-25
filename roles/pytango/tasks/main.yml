@@ -104,7 +104,7 @@
       PIPENV_NOSPIN=1
     rm -r -f /venv
     pwd
-    virtualenv -p /usr/local/bin/python3.7 /venv
+    virtualenv -p python3.7 /venv
     pip3 install pipenv
     pipenv install --dev
   when: 

@@ -15,7 +15,8 @@ test_ubuntu_18:
   script:  
   - apt-add-repository --yes --update ppa:ansible/ansible 
   - apt-get -y install ansible
-  - ansible-playbook -vvv -i hosts deploy_tangoenv.yml --extra-vars "install_ska_docker='no' start_tango='no' install_ide='no'"
+  - ansible-playbook -i hosts deploy_tangoenv.yml --extra-vars "install_ska_docker='no' start_tango='no' install_ide='no'"
+  - python3 -c "import tango; print(tango.utils.info())
   
 test_ubuntu_16:
   image: ubuntu:16.04
@@ -30,7 +31,8 @@ test_ubuntu_16:
   script:
   - apt-add-repository --yes --update ppa:ansible/ansible 
   - apt-get -y install ansible
-  - ansible-playbook -vvv -i hosts deploy_tangoenv.yml --extra-vars "install_ska_docker='no' start_tango='no' install_ide='no'"
+  - ansible-playbook -i hosts deploy_tangoenv.yml --extra-vars "install_ska_docker='no' start_tango='no' install_ide='no'"
+  - python3 -c "import tango; print(tango.utils.info())
 
 test_debian_stretch-slim:
   image: debian:stretch-slim
@@ -48,7 +50,8 @@ test_debian_stretch-slim:
   - apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 93C4A3FD7BB9C367
   - apt-get update
   - apt-get -y install ansible
-  - ansible-playbook -vvv -i hosts deploy_tangoenv.yml --extra-vars "install_ska_docker='no' start_tango='no' install_ide='no'"
+  - ansible-playbook -i hosts deploy_tangoenv.yml --extra-vars "install_ska_docker='no' start_tango='no' install_ide='no'"
+  - python3 -c "import tango; print(tango.utils.info())
 
 test_debian_buster-slim:
   image: debian:buster-slim
@@ -66,4 +69,5 @@ test_debian_buster-slim:
   - apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 93C4A3FD7BB9C367
   - apt-get update
   - apt-get -y install ansible
-  - ansible-playbook -vvv -i hosts deploy_tangoenv.yml --extra-vars "install_ska_docker='no' start_tango='no' install_ide='no'"
+  - ansible-playbook -i hosts deploy_tangoenv.yml --extra-vars "install_ska_docker='no' start_tango='no' install_ide='no'"
+  - python3 -c "import tango; print(tango.utils.info())
