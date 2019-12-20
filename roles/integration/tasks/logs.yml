@@ -1,6 +1,0 @@
-- name: Logs from the integrated system
-  become_user: "{{ ansible_user }}"
-  shell: |
-    cd /usr/src/skampi
-    kubectl get all,pv,pvc,ingress -n integration
-    make poddescribe KUBE_NAMESPACE=integration

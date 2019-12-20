@@ -2,8 +2,8 @@
 
 - name: clean_runners
   hosts: localhost
-  vars:
-    docker_compose_version: '1.23.2'
-  become: yes
-  roles:
-    - runner
+  become: true
+  become_method: sudo
+  become_flags: '-E -S -n'
+  task:
+    - include: roles/runner/tasks/clean.yml

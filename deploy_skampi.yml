@@ -1,0 +1,12 @@
+---
+
+- name: Deploy minikube
+  include: deploy_minikube.yml
+
+- name: deploy_integrationenv
+  hosts: development
+  become: true
+  become_method: sudo
+  become_flags: '-E -S -n'
+  roles:
+    - skampi

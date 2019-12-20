@@ -1,7 +1,20 @@
 ---
 - name: deploy_runners
-  hosts: runners
-  become: yes
-  tasks: 
-    - include: roles/runner/tasks/install.yml
+  hosts: localhost
+  vars:
+    build_tango: 'yes'
+    install_pytango: 'yes'
+    install_ide: 'yes'
+    install_ska_docker: 'yes'
+    start_tango: 'yes'
+    update_hosts: 'yes'
+    executor: 'shell'
+    docker_image: 'alpine:latest'
+  become: true
+  become_method: sudo
+  become_flags: '-E -S -n'
+  roles: 
+    - ska-docker
+    - updatehosts
+    - runner
 

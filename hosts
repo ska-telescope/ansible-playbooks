@@ -1,5 +1,8 @@
 [development]
-localhost ansible_connection=local
+localhost ansible_user=$USER ansible_connection=local
 
 [integration]
+localhost ansible_user=$USER ansible_connection=local
+
+[runners]
 localhost ansible_user=$USER ansible_connection=local

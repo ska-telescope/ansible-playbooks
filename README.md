@@ -25,13 +25,11 @@ To work with pytango, activate the virtualenv:
 The following variables can be set:
 ```
     build_tango: default('yes')
-    install_mysql: default('yes')
-    start_mysql_server: default ('yes')
     install_pytango: default('yes')
     install_ide: default('yes')
     install_ska_docker: default('yes')
     start_tango: default('yes')
-    update_hosts: default('yes')    
+    update_hosts: default('yes')
 ```
 
 For example:
@@ -39,48 +37,23 @@ For example:
     ansible-playbook -i hosts deploy_tangoenv.yml --extra-vars "build_tango='no' install_mysql='no' install_ide='no'"
 ```
 
-## Structure of the Playbook
-For the development environment, there are 6 roles within this playbook:
-* mysqlserver: install the mysql server service
-* tango: install the TANGO-controls framework (if the mysql service is available it creates also the database)
-* pytango: install the pytango project (with virtual env and pipenv)
-* ide: install pycharm and vscode
-* ska-docker: install the ska-docker project locally
-* update_hosts: update the file /etc/hosts
-
-TESTED OS (using a box requires at least 4GB RAM):
+## Development Environment TESTED OS (using a box requires at least 4GB RAM):
 * ubuntu:18.04
 * ubuntu:16.04
 * debian:stretch-slim
 
-## Integration Environment
+# Skampi
 It is possible to install the integration environment locally with minikube (**CHANGE USER AND PASSWORD**). 
 
-Add the following lines in the file hosts:
+Call the following command: 
 <pre>
-
-[integration]
-localhost ansible_user=<b>USER</b> ansible_connection=local
+ansible-playbook --inventory=hosts -v --limit=development --extra-vars='{"use_driver": false, "use_calico": true  , "use_nginx": false  , "minikube_disk_size": 32g, "minikube_memory": 4096  , "minikube_cpus": 2, "ansible_become_pass": <b>PASSWORD</b>  }'  deploy_skampi.yml
 </pre>
 
-Call the playbook with the following command: 
-<pre>
+At the following link will be setup the webjive webapplication: http://integration.engageska-portugal.pt/testdb
 
-ansible-playbook -i hosts deploy_integrationenv.yml --extra-vars "ansible_become_pass=<b>PASSWORD</b>"
-</pre>
-
-At the following link will be setup the webjive webapplication: http://localhost/testdb
-
-
-## GitLab Runner Environment
+# GitLab Runner Environment
 It is possible to install the gitlab runner environment locally. Make sure the docker environment is installed and it has at least 50GB disk space. 
-
-Add the following lines in the file hosts:
-<pre>
-
-[runners]
-localhost ansible_user=<b>USER</b> ansible_connection=local
-</pre>
 
 Call the playbook with the following command: 
 ``` 
@@ -117,6 +90,7 @@ Makefile:help                  show this help.
 Makefile:k8s                   Which kubernetes are we connected to
 Makefile:localip               set local Minikube IP in /etc/hosts file for Ingress $(INGRESS_HOST)
 Makefile:minikube              Ansible playbook for install and launching Minikube
+Makefile:skampi                Ansible playbook for install and launching Minikube and the Skampi project
 Makefile:vagrant_down          destroy vagrant instance
 Makefile:vagrant_install       install vagrant and vagrant-disksize on Ubuntu
 Makefile:vagrantip             set Vagrant Minikube IP in /etc/hosts file for Ingress $(INGRESS_HOST)

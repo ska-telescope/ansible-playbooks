@@ -1,13 +1,42 @@
----
-# tasks file for runner
-- name: stop all docker containers
-  shell: docker stop $(docker ps -a -q)
-  ignore_errors: true
+- name: Add GitLab’s official repository
+  shell: curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh | sudo bash
 
-- name: Remove all stopped containers, all networks not used by at least one container, all dangling images, all dangling build cache
-  shell: docker system prune -f
-  ignore_errors: true
+- name: Install the latest version of GitLab Runner
+  apt:
+    name:
+    - gitlab-runner
+    update_cache: yes
 
-- name: Remove all docker images
-  shell: docker rmi $(docker images -q) -f
-  ignore_errors: true
+- name: Tidy up Traefik tmp
+  file:
+    path: '/tmp/traefik-minikube.yaml'
+    state: absent
+  become: yes
+
+- name: Add GitLab’s official repository
+  shell: |
+    gitlab-runner register \
+      --non-interactive \
+      --url "https://gitlab.com/" \
+      --registration-token "{{token}}" \
+      --executor "{{executor}}" \
+      --docker-image {{docker_image}} \
+      --description "{{name}}" \
+      --tag-list "{{taglist}}" \
+      --run-untagged="true" \
+      --locked="false" \
+      --access-level="not_protected"
+
+- name: Check that the service has already been installed
+  stat:
+    path: /etc/systemd/system/gitlab-runner.service
+  register: stat_config
+
+- name: Install GitLab runner service
+  shell: |
+    gitlab-runner install --user {{ansible_user}}
+  when: stat_config.stat.exists == False
+
+- name: Run GitLab runner service
+  shell: |
+    gitlab-runner start

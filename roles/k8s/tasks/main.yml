@@ -221,20 +221,30 @@
       become_flags: '-E -S -n'
       when: '"enabled" in ingress_state'
 
-    - name: Copy up Traefik template
-      copy:
-        src: files/traefik-minikube.yaml
-        dest: /tmp/traefik-minikube.yaml
+    # - name: Copy up Traefik template
+    #   copy:
+    #     src: files/traefik-minikube.yaml
+    #     dest: /tmp/traefik-minikube.yaml
 
-    - name: Launch Traefik
-      shell: 'kubectl apply -f /tmp/traefik-minikube.yaml'
-      args:
-        executable: /bin/bash
+    # - name: Launch Traefik
+    #   shell: 'kubectl apply -f /tmp/traefik-minikube.yaml'
+    #   args:
+    #     executable: /bin/bash
 
-    - name: Tidy up Traefik tmp
-      file:
-        path: '/tmp/traefik-minikube.yaml'
-        state: absent
-      become: yes
+    # - name: Tidy up Traefik tmp
+    #   file:
+    #     path: '/tmp/traefik-minikube.yaml'
+    #     state: absent
+    #   become: yes
+    - name: Install traefik
+      shell: |
+        helm init
+        TMP=`mktemp -d`
+        helm fetch stable/traefik --untar --untardir $$TMP
+        helm template $$TMP/traefik -n traefik --namespace kube-system --name traefik0 --tiller-namespace kube-system --set externalIP={{ansible_default_ipv4.address}} | kubectl apply -n kube-system  -f -;
+        rm -rf $$TMP
+      become: true
+      become_method: sudo
+      become_flags: '-E -S -n'
 
   when: "not minikube_use_nginx"
