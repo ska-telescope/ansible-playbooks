@@ -1,0 +1,92 @@
+---
+- name: setup node
+  hosts: all
+  tasks:
+
+  - name: update all packages
+    yum:
+      name: '*'
+      state: latest
+    become: yes
+
+  - name: install network tools
+    yum:
+      name: net-tools
+    become: yes
+
+  - name: install ntp
+    yum:
+      name: ntp
+    become: yes
+
+  - name: check ntpd service is running
+    command: systemctl status ntpd
+    register: result
+    ignore_errors: True
+    become: yes
+    
+  - name: configure and sync ntp
+    command: "{{item}}"
+    with_items:
+      - chkconfig ntpd on
+      - ntpdate pool.ntp.org
+    when: result is failed
+    become: yes
+
+  - name: start service ntp, if not running
+    service:
+      name: ntpd
+      state: started
+    become: yes
+
+  - name: turn off firewall for install
+    command: systemctl disable firewalld
+    become: yes
+
+  - name: creates .ssh directory
+    file: path=~/.ssh state=directory owner="{{ user }}" group="{{ group }}" mode=700
+
+  - name: copy public key to authorized keys
+    template:
+      src: "{{ pubkeypath }}"
+      dest: "~/.ssh/authorized_keys"
+      owner: "{{ user }}"
+      group: "{{ group }}"
+      mode: 0640
+
+  - replace:
+      path: /etc/sudoers
+      regexp: '^#\s*%wheel\s*ALL=\(ALL\)\s*NOPASSWD:\s*ALL$'
+      replace: '%wheel        ALL=(ALL)       NOPASSWD: ALL'
+    become: yes
+
+  - replace:
+      path: /etc/sudoers
+      regexp: '^%wheel\s*ALL=\(ALL\)\s*ALL$'
+      replace: '# %wheel  ALL=(ALL)       ALL'
+    become: yes
+
+  - replace:
+      path: /etc/fstab
+      regexp: '^/dev/mapper/centos-swap\s*swap\s*swap\s*defaults\s*[0-9]\s*[0-9]$'
+      replace: '# /dev/mapper/centos-swap swap                    swap    defaults        0 0'
+    become: yes
+
+  - lineinfile:
+      path: /etc/sysconfig/network
+      state: present
+      line: 'HOSTNAME={{inventory_hostname}}.local'
+    become: yes
+
+  - lineinfile:
+      path: /etc/hosts
+      state: present
+      line: '{{ansible_default_ipv4.address}}   {{inventory_hostname}}.local   {{inventory_hostname}}'
+    become: yes
+
+  - name: restart server
+    command: /sbin/shutdown -r +1
+    async: 0
+    poll: 0
+    ignore_errors: true
+    become: yes
