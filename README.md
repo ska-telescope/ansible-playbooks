@@ -47,7 +47,7 @@ It is possible to install the integration environment locally with minikube (**C
 
 Call the following command: 
 <pre>
-ansible-playbook --inventory=hosts -v --limit=development --extra-vars='{"use_driver": false, "use_calico": true  , "use_nginx": false  , "minikube_disk_size": 32g, "minikube_memory": 4096  , "minikube_cpus": 2, "ansible_become_pass": <b>PASSWORD</b>  }'  deploy_skampi.yml
+ansible-playbook -i hosts deploy_skampi.yml
 </pre>
 
 At the following link will be setup the webjive webapplication: http://integration.engageska-portugal.pt/testdb

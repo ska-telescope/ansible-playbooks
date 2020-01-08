@@ -1,0 +1,32 @@
+---
+- git:
+    repo: 'https://github.com/kubernetes-sigs/kubespray.git'
+    dest: /usr/src/kubespray
+    version: release-{{kube_spray_version}}
+
+- name: Install requirements
+  shell: |
+    cd /usr/src/kubespray/
+    pip install -r requirements.txt
+
+# Copy ``inventory/sample`` as ``inventory/{{cluster-name}}``
+# Update Ansible inventory file with inventory builder
+- name: Create config file
+  shell: |
+    cp -rfp inventory/sample inventory/{{cluster-name}}
+    declare -a IPS=({{ ips }})
+    CONFIG_FILE=inventory/{{cluster-name}}/hosts.yaml python3 contrib/inventory_builder/inventory.py ${IPS[@]}
+
+- name: Set kube-version
+  lineinfile:
+    path: /usr/src/kubespray/inventory/{{cluster-name}}/k8s-cluster.yml
+    regexp: '^kube_version:'
+    line: 'kube_version: {{k8s_version}}'
+
+# Deploy Kubespray with Ansible Playbook - run the playbook as root
+# The option `--become` is required, as for example writing SSL keys in /etc/,
+# installing packages and interacting with various systemd daemons.
+# Without --become the playbook will fail to run!
+- name: Install k8s cluster
+  shell: |
+    ansible-playbook -i inventory/{{cluster-name}}/hosts.yaml  cluster.yml

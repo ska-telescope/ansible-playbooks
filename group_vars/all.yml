@@ -16,6 +16,10 @@ minikube_disk_size: 32g
 minikube_memory: 8192
 minikube_cpus: 4
 
+use_driver: false
+use_calico: true
+use_nginx: false
+
 # Minikube and kvm2 source
 minikube_mirror: https://github.com/kubernetes/minikube/releases/download
 minikube_install_dir: /usr/local/bin
@@ -52,3 +56,8 @@ docker_compose_version: '1.23.2'
 #vscode version 1.30
 start_mysql_server: 'no'
 install_mysql: 'no'
+
+cluster-name: 'mycluster'
+ips: '0.0.0.0 0.0.0.0 0.0.0.0'
+k8s_version: 'v1.16.3'
+kube_spray_version: 'v2.12.0'

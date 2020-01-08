@@ -53,10 +53,10 @@
       DisallowTCP=false
 
 - name: Disable xhost access control
-  shell: |
-    xhost +
+  become: no
+  command: xhost + 
 
-- name: Xserver needs to allow TCP connections
+- name: X11 UseLocalhost no
   blockinfile:
     path: /etc/ssh/sshd_config
     block: |
