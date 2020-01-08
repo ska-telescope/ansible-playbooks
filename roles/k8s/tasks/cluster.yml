@@ -37,4 +37,4 @@
 - debug:
     msg: 
     - "Now call the following command to install the cluster:"
-    - "cd /usr/src/kubespray/ && ansible-playbook -i inventory/{{cluster_name}}/hosts.yaml cluster.yml"
+    - "cd /usr/src/kubespray/ && ansible-playbook -u ubuntu -b -i inventory/{{cluster_name}}/hosts.yaml cluster.yml"
