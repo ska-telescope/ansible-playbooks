@@ -43,3 +43,22 @@
     tar xfz pycharm-{{pycharm_version}}.tar.gz -C /opt/
     echo run pycharm located with /opt/pycharm-{{pycharm_version}}/bin/pycharm.sh
   when: install_ide == 'yes'
+
+## the following step allow to open a GUI from k8s to the server machine using ssh -X option
+- name: Xserver needs to allow TCP connections
+  blockinfile:
+    path: /etc/gdm3/custom.conf
+    block: |
+      [security]
+      DisallowTCP=false
+
+- name: Disable xhost access control
+  shell: |
+    xhost +
+
+- name: Xserver needs to allow TCP connections
+  blockinfile:
+    path: /etc/ssh/sshd_config
+    block: |
+      X11UseLocalhost no
+
