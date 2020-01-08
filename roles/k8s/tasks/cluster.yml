@@ -17,13 +17,7 @@
   shell: |
     cd /usr/src/kubespray/
     pip install -r requirements.txt
-    pip3  install -r contrib/inventory_builder/requirements.txt
-    pip3 install ruamel.yaml
-
-- debug:
-    msg: 
-    - "declare -a IPS=({{ ips }})"
-    - "CONFIG_FILE=inventory/{{cluster_name}}/hosts.yaml python3 contrib/inventory_builder/inventory.py ${IPS[@]}"
+    pip3 install -r contrib/inventory_builder/requirements.txt
 
 # Copy ``inventory/sample`` as ``inventory/{{cluster_name}}``
 # Update Ansible inventory file with inventory builder
