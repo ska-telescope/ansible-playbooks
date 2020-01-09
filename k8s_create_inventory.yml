@@ -7,7 +7,7 @@
   become_flags: '-E -S -n'
   vars:
     cluster_name: 'mycluster'
-    ips: '192.168.93.13 192.168.93.30'
+    ips: '192.168.100.23 192.168.100.26'
   tasks:
     - name: Install dependencies
       apt:

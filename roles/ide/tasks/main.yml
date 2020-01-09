@@ -51,14 +51,17 @@
     block: |
       [security]
       DisallowTCP=false
+  when: install_ide == 'yes'
 
 - name: Disable xhost access control
   become: no
   command: xhost + 
+  when: install_ide == 'yes'
 
 - name: X11 UseLocalhost no
   blockinfile:
     path: /etc/ssh/sshd_config
     block: |
       X11UseLocalhost no
+  when: install_ide == 'yes'
 
