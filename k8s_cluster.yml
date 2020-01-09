@@ -1,9 +1,0 @@
----
-
-- name: k8s_cluster
-  hosts: localhost
-  become: true
-  become_method: sudo
-  become_flags: '-E -S -n'
-  tasks:
-    - include: roles/k8s/tasks/cluster.yml

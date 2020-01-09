@@ -1,0 +1,28 @@
+all:
+  hosts:
+    node1:
+      ansible_host: 192.168.100.23
+      ip: 192.168.93.13
+      access_ip: 192.168.93.13
+    node2:
+      ansible_host: 192.168.100.26
+      ip: 192.168.93.30
+      access_ip: 192.168.93.30
+  children:
+    kube-master:
+      hosts:
+        node1:
+        node2:
+    kube-node:
+      hosts:
+        node1:
+        node2:
+    etcd:
+      hosts:
+        node1:
+    k8s-cluster:
+      children:
+        kube-master:
+        kube-node:
+    calico-rr:
+      hosts: {}
