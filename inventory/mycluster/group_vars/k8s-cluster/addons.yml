@@ -4,7 +4,8 @@
 dashboard_enabled: true
 
 # Helm deployment
-helm_enabled: false
+helm_enabled: true
+helm_version: v3.0.1
 
 # Registry deployment
 registry_enabled: false

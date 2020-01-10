@@ -16,6 +16,9 @@ minikube_disk_size: 32g
 minikube_memory: 8192
 minikube_cpus: 4
 
+kube_spray_version: 'v2.12.0'
+k8s_version: 'v1.16.2'
+
 use_driver: false
 use_calico: true
 use_nginx: false
@@ -56,6 +59,3 @@ docker_compose_version: '1.23.2'
 #vscode version 1.30
 start_mysql_server: 'no'
 install_mysql: 'no'
-
-kube_spray_version: 'v2.12.0'
-k8s_version: 'v1.16.3'
