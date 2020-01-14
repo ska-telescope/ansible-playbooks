@@ -152,8 +152,8 @@ Clean up with:
 $ make vagrant_down
 ```
 
-Kubernetes Cluster
-==================
+Reset Kubernetes Cluster
+========================
 
 Kubernetes environment can be reset using the following command:
 ``` 
