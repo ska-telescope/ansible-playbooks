@@ -68,12 +68,8 @@ Ansible Playbook for local Kubernetes
 
 The following are a set of instructions for deploying Kubernetes either directly locally or on a Vagrant VirtualBox.  It has been tested on minikube v1.1.1 with Kubernetes v1.14.3 on Ubuntu 18.04, using Vagrant 2.2.4.
 
----
-**NOTE**
+**_NOTE:_** These instructions and make targets are for setting up a single-node cluster using Minikube. For creating a kubernetes cluster consisting of master and worker nodes, please refer to the [Documentation](https://developer.skatelescope.org/projects/ansible-playbooks/en/latest/kubespray/guide.html). This is not necessary if you are just starting out with Kubernetes!!!
 
-These instructions and make targets are for setting up a single-node cluster using Minikube. For creating a kubernetes cluster consisting of master and worker nodes, please refer to the [Documentation](https://developer.skatelescope.org/projects/ansible-playbooks/en/latest/kubespray/guide.html). This is not necessary if you are just starting out with Kubernetes!!!
-
----
 
 The Aim
 =======
