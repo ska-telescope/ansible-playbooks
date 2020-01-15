@@ -33,12 +33,12 @@
   :caption: Package-name
   :hidden:
 
-  package/guide
+  kubespray/guide
 
 
-Project-name documentation
-==========================
+Kubernetes cluster deployment
+=============================
 
-These are all the packages, functions and scripts that form part of the project.
+Refer to this guide for usage of the kubespray project to provision a kubernetes cluster.
 
-- :doc:`package/guide`
+- :doc:`kubespray/guide`

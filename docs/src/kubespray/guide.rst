@@ -1,10 +1,5 @@
 .. doctest-skip-all
-.. _package-guide:
-
-.. todo::
-    * Rewrite if we include *kubespray* as submodule.
-    * Setting up AuthN/Z for your cluster.
-    * Network provider (in our example cluster we deploy using calico)
+.. _kubespray-guide:
 
 *****************************
 Kubernetes cluster deployment
@@ -80,3 +75,9 @@ The `make cluster` target runs two Ansible Playbooks. The first is `k8s_create_i
 The second target simply calls kubespray's own cluster playbook, using the inventory that you created using the first. Under the kubespray directory there is a directory called `inventory`. In there you'll find `hosts.yaml`, and this is a file that you may want to edit if you have a solid understanding of what your cluster should look like, for instance in production.
 
 Note that the default behaviour of the inventory creation step is to add two master nodes and to make all the nodes worker nodes. This is not necessarily best practice - you may want to isolate these cluster roles, and also the etcd nodes. A nine-machine cluster would for instance have three master nodes, three worker nodes and three etcd nodes. But this is all dependent on how you want your cluster set up.
+
+.. todo::
+    * Rewrite if we include *kubespray* as submodule.
+    * Setting up AuthN/Z for your cluster.
+    * Network provider (in our example cluster we deploy using calico)
+	* SKA MVP cluster minimum machine requirements
