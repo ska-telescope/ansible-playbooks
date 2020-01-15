@@ -63,10 +63,17 @@ ansible-playbook -vvv deploy_runners.yaml --extra-vars "token='<token from your 
 
 To check the gitlab-runner is working, go into gitlab project page and check the CI/CD settings (Runners section).
 
-Ansible Playbook for Kubernetes
-===============================
+Ansible Playbook for local Kubernetes
+=====================================
 
 The following are a set of instructions for deploying Kubernetes either directly locally or on a Vagrant VirtualBox.  It has been tested on minikube v1.1.1 with Kubernetes v1.14.3 on Ubuntu 18.04, using Vagrant 2.2.4.
+
+---
+**NOTE**
+
+These instructions and make targets are for setting up a single-node cluster using Minikube. For creating a kubernetes cluster consisting of master and worker nodes, please refer to the [Documentation](https://developer.skatelescope.org/projects/ansible-playbooks/en/latest/kubespray/guide.html). This is not necessary if you are just starting out with Kubernetes!!!
+
+---
 
 The Aim
 =======
@@ -152,8 +159,8 @@ Clean up with:
 $ make vagrant_down
 ```
 
-Kubernetes Cluster
-==================
+Reset Kubernetes Cluster
+========================
 
 Kubernetes environment can be reset using the following command:
 ``` 
