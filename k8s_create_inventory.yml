@@ -96,31 +96,31 @@
 
     - name: Enable authentication
       lineinfile:
-        path: /usr/src/kubespray/inventory/{{cluster_name}}/group_vars/k8s-cluster/k8s-cluster.yml
+        path: {{kubespray_dir}}/inventory/{{cluster_name}}/group_vars/k8s-cluster/k8s-cluster.yml
         regexp: '^kube_oidc_auth:'
         line: 'kube_oidc_auth: true'
 
     - name: Set authentication url 
       lineinfile:
-        path: /usr/src/kubespray/inventory/{{cluster_name}}/group_vars/k8s-cluster/k8s-cluster.yml
+        path: {{kubespray_dir}}/inventory/{{cluster_name}}/group_vars/k8s-cluster/k8s-cluster.yml
         regexp: '^kube_oidc_url:'
         line: 'kube_oidc_url: http://192.168.100.25:32000'
 
     - name: Set client id
       lineinfile:
-        path: /usr/src/kubespray/inventory/{{cluster_name}}/group_vars/k8s-cluster/k8s-cluster.yml
+        path: {{kubespray_dir}}/inventory/{{cluster_name}}/group_vars/k8s-cluster/k8s-cluster.yml
         regexp: '^kube_oidc_client_id:'
         line: 'kube_oidc_client_id: dex-k8s-authenticator'  
 
     - name: Set client id
       lineinfile:
-        path: /usr/src/kubespray/inventory/{{cluster_name}}/group_vars/k8s-cluster/k8s-cluster.yml
+        path: {{kubespray_dir}}/inventory/{{cluster_name}}/group_vars/k8s-cluster/k8s-cluster.yml
         regexp: '^oidc_username_claim:'
         line: 'oidc_username_claim: preferred_username'  
 
     - debug:
         msg: 
         - "The following command installs the cluster:"
-        - "cd {{kubespray_dir}} && ansible-playbook --flush-cache -u remote_machine_username -b -i inventory/{{cluster_name}}/hosts.yaml cluster.yml l --extra-vars 'ansible_ssh_private_key_file=/home/ubuntu/cloud.key'"
+        - "cd {{kubespray_dir}} && ansible-playbook --flush-cache -u remote_machine_username -b -i inventory/{{cluster_name}}/hosts.yaml cluster.yml l --private-key=/home/ubuntu/cloud.key"
         - "Save inventory folder: {{kubespray_dir}}/inventory/{{cluster_name}}"
 
