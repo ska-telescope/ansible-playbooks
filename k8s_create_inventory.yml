@@ -27,11 +27,12 @@
     - name: Check if kubespray is already cloned
       stat:
               path: "{{kubespray_dir}}"
-      register: kubespray_dir_info
-
-    - fail:
+      register: kubespray_dir_info 
+     
+    - name: exit if kubespray is present
+      fail:
             msg: "Kubespray already exists at {{kubespray_dir}}. Do you really want to create an inventory? Suggestion: run `make cluster` with your variables." 
-            when: kubespray_dir_info.stat.exists and kubespray_dir_info.stat.isdir     
+      when: kubespray_dir_info.stat.exists 
 
     - git:
         repo: 'https://github.com/kubernetes-sigs/kubespray.git'
@@ -43,6 +44,7 @@
         path: "{{kubespray_dir}}"
         owner: "{{ user.stdout }}"
         group: "{{ user.stdout }}"
+        recurse: yes
 
     - name: Install requirements
       shell: |
@@ -94,3 +96,4 @@
         - "The following command installs the cluster:"
         - "cd {{kubespray_dir}} && ansible-playbook --flush-cache -u remote_machine_username -b -i inventory/{{cluster_name}}/hosts.yaml cluster.yml l --extra-vars 'ansible_ssh_private_key_file=/home/ubuntu/cloud.key'"
         - "Save inventory folder: {{kubespray_dir}}/inventory/{{cluster_name}}"
+
