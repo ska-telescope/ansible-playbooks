@@ -139,7 +139,7 @@ podDisruptionBudget: {}
   # maxUnavailable: 1
 
 config:
-  issuer: http://192.168.93.13:32000
+  issuer: {{dex_issuer}}
   storage:
     type: kubernetes
     config:
@@ -174,9 +174,9 @@ config:
     id: gitlab
     name: GitLab
     config:
-      clientID: 417ea12283741e0d74b22778d2dd3f5d0dcee78828c6e9a8fd5e8589025b8d2f
-      clientSecret: 27a5830ca37bd1956b2a38d747a04ae9414f9f411af300493600acc7ebe6107f
-      redirectURI: http://192.168.93.13:32000/callback
+      clientID: {{gitlab_client_id}}
+      clientSecret: {{gitlab_client_secret}}
+      redirectURI: {{dex_redirectURI}}
       org: kubernetes
     oauth2:
       alwaysShowLoginScreen: false
@@ -189,7 +189,7 @@ config:
   staticClients:
   - id: dex-k8s-authenticator
     redirectURIs: 
-    - 'http://192.168.93.13:31000/callback/mycluster'
+    - {{dex_k8s_authenticator_redirectURI}}
     name: 'Example App'
     secret: dex-k8s-secret
 
