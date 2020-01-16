@@ -3,6 +3,12 @@
   dest: /usr/src/dex-k8s-authenticator
   version: '{{ dex-k8s-authenticator_version }}'
 
+# - name: Template dex
+#   template: src="dex.yaml" dest="{{playbook_dir}}/roles/dex/files/dex.yaml"
+
+# - name: Template dex-k8s-authenticator
+#   template: src="dex-k8s-authenticator.yaml" dest="{{playbook_dir}}/roles/dex/files/dex-k8s-authenticator.yaml"
+
 - name: Install pytango
   shell: |
     helm install --name dex0  --namespace kube-system --values {{playbook_dir}}/roles/dex/files/dex.yaml stable/dex
