@@ -32,7 +32,7 @@ USE_NGINX ?= false  ## Use NGINX as the Ingress Controller
 FORMATTED_DISK_SIZE = $(shell echo $(V_DISK_SIZE) | sed 's/[^0-9]*//g')g
 
 
-.PHONY: vars k8s minikube localip vagrantip vagrant_install vagrant_up vagrant_down help
+.PHONY: vars k8s minikube localip vagrantip vagrant_install vagrant_up vagrant_down help inventory kubespray cluster components reset skampi
 .DEFAULT_GOAL := help
 
 # define targets for creating a k8s cluster

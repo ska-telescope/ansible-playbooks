@@ -9,13 +9,8 @@
     cluster_name: 'mycluster'
     ips: '192.168.100.25 192.168.100.26'
     kube_oidc_client_id: 'dex-k8s-authenticator'
-    kubespray_dir: '~/tmp/kubespray'
+    kubespray_dir: '/usr/src/kubespray'
   tasks:
-    - name: get local user
-      shell: "cat /etc/passwd | grep 1000 | cut -d: -f1" 
-      args: 
-      register: user
-
     - name: Install dependencies
       apt:
         name:
@@ -27,42 +22,26 @@
 
     - include: roles/helm/tasks/main.yml
     
-    - name: Check if kubespray is already cloned
-      stat:
-              path: "{{kubespray_dir}}"
-      register: kubespray_dir_info 
-     
-    - name: exit if kubespray is present
-      fail:
-            msg: "Kubespray already exists at {{kubespray_dir}}. Do you really want to create an inventory? Suggestion: run `make cluster` with your variables." 
-      when: kubespray_dir_info.stat.exists 
-
     - git:
         repo: 'https://github.com/kubernetes-sigs/kubespray.git'
         dest: "{{kubespray_dir}}"
         version: '{{ kube_spray_version }}'
 
-    - name: Change permissions of temporary Kubespray directory
-      file: 
-        path: "{{kubespray_dir}}"
-        owner: "{{ user.stdout }}"
-        group: "{{ user.stdout }}"
-        recurse: yes
-
     - name: Install requirements
       shell: |
-        cd "{{kubespray_dir}}"/
-        pip install -r requirements.txt
-        pip3 install -r contrib/inventory_builder/requirements.txt
+        pip install -r {{kubespray_dir}}/requirements.txt
+        pip3 install -r {{kubespray_dir}}/contrib/inventory_builder/requirements.txt
 
     # Copy ``inventory/sample`` as ``inventory/{{cluster_name}}``
     # Update Ansible inventory file with inventory builder
     - name: Create config file
       shell: |
         #!/bin/bash 
-        cd "{{kubespray_dir}}"
+        cd {{kubespray_dir}}
         cp -rfp inventory/sample inventory/{{cluster_name}} 
         CONFIG_FILE=inventory/{{cluster_name}}/hosts.yaml python3 contrib/inventory_builder/inventory.py {{ ips }}
+        ls -la inventory
+        pwd
 
     - name: Set kube-version
       lineinfile:
@@ -96,27 +75,35 @@
 
     - name: Enable authentication
       lineinfile:
-        path: {{kubespray_dir}}/inventory/{{cluster_name}}/group_vars/k8s-cluster/k8s-cluster.yml
+        path: "{{kubespray_dir}}/inventory/{{cluster_name}}/group_vars/k8s-cluster/k8s-cluster.yml"
         regexp: '^kube_oidc_auth:'
         line: 'kube_oidc_auth: true'
 
     - name: Set authentication url 
       lineinfile:
-        path: {{kubespray_dir}}/inventory/{{cluster_name}}/group_vars/k8s-cluster/k8s-cluster.yml
+        path: "{{kubespray_dir}}/inventory/{{cluster_name}}/group_vars/k8s-cluster/k8s-cluster.yml"
         regexp: '^kube_oidc_url:'
         line: 'kube_oidc_url: http://192.168.100.25:32000'
 
     - name: Set client id
       lineinfile:
-        path: {{kubespray_dir}}/inventory/{{cluster_name}}/group_vars/k8s-cluster/k8s-cluster.yml
+        path: "{{kubespray_dir}}/inventory/{{cluster_name}}/group_vars/k8s-cluster/k8s-cluster.yml"
         regexp: '^kube_oidc_client_id:'
         line: 'kube_oidc_client_id: dex-k8s-authenticator'  
 
     - name: Set client id
       lineinfile:
-        path: {{kubespray_dir}}/inventory/{{cluster_name}}/group_vars/k8s-cluster/k8s-cluster.yml
+        path: "{{kubespray_dir}}/inventory/{{cluster_name}}/group_vars/k8s-cluster/k8s-cluster.yml"
         regexp: '^oidc_username_claim:'
         line: 'oidc_username_claim: preferred_username'  
+
+    - name: Change permissions of temporary Kubespray directory
+      become: true
+      file: 
+        path: "{{kubespray_dir}}"
+        owner: "{{ localuser }}"
+        group: "{{ localuser }}"
+        recurse: yes
 
     - debug:
         msg: 
