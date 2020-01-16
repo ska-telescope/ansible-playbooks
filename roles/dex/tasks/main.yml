@@ -1,0 +1,9 @@
+- git:
+  repo: 'https://github.com/mintel/dex-k8s-authenticator.git'
+  dest: /usr/src/dex-k8s-authenticator
+  version: '{{ dex-k8s-authenticator_version }}'
+
+- name: Install pytango
+  shell: |
+    helm install --name dex0  --namespace kube-system --values {{playbook_dir}}/roles/dex/files/dex.yaml stable/dex
+    helm install --name dex-k8s-authenticator0  --namespace kube-system --values {{playbook_dir}}/roles/dex/files/dex-k8s-authenticator.yaml /usr/src/dex-k8s-authenticator/charts/dex-k8s-authenticator 
