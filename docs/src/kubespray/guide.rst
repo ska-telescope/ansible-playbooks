@@ -5,12 +5,12 @@
 Kubernetes cluster deployment
 *****************************
 
-This section describes requirements and guidelines.
+This documentation describes the basic usage of our automated deployment tools for provisioning a kubernetes cluster. The automated deployment is aimed at setting up a cluster that can run the SKA MVP Integration project, but a lot of additional configuration is possible which is not described here. Please follow the links if you are interested in more information about any of the components used.
 
 Kubespray
 =========
 
-`Kubespray <https://kubespray.io/>`_ is an open-source, SIG community-created and -maintained collection of ansible playbooks, configuration files and externally contributed projects that facilitate the deployment of a production-level kubernetes cluster. The project supports multiple cloud providers, bare-metal deployments, operating systems and network layer implementations. Refer to their documentation for a deeper understanding of what you can and/or cannot do using this repository.
+`Kubespray <https://github.com/kubernetes-sigs/kubespray>`_ is an open-source, SIG community-created and -maintained collection of ansible playbooks, configuration files and externally contributed projects that facilitate the deployment of a production-level kubernetes cluster. The project supports multiple cloud providers, bare-metal deployments, operating systems and network plugins. Refer to their `documentation <https://kubespray.io/>`_ for a deeper understanding of what you can and/or cannot do using this repository.
 
 To create a kubernetes cluster one needs at least one Master and one Worker machine. We typically use Virtual Machines to accomplish this. These Virtual Machines have a number of prerequisites that need to be met, before you can start with installing kubernetes or configuring the cluster. These include updated packages, installed docker, disabled firewall and swap, and so on.
 
@@ -82,5 +82,5 @@ Note that the default behaviour of the inventory creation step is to add two mas
 .. todo::
     * Rewrite if we include *kubespray* as submodule.
     * Setting up AuthN/Z for your cluster.
-    * Network provider (in our example cluster we deploy using calico)
+    * Network plugin (in our example cluster we deploy using calico)
 	* SKA MVP cluster minimum machine requirements
