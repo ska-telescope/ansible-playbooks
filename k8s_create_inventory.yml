@@ -8,6 +8,7 @@
   vars:
     cluster_name: 'mycluster'
     ips: '192.168.100.25 192.168.100.26'
+    kubespray_dir: '~/tmp/kubespray'
   tasks:
     - name: Install dependencies
       apt:
@@ -20,12 +21,12 @@
 
     - git:
         repo: 'https://github.com/kubernetes-sigs/kubespray.git'
-        dest: /usr/src/kubespray
+        dest: "{{kubespray_dir}}"
         version: '{{ kube_spray_version }}'
 
     - name: Install requirements
       shell: |
-        cd /usr/src/kubespray/
+        cd "{{kubespray_dir}}"/
         pip install -r requirements.txt
         pip3 install -r contrib/inventory_builder/requirements.txt
 
@@ -34,42 +35,42 @@
     - name: Create config file
       shell: |
         #!/bin/bash 
-        cd /usr/src/kubespray/ 
+        cd "{{kubespray_dir}}"/ 
         cp -rfp inventory/sample inventory/{{cluster_name}} 
         CONFIG_FILE=inventory/{{cluster_name}}/hosts.yaml python3 contrib/inventory_builder/inventory.py {{ ips }}
 
     - name: Set kube-version
       lineinfile:
-        path: /usr/src/kubespray/inventory/{{cluster_name}}/group_vars/k8s-cluster/k8s-cluster.yml
+        path: "{{ kubespray_dir }}/inventory/{{cluster_name}}/group_vars/k8s-cluster/k8s-cluster.yml"
         regexp: '^kube_version:'
         line: 'kube_version: {{k8s_version}}'
 
     - name: Set helm-enabled
       lineinfile:
-        path: /usr/src/kubespray/inventory/mycluster/group_vars/k8s-cluster/addons.yml
+        path: "{{kubespray_dir}}/inventory/mycluster/group_vars/k8s-cluster/addons.yml"
         regexp: '^helm_enabled:'
         line: 'helm_enabled: true'
 
     - name: Set helm-version
       lineinfile:
-        path: /usr/src/kubespray/inventory/mycluster/group_vars/k8s-cluster/addons.yml
+        path: "{{kubespray_dir}}/inventory/mycluster/group_vars/k8s-cluster/addons.yml"
         regexp: '^helm_version:'
         line: 'helm_version: {{helm_version}}'
 
     - name: Set kubeconfig_localhost
       lineinfile:
-        path: /usr/src/kubespray/inventory/{{cluster_name}}/group_vars/k8s-cluster/k8s-cluster.yml
+        path: "{{kubespray_dir}}/inventory/{{cluster_name}}/group_vars/k8s-cluster/k8s-cluster.yml"
         regexp: '^kubeconfig_localhost:'
         line: 'kubeconfig_localhost: true'
 
     - name: Set kubectl_localhost
       lineinfile:
-        path: /usr/src/kubespray/inventory/{{cluster_name}}/group_vars/k8s-cluster/k8s-cluster.yml
+        path: "{{kubespray_dir}}/inventory/{{cluster_name}}/group_vars/k8s-cluster/k8s-cluster.yml"
         regexp: '^kubectl_localhost:'
         line: 'kubectl_localhost: true'
 
     - debug:
         msg: 
         - "The following command installs the cluster:"
-        - "cd /usr/src/kubespray/ && ansible-playbook --flush-cache -u remote_machine_username -b -i inventory/{{cluster_name}}/hosts.yaml cluster.yml l --extra-vars 'ansible_ssh_private_key_file=/home/ubuntu/cloud.key'"
-        - "Save inventory folder: /usr/src/kubespray/inventory/{{cluster_name}}"
+        - "cd {{kubespray_dir}} && ansible-playbook --flush-cache -u remote_machine_username -b -i inventory/{{cluster_name}}/hosts.yaml cluster.yml l --extra-vars 'ansible_ssh_private_key_file=/home/ubuntu/cloud.key'"
+        - "Save inventory folder: {{kubespray_dir}}/inventory/{{cluster_name}}"
