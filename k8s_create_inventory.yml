@@ -7,7 +7,8 @@
   become_flags: '-E -S -n'
   vars:
     cluster_name: 'mycluster'
-    ips: '192.168.100.25 192.168.100.26'
+    ips: '0.0.0.0 0.0.0.0'
+    master_floating_ip: '0.0.0.0'
     kube_oidc_client_id: 'dex-k8s-authenticator'
     kubespray_dir: '/usr/src/kubespray'
   tasks:
@@ -83,7 +84,7 @@
       lineinfile:
         path: "{{kubespray_dir}}/inventory/{{cluster_name}}/group_vars/k8s-cluster/k8s-cluster.yml"
         regexp: '^kube_oidc_url:'
-        line: 'kube_oidc_url: http://192.168.100.25:32000'
+        line: 'kube_oidc_url: http://{{master_floating_ip}}:32000'
 
     - name: Set client id
       lineinfile:
@@ -108,6 +109,6 @@
     - debug:
         msg: 
         - "The following command installs the cluster:"
-        - "cd {{kubespray_dir}} && ansible-playbook --flush-cache -u remote_machine_username -b -i inventory/{{cluster_name}}/hosts.yaml cluster.yml l --private-key=/home/ubuntu/cloud.key"
+        - "cd {{kubespray_dir}} && ansible-playbook --flush-cache -u remote_machine_username -b -i inventory/{{cluster_name}}/hosts.yaml cluster.yml --private-key=/home/ubuntu/cloud.key"
         - "Save inventory folder: {{kubespray_dir}}/inventory/{{cluster_name}}"
 
