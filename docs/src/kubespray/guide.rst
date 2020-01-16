@@ -25,7 +25,10 @@ We have automated the setup steps mentioned above in a single `make` command tha
 
 		3.1 If you use Virtualbox to create your machines, follow the instructions in `this Youtube video <https://www.youtube.com/watch?v=S7jD6nnYJy0/>`_.
 
-		3.2 If your VMs were created in Openstack, be sure to assign them Floating IPs - refer to `this page in our developer portal <https://developer.skatelescope.org/en/latest/services/ait_performance_env.html/>`_ for details of how to do this. **NOTE**: many writers suggest using a separate machine as Ansible host from which to deploy, especially when using *kubespray* - this is recommended if you are planning to use our makefile in an Openstack deployment as it is necessary that the host is on the same network as the nodes for deployment. Otherwise, you would need to configure the inventory group variables somewhat before running the ansible playbooks provided in the `kubespray` repository. Remember that the IP addresses used (see command below) will be the floating IPs.
+		3.2 If your VMs were created in Openstack, be sure to assign them Floating IPs - refer to `this page in our developer portal <https://developer.skatelescope.org/en/latest/services/ait_performance_env.html/>`_ for details of how to do this.
+
+.. note::
+	Many writers suggest using a separate machine as Ansible host from which to deploy, especially when using *kubespray* - this is recommended if you are planning to use our makefile in an Openstack deployment as it is necessary that the host is on the same network as the nodes for deployment. Otherwise, you would need to configure the inventory group variables somewhat before running the ansible playbooks provided in the `kubespray` repository. Remember that the IP addresses used (see command below) will be the floating IPs.
 
 Create cluster
 """"""""""""""
@@ -62,7 +65,7 @@ This is an example of the `make cluster` command, for provisioning a three-machi
 
 	$ make cluster V_CLUSTERNAME=mycluster V_IPs="192.168.100.32 192.168.100.42 192.168.100.5" V_REMOTE_USER=jacksparrow V_PRIVATE_SSH_KEY=~/.ssh/id_rsa
 
-There is also a `reset` target, which enables you to destroy the cluster. Note that you need the same parameters as before in order to get to the machines:
+There is also a `reset` target, which enables you to destroy the cluster. Note that you need the same parameters as before in order to access the machines:
 ::
 
 	$ make reset V_CLUSTERNAME=mycluster V_IPs="192.168.100.32 192.168.100.42 192.168.100.5" V_REMOTE_USER=jacksparrow V_PRIVATE_SSH_KEY=~/.ssh/id_rsa
