@@ -21,8 +21,6 @@
         force: yes 
         update_cache: yes
 
-    - include: roles/helm/tasks/main.yml
-    
     - git:
         repo: 'https://github.com/kubernetes-sigs/kubespray.git'
         dest: "{{kubespray_dir}}"

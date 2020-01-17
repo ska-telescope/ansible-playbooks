@@ -1,4 +1,24 @@
 ---
+# not all tasks should be run as root
+- name: Install Docker
+  hosts:
+    - localhost
+  roles:
+    - docker
+
+- name: Deploy kubectl
+  hosts:
+    - localhost
+  become: yes
+  roles:
+    - kubectl
+
+# not all tasks should be run as root
+- name: Install helm
+  hosts:
+    - localhost
+  roles:
+    - helm
 
 - name: k8s_deploy_components
   hosts: localhost
@@ -14,6 +34,7 @@
     gitlab_client_secret: '27a5830ca37bd1956b2a38d747a04ae9414f9f411af300493600acc7ebe6107f'
     dex_k8s_authenticator_redirectURI: 'http://192.168.93.19:31000/callback/mycluster'
   tasks:
+    - include: roles/helm/tasks/main.yml
     - include: roles/dex/tasks/main.yml
 
     - name: Install traefik
