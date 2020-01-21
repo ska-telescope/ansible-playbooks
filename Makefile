@@ -25,9 +25,6 @@ DRIVER ?= true  ## Run Minikube via 'kvm2' driver (true) or 'none' (false)
 USE_CALICO ?= true  ## Use Calico for Pod Networking
 USE_NGINX ?= false  ## Use NGINX as the Ingress Controller
 
-# define overides for above variables in here
--include PrivateRules.mak
-
 # Format the disk size for minikube - 999g
 FORMATTED_DISK_SIZE = $(shell echo $(V_DISK_SIZE) | sed 's/[^0-9]*//g')g
 
