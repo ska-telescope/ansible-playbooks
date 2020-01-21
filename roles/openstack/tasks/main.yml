@@ -1,0 +1,3 @@
+---
+- name: Mount attached volume
+  script: ../files/add_volume.sh

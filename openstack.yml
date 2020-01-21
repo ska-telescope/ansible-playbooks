@@ -1,0 +1,10 @@
+---
+
+- name: Prepare Openstack Instances
+  hosts: k8s-cluster
+  become: true 
+  become_method: sudo 
+  roles: 
+        - role: openstack
+
+
