@@ -20,7 +20,7 @@ inventory: ## create the inventory files input for kubespray
 	ansible-playbook -b --extra-vars='{"cluster_name": $(V_CLUSTERNAME), "ips": $(V_IPs), "master_floating_ip": $(V_MASTER_IP)}' k8s_create_inventory.yml
 
 openstack: ## Provision openstack machines
-	ansible-playbook -u $(V_REMOTE_USER) -b -i $(V_KUBESPRAY_DIR)/inventory/$(V_CLUSTERNAME)/hosts.yaml openstack.yml
+	ansible-playbook -u $(V_REMOTE_USER) -b -i $(V_KUBESPRAY_DIR)/inventory/$(V_CLUSTERNAME)/hosts.yaml openstack.yml -vv
 
 kubespray: ## create a k8s cluster using an existing inventory
 	ansible-playbook --flush-cache -u $(V_REMOTE_USER) -b -i $(V_KUBESPRAY_DIR)/inventory/$(V_CLUSTERNAME)/hosts.yaml $(V_KUBESPRAY_DIR)/cluster.yml --private-key=$(V_PRIVATE_SSH_KEY) && \
