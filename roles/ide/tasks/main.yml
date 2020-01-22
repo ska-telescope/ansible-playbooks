@@ -58,10 +58,17 @@
   command: xhost + 
   when: install_ide == 'yes'
 
+- name: Check if sshd_config exists
+  stat: 
+    path: /etc/ssh/sshd_config
+  register: sshd_config
+
 - name: X11 UseLocalhost no
   blockinfile:
     path: /etc/ssh/sshd_config
     block: |
       X11UseLocalhost no
-  when: install_ide == 'yes'
+  when: 
+    - install_ide == 'yes'
+    - sshd_config.stat.exists == true
 
