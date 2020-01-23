@@ -162,7 +162,9 @@ Kubernetes cluster can be deployed using the following command, BUT make sure `h
 ``` 
 
 ansible-playbook -i hosts setup_cluster.yml
-``` 
+```
+
+This playbook is intended for CentOS 7 operating system. If deployed within the EngageSKA cluster, please create all nodes with `int_net` network and add to each VM floating IP. After the instalation, remove floating IP's only from the worked nodes.
 
 Reset Kubernetes Cluster
 ========================
