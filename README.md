@@ -155,6 +155,15 @@ Clean up with:
 $ make vagrant_down
 ```
 
+Deploy Kubernetes Cluster
+========================
+
+Kubernetes cluster can be deployed using the following command, BUT make sure `hosts` file is accordingly to your needs:
+``` 
+
+ansible-playbook -i hosts setup_cluster.yml
+``` 
+
 Reset Kubernetes Cluster
 ========================
 
