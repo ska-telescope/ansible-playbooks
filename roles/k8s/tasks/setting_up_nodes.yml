@@ -21,6 +21,7 @@
       - kubelet-{{ k8s_version }}-0
       - kubectl-{{ k8s_version }}-0
       - docker
+      - git
      state: present
 
   - name: Starting and Enabling docker service
