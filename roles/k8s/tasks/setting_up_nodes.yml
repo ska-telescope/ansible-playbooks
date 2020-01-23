@@ -1,0 +1,36 @@
+---
+- hosts: kubernetes-master-nodes kubernetes-worker-nodes
+  become: yes
+  tasks:
+  - name: Adding repository details in Kubernetes repo file.
+    copy:
+     dest: /etc/yum.repos.d/kubernetes.repo
+     content: |
+      [kubernetes]
+      name=Kubernetes
+      baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-$basearch
+      enabled=1
+      gpgcheck=1
+      repo_gpgcheck=1
+      gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+
+  - name: Installing required packages
+    yum:
+     name: 
+      - kubeadm-{{ k8s_version }}-0
+      - kubelet-{{ k8s_version }}-0
+      - kubectl-{{ k8s_version }}-0
+      - docker
+     state: present
+
+  - name: Starting and Enabling docker service
+    service:
+     name: docker
+     state: started
+     enabled: yes
+
+  - name: Enabling the required kubelet service
+    service:
+     name: kubelet
+     state: stopped
+     enabled: yes

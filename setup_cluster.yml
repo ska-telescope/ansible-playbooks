@@ -1,0 +1,5 @@
+---
+- import_playbook: roles/k8s/tasks/openstack_prerequisites.yml
+- import_playbook: roles/k8s/tasks/setting_up_nodes.yml
+- import_playbook: roles/k8s/tasks/configure_master_node.yml
+- import_playbook: roles/k8s/tasks/configure_worker_nodes.yml
