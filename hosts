@@ -8,8 +8,8 @@ localhost ansible_user=$USER ansible_connection=local
 localhost ansible_user=$USER ansible_connection=local
 
 [kubernetes-master-nodes]
-k8s-master ansible_host=192.168.93.68 ansible_user=centos hostname=k8s-master dns=kubernetes-v3.engageska-portugal.pt k8s_version=1.16.2
+k8s-master ansible_host=192.168.93.81 ansible_user=centos hostname=k8s-master dns=kubernetes-v3.engageska-portugal.pt k8s_version=1.16.2 oidc_issuer_url=https://gitlab.com oidc_username_claim=sub oidc_client_id=417ea12283741e0d74b22778d2dd3f5d0dcee78828c6e9a8fd5e8589025b8d2f
 
 [kubernetes-worker-nodes]
-k8s-node-1 ansible_host=192.168.93.39 ansible_user=centos hostname=k8s-node-1 k8s_version=1.16.2
-k8s-node-2 ansible_host=192.168.93.44 ansible_user=centos hostname=k8s-node-2 k8s_version=1.16.2
+k8s-node-1 ansible_host=192.168.93.26 ansible_user=centos hostname=k8s-node-1 k8s_version=1.16.2
+k8s-node-2 ansible_host=192.168.93.60 ansible_user=centos hostname=k8s-node-2 k8s_version=1.16.2
