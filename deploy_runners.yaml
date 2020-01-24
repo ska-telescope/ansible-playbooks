@@ -8,8 +8,8 @@
     install_ska_docker: 'yes'
     start_tango: 'yes'
     update_hosts: 'yes'
-    executor: 'shell'
-    docker_image: 'alpine:latest'
+    executor: 'docker'
+    docker_image: 'docker:19.03.1'
   become: true
   become_method: sudo
   become_flags: '-E -S -n'

@@ -5,6 +5,7 @@
   apt:
     name:
     - gitlab-runner
+    - make
     update_cache: yes
 
 - name: Tidy up Traefik tmp
