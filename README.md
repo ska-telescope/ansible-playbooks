@@ -156,7 +156,7 @@ $ make vagrant_down
 ```
 
 Deploy Kubernetes Cluster
-========================
+=========================
 
 Kubernetes cluster can be deployed using the following command, BUT make sure `hosts` file is accordingly to your needs:
 ``` 
@@ -165,6 +165,15 @@ ansible-playbook -i hosts setup_cluster.yml
 ```
 
 This playbook is intended for CentOS 7 operating system. If deployed within the EngageSKA cluster, please create all nodes with `int_net` network and add to each VM floating IP. After the instalation, remove floating IP's only from the worked nodes.
+
+Join nodes to Kubernetes Cluster
+================================
+
+Kubernetes worker can be joined to the cluster using the following command, BUT make sure `hosts` file is accordingly to your needs:
+``` 
+
+ansible-playbook -i hosts join_cluster.yml
+```
 
 Reset Kubernetes Cluster
 ========================

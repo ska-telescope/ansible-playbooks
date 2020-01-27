@@ -1,12 +1,9 @@
 ---
-- hosts: kubernetes-master-nodes kubernetes-worker-nodes
-  become: yes
-  tasks:
-  - name: Obtain Kubernetes cluster join command
-    shell: kubeadm token create --print-join-command
-    register: k8s_token
-    when: ansible_hostname == 'k8s-master'
+- name: Obtain Kubernetes cluster join command
+  shell: kubeadm token create --print-join-command
+  register: k8s_token
+  when: ansible_hostname == 'k8s-master'
 
-  - name: Joining worker nodes with kubernetes master
-    shell: "{{ hostvars['k8s-master']['k8s_token'].stdout }}"
-    when: ansible_hostname != 'k8s-master'
+- name: Joining worker nodes with kubernetes master
+  shell: "{{ hostvars['k8s-master']['k8s_token'].stdout }}"
+  when: ansible_hostname != 'k8s-master'
