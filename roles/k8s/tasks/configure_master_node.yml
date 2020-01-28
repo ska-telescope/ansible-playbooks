@@ -95,3 +95,4 @@
   shell: "helm plugin install https://github.com/rimusz/helm-tiller"
   args:
     executable: /bin/bash
+  ignore_errors: yes

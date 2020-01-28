@@ -2,8 +2,12 @@
 - name: Obtain Kubernetes cluster join command
   shell: kubeadm token create --print-join-command
   register: k8s_token
-  when: ansible_hostname == 'k8s-master'
+  when: node_role == 'master'
+
+- name: Resetting kubeadm
+  shell: kubeadm reset -f
+  when: node_role == 'worker'
 
 - name: Joining worker nodes with kubernetes master
-  shell: "{{ hostvars['k8s-master']['k8s_token'].stdout }}"
-  when: ansible_hostname != 'k8s-master'
+  shell: "{{ hostvars[groups['kubernetes-master-nodes'][0]]['k8s_token'].stdout }}"
+  when: node_role == 'worker'
