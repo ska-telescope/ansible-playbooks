@@ -77,7 +77,7 @@
     replace: "/bin"
 
 - name: Install Helm
-  shell: "/root/helm.sh"
+  shell: "/root/helm.sh -v {{ helm_version }}"
   args:
     executable: /bin/bash
 
