@@ -10,7 +10,7 @@ localhome: "{{ lookup('env','HOME') }}"
 kubectl_version: 'v1.15.0'
 kvm2_driver_version: 'v1.1.1'
 minikube_version: 'v1.2.0'
-helm_version: v2.14.1
+helm_version: v2.16.1
 calico_version: v3.7
 minikube_disk_size: 32g
 minikube_memory: 8192
