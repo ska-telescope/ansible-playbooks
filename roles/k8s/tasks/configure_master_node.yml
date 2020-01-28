@@ -82,7 +82,7 @@
     executable: /bin/bash
 
 - name: Initialise Helm
-  shell: "helm init --client-only"
+  shell: "helm init"
   args:
     executable: /bin/bash
 
