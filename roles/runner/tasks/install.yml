@@ -23,12 +23,15 @@
       --url "https://gitlab.com/" \
       --registration-token "{{token}}" \
       --executor "{{executor}}" \
-      --docker-image alpine:latest \
+      --docker-image docker:19.03.1 \
       --description "{{runnername}}" \
       --tag-list "{{taglist}}" \
       --run-untagged="true" \
       --locked="false" \
       --access-level="not_protected"
+      --privileged = "true"
+      --volumes = ["/var/run/docker.sock:/var/run/docker.sock","/cache"]
+
 
 - name: Run GitLab runner service
   shell: gitlab-runner start
