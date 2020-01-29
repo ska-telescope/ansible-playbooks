@@ -28,10 +28,14 @@
       --tag-list "{{taglist}}" \
       --run-untagged="true" \
       --locked="false" \
-      --access-level="not_protected"
-      --privileged = "true"
-      --volumes = ["/var/run/docker.sock:/var/run/docker.sock","/cache"]
+      --access-level="not_protected" \
+      --docker-privileged = "true"
 
+- name: Replace volumes var
+  replace:
+    path: /etc/gitlab-runner/config.toml
+    regexp: '"/cache"'
+    replace: '"/cache","/var/run/docker.sock:/var/run/docker.sock","/builds:/builds:rw"'
 
 - name: Run GitLab runner service
   shell: gitlab-runner start
