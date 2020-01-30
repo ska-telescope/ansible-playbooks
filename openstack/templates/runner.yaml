@@ -14,4 +14,4 @@ resources:
       flavor: r1.medium
       key_name: tick-stack
       networks:
-        - network: int_net
+        - network: ext_net
