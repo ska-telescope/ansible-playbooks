@@ -1,6 +1,17 @@
 - name: Install Docker
   shell: curl -sSL https://get.docker.com/ | sh
 
+- name: Create daemon.json file
+  copy:
+   dest: /etc/docker/daemon.json
+   content: |
+    {
+      "default-address-pools":
+      [
+        {"base":"172.17.0.0/16","size":24}
+      ]
+    }
+
 - name: Start and enable docker
   shell: systemctl start docker && systemctl enable docker
 
@@ -20,6 +31,7 @@
   shell: |
     gitlab-runner register \
       --non-interactive \
+      --request-concurrency 3 \
       --url "https://gitlab.com/" \
       --registration-token "{{token}}" \
       --executor "{{executor}}" \

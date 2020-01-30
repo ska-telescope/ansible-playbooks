@@ -1,0 +1,6 @@
+---
+- gather_facts: False
+  hosts: all
+  become: true
+  tasks:
+    - include: roles/openstack/tasks/init_{{ ansible_user }}.yml
