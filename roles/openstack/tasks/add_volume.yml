@@ -1,0 +1,15 @@
+---
+# tasks file for volume
+- name: check if volume exists
+  shell: lsblk
+  register: lsblk
+
+- name: copy add_volume.sh script
+  copy:
+    src: "add_volume.sh"
+    dest: "/tmp/add_volume.sh"
+
+- name: run add_volume.sh script
+  become: yes
+  shell: bash /tmp/add_volume.sh
+  when: lsblk.stdout is search('vdb')
