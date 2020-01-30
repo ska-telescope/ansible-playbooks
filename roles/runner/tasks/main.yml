@@ -44,6 +44,26 @@
     gitlab-runner install --user {{ansible_user}}
   when: stat_config.stat.exists == False
 
+- name: Create daemon.json file
+  copy:
+   dest: /etc/docker/daemon.json
+   content: |
+    {
+      "default-address-pools":
+      [
+        {"base":"172.17.0.0/16","size":24}
+      ]
+    }
+
+- name: restart and docker
+  systemd:
+    name: docker
+    state: restarted
+    daemon_reload: yes
+    enabled: yes
+  become: true
+  when: executor == 'docker'
+
 - name: Run GitLab runner service
   shell: |
     gitlab-runner start
