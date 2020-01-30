@@ -5,7 +5,7 @@ check_interval = 0
   session_timeout = 1800
 
 [[runners]]
-  name = "skampi-runner"
+  name = "{{name}}"
   url = "https://gitlab.com/"
   token = "{{token}}"
   executor = "docker"
