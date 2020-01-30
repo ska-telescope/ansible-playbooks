@@ -23,6 +23,7 @@
     - ca-certificates
     - curl
     - software-properties-common
+    - make
     update_cache: yes
   when: 
   - install_ska_docker == 'yes'

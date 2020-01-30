@@ -1,3 +1,5 @@
+## need to be merged with install.yml!
+
 - name: Add GitLab’s official repository
   shell: curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh | sudo bash
 
@@ -5,7 +7,6 @@
   apt:
     name:
     - gitlab-runner
-    - make
     update_cache: yes
 
 - name: Tidy up Traefik tmp
@@ -28,11 +29,20 @@
       --locked="false" \
       --access-level="not_protected"
 
-- name: Config.toml
-  template:
-    src: config.toml
-    dest: /etc/gitlab-runner/config.toml
+- name: Replace volumes var
+  replace:
+    path: /etc/gitlab-runner/config.toml
+    regexp: '"/cache"'
+    replace: '"/cache","/var/run/docker.sock:/var/run/docker.sock","/builds:/builds:rw"'
   when: executor == 'docker'
+
+- name: Replace volumes var
+  replace:
+    path: /etc/gitlab-runner/config.toml
+    regexp: 'privileged = false'
+    replace: 'privileged = true'
+  when: executor == 'docker'
+  ignore_errors: yes
 
 - name: Check that the service has already been installed
   stat:
