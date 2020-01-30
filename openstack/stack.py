@@ -49,7 +49,7 @@ def valid_ip_address(ip_address):
 
 def process_yaml_file(template_content, return_content):
 	# heat file content
-	heat_content = yaml.load(template_content, Loader=yaml.FullLoader)
+	heat_content = yaml.load(template_content)
 
 	# get stack name
 	heat_stack_name = heat_content['heat_stack_name']
@@ -149,7 +149,7 @@ def stack_exists(stack_name):
 	return False
 
 
-def instance_ip_by_hostname(hostname,network='int_net'):
+def instance_ip_by_hostname(hostname,network='ext_net'):
 	for server in novac.servers.list():
 		if server.to_dict()['name'] == hostname:
 			addresses = server.to_dict()['addresses']
@@ -158,13 +158,13 @@ def instance_ip_by_hostname(hostname,network='int_net'):
 
 
 def port_is_open(ip,port):
-   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-   try:
-	  s.connect((ip, int(port)))
-	  s.shutdown(2)
-	  return True
-   except:
-	  return False
+	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	try:
+		s.connect((ip, int(port)))
+		s.shutdown(2)
+		return True
+	except:
+		return False
 
 
 def ssh_user_by_image(hostname):
