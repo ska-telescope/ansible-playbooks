@@ -28,6 +28,12 @@
       --locked="false" \
       --access-level="not_protected"
 
+- name: Config.toml
+  template:
+    src: config.toml
+    dest: /etc/gitlab-runner/config.toml
+  when: executor == 'docker'
+
 - name: Check that the service has already been installed
   stat:
     path: /etc/systemd/system/gitlab-runner.service

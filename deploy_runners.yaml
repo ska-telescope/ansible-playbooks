@@ -1,6 +1,6 @@
 ---
 - name: deploy_runners
-  hosts: localhost
+  hosts: runners
   vars:
     build_tango: 'yes'
     install_pytango: 'yes'
