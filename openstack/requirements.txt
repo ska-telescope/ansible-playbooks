@@ -1,0 +1,5 @@
+keystoneauth1==3.1.0
+python-novaclient==2.27.0
+rackspace-novaclient==2.1
+python-heatclient==1.11.1
+ansible
