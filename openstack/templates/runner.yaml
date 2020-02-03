@@ -10,7 +10,7 @@ resources:
         file: '../../deploy_openstack_runner.yaml'
         extra-vars: "token='seyd2HjhP4TkVveTe4Fx' runnername='EngageSKA-AUTO-TMC-Runner' taglist='docker-executor,engageska,ska,tmc-prototype' executor='docker'"
     properties:
-      image: 'Ubuntu-18.04-x86_64'
+      image: 'Ubuntu 18.04 LTS Jan/2020'
       flavor: r1.medium
       key_name: tester
       networks:
