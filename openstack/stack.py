@@ -11,6 +11,8 @@ import datetime
 import sys
 from threading import Thread
 
+print("Username: " + os.environ["username"] + " & Password: " + os.environ["password"] + " & Project name: " + os.environ["project_name"])
+
 start_time = datetime.datetime.now()
 
 logging.basicConfig(level=logging.INFO)
@@ -149,12 +151,15 @@ def stack_exists(stack_name):
 	return False
 
 
-def instance_ip_by_hostname(hostname,network='ext_net'):
+def instance_ip_by_hostname(hostname):
 	for server in novac.servers.list():
 		if server.to_dict()['name'] == hostname:
 			addresses = server.to_dict()['addresses']
 
-			return addresses[network][0]['addr']
+			for key in addresses:
+				for entry in addresses[key]:
+					if "192.168.93" in entry["addr"]:
+						return entry["addr"]
 
 
 def port_is_open(ip,port):
@@ -350,8 +355,6 @@ def run_stack(yaml_file, action, compt_stack_name=None):
 if __name__ == "__main__":
 	file = sys.argv[1]
 	action = sys.argv[2]
-
-	print("Username: " + os.environ["username"] + " & Password: " + os.environ["password"] + " & Project name: " + os.environ["project_name"])
 
 	run_stack(file, action)
 

@@ -10,8 +10,19 @@ resources:
         file: '../../deploy_openstack_runner.yaml'
         extra-vars: "token='seyd2HjhP4TkVveTe4Fx' runnername='EngageSKA-AUTO-TMC-Runner' taglist='docker-executor,engageska,ska,tmc-prototype' executor='docker'"
     properties:
-      image: 'Ubuntu 18.04 LTS Jan/2020'
+      image: 'Ubuntu-18.04-x86_64'
       flavor: r1.medium
-      key_name: tick-stack
+      key_name: tester
       networks:
-        - network: ext_net
+        - network: int_net
+
+  FloatingIP:
+    type: OS::Nova::FloatingIP
+    properties:
+      pool: ext_net
+
+  association:
+    type: OS::Nova::FloatingIPAssociation
+    properties:
+      floating_ip: { get_resource: FloatingIP }
+      server_id: { get_resource: GitLabRunnerNode }
