@@ -6,6 +6,7 @@
   apt:
     name:
     - make
+    - socat
     update_cache: yes
 
 - name: Check if skampi exists
@@ -28,6 +29,7 @@
 - name: Change file ownership, group and permissions
   file:
     path: /usr/src/skampi
+    recurse: yes
     owner: '{{ localuser }}'
     group: '{{ localuser }}'
 
