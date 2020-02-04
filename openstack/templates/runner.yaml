@@ -12,6 +12,17 @@ resources:
     properties:
       image: 'Ubuntu 18.04 LTS Jan/2020'
       flavor: r1.medium
-      key_name: tick-stack
+      key_name: tester
       networks:
-        - network: ext_net
+        - network: int_net
+
+  FloatingIP:
+    type: OS::Nova::FloatingIP
+    properties:
+      pool: ext_net
+
+  association:
+    type: OS::Nova::FloatingIPAssociation
+    properties:
+      floating_ip: { get_resource: FloatingIP }
+      server_id: { get_resource: GitLabRunnerNode }
