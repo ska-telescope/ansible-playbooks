@@ -22,7 +22,7 @@
    :maxdepth: 2
    :caption: Readme
 
-   README
+   ../../README
 
 .. COMMUNITY SECTION ==================================================
 
@@ -30,15 +30,7 @@
 
 .. toctree::
   :maxdepth: 2
-  :caption: Package-name
-  :hidden:
+  :caption: Playbooks
 
-  kubespray/guide
-
-
-Kubernetes cluster deployment
-=============================
-
-Refer to this guide for usage of the kubespray project to provision a kubernetes cluster.
-
-- :doc:`kubespray/guide`
+  playbooks/kubernetes
+  playbooks/runners
