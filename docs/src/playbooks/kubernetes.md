@@ -4,9 +4,9 @@ The simplest way of deploying the MVP is by running it on a Minikube system. Min
 
 ## Skampi
 
-It is possible to install the integration environment locally with minikube (**CHANGE USER AND PASSWORD**). 
+It is possible to install the integration environment locally with minikube (**CHANGE USER AND PASSWORD**), as well as deploy the SKA MPI project (the MVP), by running a playbook or calling `make skampi`.
 
-Call the following command: 
+The make target calls the playbook for setting up the skampi repository, with additional parameters already passed from the rules (or PrivateRules.mak, if you've set it up). 
 
 ```
 ansible-playbook -i hosts deploy_skampi.yml
@@ -98,28 +98,7 @@ Clean up with:
 ```
 $ make vagrant_down
 ```
-
-## Deploy Kubernetes Cluster
-
-A fully-fledged Kubernetes cluster can be deployed using the following command, BUT make sure `hosts` file is accordingly to your needs:
-``` 
-
-ansible-playbook -i hosts setup_cluster.yml
-```
-
-This playbook is intended for CentOS 7 operating system. If deployed within the EngageSKA cluster, please create all nodes with `int_net` network and add to each VM floating IP. After the instalation, remove floating IP's only from the worked nodes.
-
-Join nodes to Kubernetes Cluster
-================================
-
-Kubernetes worker can be joined to the cluster using the following command, BUT make sure `hosts` file is accordingly to your needs:
-``` 
-
-ansible-playbook -i hosts join_cluster.yml
-```
-
-Reset Kubernetes Cluster
-========================
+## Reset Minikube cluster
 
 Kubernetes environment can be reset using the following command:
 ``` 
@@ -127,8 +106,7 @@ Kubernetes environment can be reset using the following command:
 ansible-playbook reset_k8s.yml
 ``` 
 
-Minikube Direct
-===============
+## Minikube Direct
 
 Minikube on kvm2
 ----------------
@@ -138,17 +116,14 @@ Minikube can be installed onto your Debian or RedHat based machine within a kvm2
 make minikube DRIVER=kvm2
 ```
 
-Clean up
---------
+## Clean up
 
 Clean up with:
 ```
 $ minikube delete
 ```
 
-
-Minikube direct install (for the brave)
----------------------------------------
+## Minikube direct install (for the brave)
 
 Minikube can also be installed directly onto your Debian or RedHat based machine with:
 ```
@@ -156,10 +131,25 @@ make minikube DRIVER=none
 ```
 ***WARNING*** This will overwrite anything that you have locally installed for `docker`, `helm`, `kubectl`, and `minikube` which could be disastrous if you have an existing and customised configuration.
 
-Clean up
---------
 
-Clean up with:
+
+# Deploy Kubernetes Cluster
+
+A fully-fledged Kubernetes cluster can be deployed using the following command, BUT make sure `hosts` file is modified according to your needs:
+
+## Set up N-node cluster
+After setting up the `hosts`, you can run the following playbook to provision the nodes. 
+
+``` 
+ansible-playbook -i hosts setup_cluster.yml
 ```
-$ minikube delete
+
+This playbook is intended for CentOS 7 operating system. If deployed within the EngageSKA cluster, please create all nodes with `int_net` network and add to each VM floating IP. After the instalation, remove floating IP's only from the worked nodes.
+
+## Join nodes to Kubernetes Cluster
+
+Kubernetes worker can be joined to the cluster using the following command, BUT make sure `hosts` file is modified according to your needs:
+
+``` 
+ansible-playbook -i hosts join_cluster.yml
 ```
