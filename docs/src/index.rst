@@ -41,3 +41,4 @@ This is the README that you can also find on the `Gitlab repository <https://git
 
   playbooks/kubernetes
   playbooks/runners
+  playbooks/all
