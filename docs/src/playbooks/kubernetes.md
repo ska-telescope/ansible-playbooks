@@ -4,22 +4,25 @@ The simplest way of deploying the MVP is by running it on a Minikube system. Min
 
 ## Skampi
 
-It is possible to install the integration environment locally with minikube (**CHANGE USER AND PASSWORD**), as well as deploy the SKA MPI project (the MVP), by running a playbook or calling `make skampi`.
-
-The make target calls the playbook for setting up the skampi repository, with additional parameters already passed from the rules (or PrivateRules.mak, if you've set it up). 
-
+It is possible to install the integration environment locally with Minikube, as well as deploy the SKA MPI project (the MVP), by running the Ansible playbook or calling the make command:  
 ```
-ansible-playbook -i hosts deploy_skampi.yml
+make skampi
 ```
 
-At the following link will be setup the webjive webapplication: http://integration.engageska-portugal.pt/testdb
+The make target above calls the playbook for setting up the skampi repository, with additional parameters already passed from the rules (or `PrivateRules.mak`, if you've set it up). It assumes password-less sudo rights.
+
+Using an Ansible playbook, you may need to set a password, as in the example below; if you have password-less sudo access on the host you don't need that.
+
+```
+ansible-playbook -i hosts deploy_skampi.yml --extra-vars "ansible_become_pass=$PASSWORD"
+```
+
+At the following link will be setup the webjive webapplication: `http://integration.engageska-portugal.pt/testdb`
 
 
 ## Ansible Playbook for local Kubernetes
 
 The following are a set of instructions for deploying Kubernetes either directly locally or on a Vagrant VirtualBox.  It has been tested on minikube v1.1.1 with Kubernetes v1.14.3 on Ubuntu 18.04, using Vagrant 2.2.4.
-
-### The Aim
 
 The aim of these instructions, scripts, and playbook+roles is to provide a canned locally available Kubernetes development environment.  This environment will contain:
 

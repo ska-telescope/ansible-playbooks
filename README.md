@@ -17,9 +17,9 @@ For working with Ansible, you need to install it and set up a connection (ssh if
 * Install Ansible:
 ``` 
     apt-add-repository --yes --update ppa:ansible/ansible && apt-get install ansible -y
-    
-    OR
-
+```
+or with sudo:
+```    
     sudo apt-add-repository --yes --update ppa:ansible/ansible && sudo apt-get install ansible -y
 
 ```
@@ -34,7 +34,7 @@ If you run `make help` you will get an output of all the currently available tar
 
 ### Deploy the SKA MVP Prototype Integration (Skampi) on Minikube
 
-In order to install and run Minikube, as well as deploy the `SKAmpi` project on it, simply run
+In order to install and run Minikube, as well as deploy the **SKA MPI** project on it, simply run
 ```
 make skampi
 ```
@@ -49,7 +49,7 @@ To deploy a Tango development environment, you simply now need to launch the ans
 ``` 
     ansible-playbook -i hosts deploy_tangoenv.yml 
 ```
-or with a password (replace `my-sudo-user-password` with an actual password): 
+or with a password (replace `$PASSWORD` with an actual password): 
 ```
     export PASSWORD=my-sudo-user-password
     ansible-playbook -i hosts deploy_tangoenv.yml --extra-vars "ansible_become_pass=$PASSWORD"
