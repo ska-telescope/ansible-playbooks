@@ -12,6 +12,11 @@ This repository consists of a Makefile and a set of playbooks that allow a devel
 
 # Quick Start
 
+* Clone the repo:
+```
+git clone https://gitlab.com/ska-telescope/ansible-playbooks.git && cd ansible-playbooks
+```
+
 For working with Ansible, you need to install it and set up a connection (ssh if it's not localhost) to the machine(s) where the playbooks will run. Most of the `make` targets merely call one or more Ansible playbooks, so you need to install Ansible to use it too.
 
 * Install Ansible:

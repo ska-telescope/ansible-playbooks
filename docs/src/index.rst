@@ -22,9 +22,12 @@ SKA Ansible Playbooks documentation
 
 .. This project most likely has it's own README. We include it here.
 
+This is the README that you can also find on the `Gitlab repository <https://gitlab.com/ska-telescope/ansible-playbooks>`_.
+
 .. toctree::
    :maxdepth: 2
    :caption: Readme
+
 
    ../../README
 
