@@ -43,7 +43,7 @@ In order to install and run Minikube, as well as deploy the **SKA MPI** project 
 ```
 make skampi
 ```
-The above `make` target installs Docker, Minikube, kubectl, Helm, Tiller and starts up the Kubernetes cluster (Minikube). It clones the `skampi` repository but not for development purposes. See example below for setting up a development environment.
+The above `make` target installs Docker, Minikube, kubectl, Helm, Tiller and starts up the Kubernetes cluster (Minikube). It clones the `skampi` repository into `/usr/src/skampi`. See example below for setting up a development environment.
 
 ## Playbooks
 There are also a few playbooks in this repository that are not wrapped in a `make` target. You can run the playbooks as well, for instance for deploying a local Tango Controls development environment:
