@@ -127,10 +127,8 @@ minikube:  ## Ansible playbook for install and launching Minikube
 	 deploy_minikube.yml
 
 skampi:  ## Ansible playbook for install and launching Minikube
-	PYTHONUNBUFFERED=1 ANSIBLE_FORCE_COLOR=true ANSIBLE_CONFIG='ansible-local.cfg' \
 	ansible-playbook --inventory=hosts \
-	 -v \
-   --limit=development \
+	 -vvv \
 	 --extra-vars='{"use_driver": false, "use_calico": $(USE_CALICO), "use_nginx": $(USE_NGINX), "minikube_disk_size": $(FORMATTED_DISK_SIZE), "minikube_memory": $(V_MEMORY), "minikube_cpus": $(V_CPUS)}' \
 	 deploy_skampi.yml
 
