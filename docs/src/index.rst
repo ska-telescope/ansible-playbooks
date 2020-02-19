@@ -3,6 +3,10 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+***********************************
+SKA Ansible Playbooks documentation
+***********************************
+
 
 .. HOME SECTION ==================================================
 
@@ -18,11 +22,14 @@
 
 .. This project most likely has it's own README. We include it here.
 
+This is the README that you can also find on the `Gitlab repository <https://gitlab.com/ska-telescope/ansible-playbooks>`_.
+
 .. toctree::
    :maxdepth: 2
    :caption: Readme
 
-   README
+
+   ../../README
 
 .. COMMUNITY SECTION ==================================================
 
@@ -30,15 +37,8 @@
 
 .. toctree::
   :maxdepth: 2
-  :caption: Package-name
-  :hidden:
+  :caption: Documentation
 
-  kubespray/guide
-
-
-Kubernetes cluster deployment
-=============================
-
-Refer to this guide for usage of the kubespray project to provision a kubernetes cluster.
-
-- :doc:`kubespray/guide`
+  playbooks/kubernetes
+  playbooks/runners
+  playbooks/all
