@@ -33,20 +33,8 @@ or with sudo:
 
 * Add the ssh key to the managed hosts (if not localhost). 
 
-## Make
-
-If you run `make help` you will get an output of all the currently available targets, and variables that you can set, with their defaults. Examples:
-
-### Deploy the SKA MVP Prototype Integration (Skampi) on Minikube
-
-In order to install and run Minikube, as well as deploy the **SKA MPI** project on it, simply run
-```
-make skampi
-```
-The above `make` target installs Docker, Minikube, kubectl, Helm, Tiller and starts up the Kubernetes cluster (Minikube). It clones the `skampi` repository into `/usr/src/skampi`. See example below for setting up a development environment.
-
 ## Playbooks
-There are also a few playbooks in this repository that are not wrapped in a `make` target. You can run the playbooks as well, for instance for deploying a local Tango Controls development environment:
+The `deploy_tangoenv.yml` playbook can be used for deploying a local Tango Controls development environment:
 
 ### Deploy Tango Environment
 
