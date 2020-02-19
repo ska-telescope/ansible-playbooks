@@ -68,7 +68,7 @@ For example:
     ansible-playbook -i hosts deploy_tangoenv.yml --extra-vars "build_tango='no' install_mysql='no' install_ide='no'"
 ```
 
-For all the other playbooks, visit the [Documentation](https://developer.skatelescope.org/projects/ansible-playbooks/en/latest/).
+For more information on the other playbooks available in this repo, visit the [Documentation](https://developer.skatelescope.org/projects/ansible-playbooks/en/latest/).
 
 ## Development Environment TESTED OS (using a box requires at least 4GB RAM):
 * ubuntu:18.04
