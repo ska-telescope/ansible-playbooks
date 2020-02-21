@@ -12,7 +12,7 @@ resources:
     properties:
       image: 'Ubuntu 18.04 LTS Jan/2020'
       flavor: r1.medium
-      key_name: tester
+      key_name: adebeer-sac
       networks:
         - network: int_net
 
