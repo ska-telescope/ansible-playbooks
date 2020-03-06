@@ -10,4 +10,4 @@ venv
 build
 *_build*
 *Pipfile*
-
+.env
