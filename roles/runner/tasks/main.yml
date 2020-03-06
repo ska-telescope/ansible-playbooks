@@ -1,19 +1,25 @@
-## need to be merged with install.yml!
 
-- name: Add GitLab’s official repository
-  shell: curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh | sudo bash
+- name: Check that the gitlab runner has already been installed
+  stat:
+    path: /usr/local/bin/gitlab-runner
+  register: stat_gitlab_runner
 
 - name: Install the latest version of GitLab Runner
-  apt:
-    name:
-    - gitlab-runner
-    update_cache: yes
+  shell: curl -L --output /usr/local/bin/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64
+  when: stat_gitlab_runner.stat.exists == False
 
-- name: Tidy up Traefik tmp
-  file:
-    path: '/tmp/traefik-minikube.yaml'
-    state: absent
-  become: yes
+- name: Permissions to execute
+  shell: chmod +x /usr/local/bin/gitlab-runner
+  when: stat_gitlab_runner.stat.exists == False
+
+- name: Check that the service has already been installed
+  stat:
+    path: /etc/systemd/system/gitlab-runner.service
+  register: stat_config
+
+- name: Install GitLab runner service
+  shell: gitlab-runner install --user=root 
+  when: stat_config.stat.exists == False
 
 - name: Add GitLab’s official repository
   shell: |
@@ -43,16 +49,6 @@
     replace: 'privileged = true'
   when: executor == 'docker'
   ignore_errors: yes
-
-- name: Check that the service has already been installed
-  stat:
-    path: /etc/systemd/system/gitlab-runner.service
-  register: stat_config
-
-- name: Install GitLab runner service
-  shell: |
-    gitlab-runner install --user {{ansible_user}}
-  when: stat_config.stat.exists == False
 
 - name: Create daemon.json file
   copy:
