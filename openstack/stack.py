@@ -265,6 +265,7 @@ def run_stack(yaml_file, action, nodes_count, compt_stack_name=None):
 			'software_content': True,
 			'print_details': True
 		}
+	#lots of useful stuff can be added here
 	elif action == 'dry-run':
 		print("Node count: {count}".format(count=nodes_count))
 		exit(0)
@@ -358,7 +359,9 @@ def run_stack(yaml_file, action, nodes_count, compt_stack_name=None):
 if __name__ == "__main__":
 	file = sys.argv[1]
 	action = sys.argv[2]
-	nodes = sys.argv[3]
+	nodes = 1
+	if len(sys.argv)>3:
+		nodes = sys.argv[3]
 
 	run_stack(file, action, nodes)
 

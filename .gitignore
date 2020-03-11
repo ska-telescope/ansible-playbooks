@@ -6,7 +6,7 @@
 ubuntu-bionic-18.04-cloudimg-console.log
 PrivateRules.mak
 *.pyc
-venv
+venv*
 build
 *_build*
 *Pipfile*

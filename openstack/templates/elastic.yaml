@@ -3,7 +3,7 @@ heat_stack_name: test-elastic
 description: TEST Elasticsearch
 
 resources:
-  ElasticsearchNode:
+  ElasticsearchNode1:
     type: OS::Nova::Server
     content:
       ansible:
@@ -16,7 +16,20 @@ resources:
       networks:
         - network: int_net
 
-  FloatingIP:
+  ElasticsearchNode2:
+    type: OS::Nova::Server
+    content:
+      ansible:
+        file: '../../deploy_elasticsearch.yaml'
+        extra-vars: ""
+    properties:
+      image: 'Ubuntu 18.04 LTS Jan/2020'
+      flavor: r1.medium
+      key_name: adebeer-sac
+      networks:
+        - network: int_net
+
+  FloatingIP1:
     type: OS::Nova::FloatingIP
     properties:
       pool: ext_net
@@ -24,5 +37,16 @@ resources:
   association:
     type: OS::Nova::FloatingIPAssociation
     properties:
-      floating_ip: { get_resource: FloatingIP }
-      server_id: { get_resource: ElasticsearchNode}
+      floating_ip: { get_resource: FloatingIP1 }
+      server_id: { get_resource: ElasticsearchNode1}
+
+  FloatingIP2:
+    type: OS::Nova::FloatingIP
+    properties:
+      pool: ext_net
+
+  association:
+    type: OS::Nova::FloatingIPAssociation
+    properties:
+      floating_ip: { get_resource: FloatingIP2 }
+      server_id: { get_resource: ElasticsearchNode2}
