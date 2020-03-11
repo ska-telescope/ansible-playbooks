@@ -1,0 +1,28 @@
+heat_template_version: 2013-05-23
+heat_stack_name: test-runner
+description: TEST Runner
+
+resources:
+  ElasticsearchNode:
+    type: OS::Nova::Server
+    content:
+      ansible:
+        file: '../../deploy_elasticsearch.yaml'
+        extra-vars: ""
+    properties:
+      image: 'Ubuntu 18.04 LTS Jan/2020'
+      flavor: r1.medium
+      key_name: adebeer-sac
+      networks:
+        - network: int_net
+
+  FloatingIP:
+    type: OS::Nova::FloatingIP
+    properties:
+      pool: ext_net
+
+  association:
+    type: OS::Nova::FloatingIPAssociation
+    properties:
+      floating_ip: { get_resource: FloatingIP }
+      server_id: { get_resource: ElasticsearchNode}

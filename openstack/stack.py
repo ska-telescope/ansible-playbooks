@@ -244,7 +244,7 @@ def threads_start_and_wait(threads):
 	return []
 
 
-def run_stack(yaml_file, action, compt_stack_name=None):
+def run_stack(yaml_file, action, nodes_count, compt_stack_name=None):
 	script_path = os.getcwd()
 	template_path = script_path + '/' +os.path.dirname(yaml_file)
 	init_template = script_path + "/../init_openstack.yml"
@@ -265,8 +265,11 @@ def run_stack(yaml_file, action, compt_stack_name=None):
 			'software_content': True,
 			'print_details': True
 		}
+	elif action == 'dry-run':
+		print("Node count: {count}".format(count=nodes_count))
+		exit(0)
 	else:
-		print("the options are 'remove' or 'deploy'")
+		print("the options are 'dry-run', remove' or 'deploy'")
 		exit(0)
 
 	if stages['template_analysis']:
@@ -355,24 +358,9 @@ def run_stack(yaml_file, action, compt_stack_name=None):
 if __name__ == "__main__":
 	file = sys.argv[1]
 	action = sys.argv[2]
+	nodes = sys.argv[3]
 
-	run_stack(file, action)
+	run_stack(file, action, nodes)
 
 	print(datetime.datetime.now() - start_time)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
