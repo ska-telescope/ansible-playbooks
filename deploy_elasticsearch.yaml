@@ -1,0 +1,6 @@
+---
+- name: deploy_elasticsearch
+  hosts: elastic
+  become: yes
+  tasks:
+    - include: roles/elasticsearch/tasks/main.yml

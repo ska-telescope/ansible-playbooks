@@ -1,0 +1,22 @@
+---
+
+- name: include docker.yml
+  include: docker.yml
+  tags:
+    - docker
+
+# - name: include java.yml
+#   include: java.yml
+#   # when: es_java_install
+#   tags:
+#       - java
+
+# - name: include elasticsearch.yml
+#   include: elasticsearch.yml
+#   tags:
+#       - install
+
+# - name: include elasticsearch-config.yml
+#   include: elasticsearch-config.yml
+#   tags:
+#       - config
