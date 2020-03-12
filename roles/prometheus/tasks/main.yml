@@ -1,2 +1,6 @@
 ---
 # tasks file for prometheus
+
+- include: server.yml
+
+- include: node_exporter.yml

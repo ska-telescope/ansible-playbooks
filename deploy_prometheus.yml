@@ -1,0 +1,93 @@
+---
+
+- name: deploy_prometheus_server
+  hosts: prometheus
+  become: true
+  become_method: sudo
+  become_flags: '-E -S -n'
+  roles:
+    - prometheus
+  vars:
+    prometheus_global:
+      scrape_interval: 15s
+      scrape_timeout: 10s
+      evaluation_interval: 15s
+
+    prometheus_remote_write: []
+
+    prometheus_remote_read: []
+
+    prometheus_alertmanager_config: []
+
+    prometheus_scrape_configs:
+      - job_name: "prometheus"
+        static_configs:
+          - targets:
+              - "{{ ansible_fqdn | default(ansible_host) | default('localhost') }}:9090"
+
+      - job_name: "exporters"
+        static_configs:
+          - targets:
+              - "{{ ansible_fqdn | default(ansible_host) | default('localhost') }}:9100"
+
+    prometheus_alert_rules:
+    - alert: Watchdog
+      expr: vector(1)
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        description: 'This is an alert meant to ensure that the entire alerting pipeline is functional.
+          This alert is always firing, therefore it should always be firing in Alertmanager
+          and always fire against a receiver. There are integrations with various notification
+          mechanisms that send a notification when this alert is not firing. For example the
+          "DeadMansSnitch" integration in PagerDuty.'
+        summary: 'Ensure entire alerting pipeline is functional'
+    - alert: InstanceDown
+      expr: "up == 0"
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        description: "{% raw %}{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes.{% endraw %}"
+        summary: "{% raw %}Instance {{ $labels.instance }} down{% endraw %}"
+    - alert: CriticalCPULoad
+      expr: '100 - (avg by (instance) (irate(node_cpu_seconds_total{job="node",mode="idle"}[5m])) * 100) > 96'
+      for: 2m
+      labels:
+        severity: critical
+      annotations:
+        description: "{% raw %}{{ $labels.instance }} of job {{ $labels.job }} has Critical CPU load for more than 2 minutes.{% endraw %}"
+        summary: "{% raw %}Instance {{ $labels.instance }} - Critical CPU load{% endraw %}"
+    - alert: CriticalRAMUsage
+      expr: '(1 - ((node_memory_MemFree_bytes + node_memory_Buffers_bytes + node_memory_Cached_bytes) / node_memory_MemTotal_bytes)) * 100 > 98'
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        description: "{% raw %}{{ $labels.instance }} has Critical Memory Usage more than 5 minutes.{% endraw %}"
+        summary: "{% raw %}Instance {{ $labels.instance }} has Critical Memory Usage{% endraw %}"
+    - alert: CriticalDiskSpace
+      expr: 'node_filesystem_free_bytes{mountpoint!~"^/run(/.*|$)",fstype!~"(squashfs|fuse.*)",job="node"} / node_filesystem_size_bytes{job="node"} < 0.1'
+      for: 4m
+      labels:
+        severity: critical
+      annotations:
+        description: "{% raw %}{{ $labels.instance }} of job {{ $labels.job }} has less than 10% space remaining.{% endraw %}"
+        summary: "{% raw %}Instance {{ $labels.instance }} - Critical disk space usage{% endraw %}"
+    - alert: RebootRequired
+      expr: "node_reboot_required > 0"
+      labels:
+        severity: warning
+      annotations:
+        description: "{% raw %}{{ $labels.instance }} requires a reboot.{% endraw %}"
+        summary: "{% raw %}Instance {{ $labels.instance }} - reboot required{% endraw %}"
+    - alert: ClockSkewDetected
+      expr: 'abs(node_timex_offset_seconds) * 1000 > 30'
+      for: 2m
+      labels:
+        severity: warning
+      annotations:
+        description: "{% raw %}Clock skew detected on {{ $labels.instance }}. Ensure NTP is configured correctly on this host.{% endraw %}"
+        summary: "{% raw %}Instance {{ $labels.instance }} - Clock skew detected{% endraw %}"
+

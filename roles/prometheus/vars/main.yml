@@ -1,2 +1,5 @@
 ---
 # vars file for prometheus
+
+prometheus_binary_dir: /usr/local/bin
+prometheus_config_dir: /etc/prometheus

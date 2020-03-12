@@ -1,6 +1,12 @@
 [development]
 localhost ansible_user=$USER ansible_connection=local
 
+[prometheus]
+localhost ansible_user=$USER ansible_connection=local
+
+[nodexporter]
+localhost ansible_user=$USER ansible_connection=local
+
 [integration]
 localhost ansible_user=$USER ansible_connection=local
 

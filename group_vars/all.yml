@@ -63,3 +63,5 @@ docker_compose_version: '1.23.2'
 #vscode version 1.30
 start_mysql_server: 'no'
 install_mysql: 'no'
+
+prometheus_server: '2.16.0'

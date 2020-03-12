@@ -1,0 +1,12 @@
+[Unit]
+Description=Prometheus Server
+After=network.target
+
+[Service]
+User=root
+Group=root
+Type=simple
+ExecStart={{prometheus_binary_dir}}/prometheus/prometheus --config.file={{ prometheus_config_dir }}/prometheus.yml
+
+[Install]
+WantedBy=multi-user.target

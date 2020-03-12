@@ -3,12 +3,7 @@
   yum:
     name: 'libselinux-python'
     state: latest
-
-- name: Check if service node_exporter exists
-  stat:
-    path: /etc/systemd/system/node_exporter.service
-  register: service_status
-  failed_when: service_status.stat.exists == True
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat'
 
 - name: Create the node_exporter user
   user:
@@ -52,7 +47,7 @@
 
 - name: Copy the Node Exporter systemd service file
   template:
-    src: node_exporter.service.j2
+    src: "{{playbook_dir}}/roles/prometheus/templates/node_exporter.service.j2"
     dest: /etc/systemd/system/node_exporter.service
     owner: root
     group: root
@@ -64,4 +59,4 @@
     daemon_reload: true
     name: node_exporter
     enabled: true
-    state: started
+    state: restarted
