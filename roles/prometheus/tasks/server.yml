@@ -1,34 +1,18 @@
 ---
 # tasks file for prometheus
 
-- name: Downloading Prometheus
-  become: false
-  get_url:
-    url: "https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_server }}/prometheus-{{ prometheus_server }}.linux-amd64.tar.gz"
-    dest: "/{{ localhome }}/prometheus-{{ prometheus_server }}.linux-amd64.tar.gz"
-    checksum: "sha256:c04e631d18e186b66a51cac3062157298e037ffae784f35ccaaf29e496d65d3f"
-  register: _download_binary
-  until: _download_binary is succeeded
-  retries: 5
-  delay: 2
-  check_mode: false
-
-- name: Unpack Prometheus binary
-  unarchive:
-    src: "/{{ localhome }}/prometheus-{{ prometheus_server }}.linux-amd64.tar.gz"
-    dest: "/{{ localhome }}"
-  check_mode: false
-
-- name: Propagate prometheus binaries 
-  synchronize:
-    src: "/{{ localhome }}/prometheus-{{ prometheus_server }}.linux-amd64/"
-    dest: "{{prometheus_binary_dir}}/prometheus/"
-
 - name: ensure Prometheus configuration directory
   file:
     path: '{{ prometheus_config_dir }}'
     state: directory
-    mode: '0755'
+    mode: 0755
+  become: yes
+
+- name: ensure Prometheus rules configuration directory
+  file:
+    path: '{{ prometheus_config_dir }}/rules/'
+    state: directory
+    mode: 0755
   become: yes
 
 - name: Generate Prometheus configuration
@@ -37,23 +21,42 @@
     src: "{{playbook_dir}}/roles/prometheus/templates/prometheus.yml.j2"
     dest: "{{ prometheus_config_dir }}/prometheus.yml"
     force: true
-    owner: root
-    group: root
-    mode: 0644
+    owner: "{{ localuser }}"
+    group: "{{ localuser }}"
+    mode: 0755
 
-- name: Create the prometheus service
-  become: true
+- name: alerting rules file
   template:
-    src: "{{playbook_dir}}/roles/prometheus/templates/prometheus.service.j2"
-    dest: /etc/systemd/system/prometheus.service
-    owner: root
-    group: root
-    mode: 0644
+    src: "{{playbook_dir}}/roles/prometheus/templates/alert.rules.j2"
+    dest: "{{ prometheus_config_dir }}/rules/ansible_managed.rules"
+    owner: "{{ localuser }}"
+    group: "{{ localuser }}"
+    mode: 0755
+  when:
+    - prometheus_alert_rules != []
 
-- name: Ensure prometheus service is enabled on boot
-  become: true
-  systemd:
-    daemon_reload: true
+- name: copy basic rules
+  copy:
+    src: "{{playbook_dir}}/roles/prometheus/files/basic.rules"
+    dest: "{{ prometheus_config_dir }}/rules/basic.rules"
+    owner: "{{ localuser }}"
+    group: "{{ localuser }}"
+    mode: 0755
+
+- name: Pull prometheus image {{prometheus_docker_tags}}
+  docker_image:
+    name: prom/prometheus
+    tag: "{{prometheus_docker_tags}}"
+
+- name: Start prometheus container
+  docker_container:
     name: prometheus
-    enabled: true
-    state: restarted
+    image: prom/prometheus
+    state: started
+    restart: yes
+    restart_policy: on-failure
+    ports:
+     - "9090:9090"
+    volumes:
+      - "{{ prometheus_config_dir }}:/etc/prometheus:rw"
+      - "/etc/hosts:/etc/hosts"

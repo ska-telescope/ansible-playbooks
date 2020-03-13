@@ -5,45 +5,56 @@
     state: latest
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat'
 
-- name: Create the node_exporter user
-  user:
-    name: "nodeusr"
-    append: true
-    shell: /usr/sbin/nologin
-    system: true
-    create_home: false
-    home: /
+- name: Install node_exporter
+  become: yes
+  apt:
+    name:
+        - prometheus-node-exporter
+    state: latest
+    force: yes 
+    update_cache: yes
+  when: 
+    - ansible_distribution == 'Ubuntu'
 
-- name: Download node_exporter binary to local folder
-  become: false
-  get_url:
-    url: "https://nexus.engageska-portugal.pt/repository/raw/prometheus/node_exporter-0.18.1.linux-amd64.tar.gz"
-    dest: "/tmp/node_exporter-0.18.1.linux-amd64.tar.gz"
-    checksum: "sha256:b2503fd932f85f4e5baf161268854bf5d22001869b84f00fd2d1f57b51b72424"
-  register: _download_binary
-  until: _download_binary is succeeded
-  retries: 5
-  delay: 2
-  delegate_to: localhost
-  check_mode: false
+# - name: Create the node_exporter user
+#   user:
+#     name: "nodeusr"
+#     append: true
+#     shell: /usr/sbin/nologin
+#     system: true
+#     create_home: false
+#     home: /
 
-- name: Unpack node_exporter binary
-  become: false
-  unarchive:
-    src: "/tmp/node_exporter-0.18.1.linux-amd64.tar.gz"
-    dest: "/tmp"
-    creates: "/tmp/node_exporter-0.18.1.linux-amd64/node_exporter"
-  delegate_to: localhost
-  check_mode: false
+# - name: Download node_exporter binary to local folder
+#   become: false
+#   get_url:
+#     url: "https://nexus.engageska-portugal.pt/repository/raw/prometheus/node_exporter-0.18.1.linux-amd64.tar.gz"
+#     dest: "/tmp/node_exporter-0.18.1.linux-amd64.tar.gz"
+#     checksum: "sha256:b2503fd932f85f4e5baf161268854bf5d22001869b84f00fd2d1f57b51b72424"
+#   register: _download_binary
+#   until: _download_binary is succeeded
+#   retries: 5
+#   delay: 2
+#   delegate_to: localhost
+#   check_mode: false
 
-- name: Propagate node_exporter binaries
-  copy:
-    src: "/tmp/node_exporter-0.18.1.linux-amd64/node_exporter"
-    dest: "/usr/local/bin/node_exporter"
-    mode: 0755
-    owner: root
-    group: root
-  when: not ansible_check_mode
+# - name: Unpack node_exporter binary
+#   become: false
+#   unarchive:
+#     src: "/tmp/node_exporter-0.18.1.linux-amd64.tar.gz"
+#     dest: "/tmp"
+#     creates: "/tmp/node_exporter-0.18.1.linux-amd64/node_exporter"
+#   delegate_to: localhost
+#   check_mode: false
+
+# - name: Propagate node_exporter binaries
+#   copy:
+#     src: "/tmp/node_exporter-0.18.1.linux-amd64/node_exporter"
+#     dest: "/usr/local/bin/node_exporter"
+#     mode: 0755
+#     owner: root
+#     group: root
+#   when: not ansible_check_mode
 
 - name: Copy the Node Exporter systemd service file
   template:

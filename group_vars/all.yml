@@ -64,4 +64,4 @@ docker_compose_version: '1.23.2'
 start_mysql_server: 'no'
 install_mysql: 'no'
 
-prometheus_server: '2.16.0'
+prometheus_docker_tags: 'v2.16.0'

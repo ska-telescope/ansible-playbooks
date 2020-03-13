@@ -6,7 +6,7 @@ After=network.target
 User=nodeusr
 Group=nodeusr
 Type=simple
-ExecStart=/usr/local/bin/node_exporter
+ExecStart=/usr/bin/prometheus-node-exporter
 
 [Install]
 WantedBy=multi-user.target
