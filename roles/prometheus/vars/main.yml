@@ -105,36 +105,3 @@ prometheus_alert_rules:
   annotations:
     description: "{% raw %}Clock skew detected on {{ $labels.instance }}. Ensure NTP is configured correctly on this host.{% endraw %}"
     summary: "{% raw %}Instance {{ $labels.instance }} - Clock skew detected{% endraw %}"
-
-# - alert: HostOutOfRamMemory
-#   expr: node_memory_MemAvailable / node_memory_MemTotal * 100 < 10
-#   for: 5m
-#   labels:
-#     severity: warning
-#   annotations:
-#     summary: "Host out of memory (instance {{ $labels.instance }})"
-#     description: "Node memory is filling up (< 10% left)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
-# - alert: HostOutOfDiskSpace
-#   expr: (node_filesystem_avail{mountpoint="/"}  * 100) / node_filesystem_size{mountpoint="/"} < 10
-#   for: 5m
-#   labels:
-#     severity: critical
-#   annotations:
-#     summary: "Host out of disk space (instance {{ $labels.instance }})"
-#     description: "Disk is almost full (< 10% left)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
-# - alert: HostDiskWillFillIn4Hours
-#   expr: predict_linear(node_filesystem_avail{mountpoint="/"}[1h], 4 * 3600) < 0
-#   for: 5m
-#   labels:
-#     severity: warning
-#   annotations:
-#     summary: "Host disk will fill in 4 hours (instance {{ $labels.instance }})"
-#     description: "Disk will fill in 4 hours at current write rate\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
-# - alert: HostHighCpuLoad
-#   expr: 100 - (avg by(instance) (irate(node_cpu{mode="idle"}[5m])) * 100) > 80
-#   for: 5m
-#   labels:
-#     severity: warning
-#   annotations:
-#     summary: "Host high CPU load (instance {{ $labels.instance }})"
-#     description: "CPU load is > 80%\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
