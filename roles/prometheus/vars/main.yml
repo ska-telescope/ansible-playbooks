@@ -90,7 +90,7 @@ prometheus_alert_rules:
     description: "{% raw %}{{ $labels.instance }} has Critical Memory Usage more than 5 minutes.{% endraw %}"
     summary: "{% raw %}Instance {{ $labels.instance }} has Critical Memory Usage{% endraw %}"
 - alert: CriticalDiskSpace
-  expr: 'node_filesystem_avail{mountpoint="/",job="node"} / node_filesystem_size{mountpoint="/",job="node"} < 0.8'
+  expr: 'node_filesystem_avail{mountpoint="/",job="node"} / node_filesystem_size{mountpoint="/",job="node"} < 0.2'
   for: 4m
   labels:
     severity: critical
