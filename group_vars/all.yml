@@ -65,3 +65,4 @@ start_mysql_server: 'no'
 install_mysql: 'no'
 
 prometheus_docker_tags: 'v2.16.0'
+prometheus_alertmanager_docker_tags: 'v0.20.0'

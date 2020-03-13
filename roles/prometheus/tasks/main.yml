@@ -1,6 +1,21 @@
 ---
 # tasks file for prometheus
 
+- name: Install dependencies
+  apt:
+    name:
+        - python3-pip
+    state: latest
+    force: yes 
+    update_cache: yes
+  become: yes
+
+- pip:
+    name: docker-py
+  become: yes
+
 - include: server.yml
 
 - include: node_exporter.yml
+
+- include: alert_manager.yml

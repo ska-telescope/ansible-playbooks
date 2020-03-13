@@ -1,11 +1,22 @@
 ---
 # tasks file for prometheus
 
+- name: ensure Prometheus data directory
+  file:
+    path: '{{ prometheus_data_dir }}'
+    state: directory
+    mode: 0766
+    owner: "{{ localuser }}"
+    group: "{{ localuser }}"
+  become: yes
+
 - name: ensure Prometheus configuration directory
   file:
     path: '{{ prometheus_config_dir }}'
     state: directory
     mode: 0755
+    owner: "{{ localuser }}"
+    group: "{{ localuser }}"
   become: yes
 
 - name: ensure Prometheus rules configuration directory
@@ -13,6 +24,8 @@
     path: '{{ prometheus_config_dir }}/rules/'
     state: directory
     mode: 0755
+    owner: "{{ localuser }}"
+    group: "{{ localuser }}"
   become: yes
 
 - name: Generate Prometheus configuration
@@ -35,13 +48,15 @@
   when:
     - prometheus_alert_rules != []
 
-- name: copy basic rules
-  copy:
-    src: "{{playbook_dir}}/roles/prometheus/files/basic.rules"
-    dest: "{{ prometheus_config_dir }}/rules/basic.rules"
+- name: record rules
+  template:
+    src: "{{playbook_dir}}/roles/prometheus/templates/record.rules.j2"
+    dest: "{{ prometheus_config_dir }}/rules/record.rules"
     owner: "{{ localuser }}"
     group: "{{ localuser }}"
     mode: 0755
+  when:
+    - prometheus_record_rules != []
 
 - name: Pull prometheus image {{prometheus_docker_tags}}
   docker_image:
@@ -51,12 +66,14 @@
 - name: Start prometheus container
   docker_container:
     name: prometheus
-    image: prom/prometheus
+    image: "prom/prometheus:{{prometheus_docker_tags}}"
     state: started
+    user: root
     restart: yes
     restart_policy: on-failure
     ports:
      - "9090:9090"
     volumes:
-      - "{{ prometheus_config_dir }}:/etc/prometheus:rw"
+      - "{{ prometheus_config_dir }}:/etc/prometheus"
       - "/etc/hosts:/etc/hosts"
+      - "{{ prometheus_data_dir }}:/prometheus"

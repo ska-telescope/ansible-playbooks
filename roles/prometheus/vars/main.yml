@@ -3,6 +3,12 @@
 
 prometheus_binary_dir: /usr/local/bin
 prometheus_config_dir: /etc/prometheus
+prometheus_data_dir: /prometheus
+
+prometheus_alertmanager_config_dir: /etc/alertmanager
+prometheus_alertmanager_data_dir: /alertmanager
+
+slack_api_url: "https://hooks.slack.com/services/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"
 
 prometheus_global:
   scrape_interval: 15s
@@ -13,7 +19,10 @@ prometheus_remote_write: []
 
 prometheus_remote_read: []
 
-prometheus_alertmanager_config: []
+prometheus_alertmanager_config:
+  - scheme: http
+    static_configs:
+      - targets: ["{{ ansible_fqdn | default(ansible_host) | default('localhost') }}:9093"]
 
 prometheus_scrape_configs:
   - job_name: "prometheus"
@@ -21,10 +30,27 @@ prometheus_scrape_configs:
       - targets:
           - "{{ ansible_fqdn | default(ansible_host) | default('localhost') }}:9090"
 
-  - job_name: "exporters"
+  - job_name: "node"
     static_configs:
       - targets:
           - "{{ ansible_fqdn | default(ansible_host) | default('localhost') }}:9100"
+
+prometheus_record_rules:
+  # The count of CPUs per node, useful for getting CPU time as a percent of total.
+  - record: instance:node_cpus:count
+    expr: count(node_cpu{mode="idle"}) without (cpu,mode)
+
+  # CPU in use by CPU.
+  - record: instance_cpu:node_cpu_not_idle:rate5m
+    expr: sum(rate(node_cpu{mode!="idle"}[5m])) without (mode)
+
+  # CPU in use by mode.
+  - record: instance_mode:node_cpu:rate5m
+    expr: sum(rate(node_cpu[5m])) without (cpu)
+
+  # CPU in use ratio.
+  - record: instance:node_cpu_utilization:ratio
+    expr: sum(rate(node_cpu{mode!="idle"}[5m])) without (mode) / count(node_cpu)
 
 prometheus_alert_rules:
 - alert: Watchdog
@@ -48,7 +74,7 @@ prometheus_alert_rules:
     description: "{% raw %}{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes.{% endraw %}"
     summary: "{% raw %}Instance {{ $labels.instance }} down{% endraw %}"
 - alert: CriticalCPULoad
-  expr: '100 - (avg by (instance) (irate(node_cpu_seconds_total{job="node",mode="idle"}[5m])) * 100) > 96'
+  expr: '100 - (avg by(instance) (irate(node_cpu{mode="idle"}[5m])) * 100) > 80'
   for: 2m
   labels:
     severity: critical
@@ -56,7 +82,7 @@ prometheus_alert_rules:
     description: "{% raw %}{{ $labels.instance }} of job {{ $labels.job }} has Critical CPU load for more than 2 minutes.{% endraw %}"
     summary: "{% raw %}Instance {{ $labels.instance }} - Critical CPU load{% endraw %}"
 - alert: CriticalRAMUsage
-  expr: '(1 - ((node_memory_MemFree_bytes + node_memory_Buffers_bytes + node_memory_Cached_bytes) / node_memory_MemTotal_bytes)) * 100 > 98'
+  expr: '(1 - node_memory_MemAvailable / node_memory_MemTotal) * 100 > 98'
   for: 5m
   labels:
     severity: critical
@@ -64,20 +90,13 @@ prometheus_alert_rules:
     description: "{% raw %}{{ $labels.instance }} has Critical Memory Usage more than 5 minutes.{% endraw %}"
     summary: "{% raw %}Instance {{ $labels.instance }} has Critical Memory Usage{% endraw %}"
 - alert: CriticalDiskSpace
-  expr: 'node_filesystem_free_bytes{mountpoint!~"^/run(/.*|$)",fstype!~"(squashfs|fuse.*)",job="node"} / node_filesystem_size_bytes{job="node"} < 0.1'
+  expr: 'node_filesystem_avail{mountpoint="/",job="node"} / node_filesystem_size{mountpoint="/",job="node"} < 0.8'
   for: 4m
   labels:
     severity: critical
   annotations:
     description: "{% raw %}{{ $labels.instance }} of job {{ $labels.job }} has less than 10% space remaining.{% endraw %}"
     summary: "{% raw %}Instance {{ $labels.instance }} - Critical disk space usage{% endraw %}"
-- alert: RebootRequired
-  expr: "node_reboot_required > 0"
-  labels:
-    severity: warning
-  annotations:
-    description: "{% raw %}{{ $labels.instance }} requires a reboot.{% endraw %}"
-    summary: "{% raw %}Instance {{ $labels.instance }} - reboot required{% endraw %}"
 - alert: ClockSkewDetected
   expr: 'abs(node_timex_offset_seconds) * 1000 > 30'
   for: 2m
@@ -87,3 +106,35 @@ prometheus_alert_rules:
     description: "{% raw %}Clock skew detected on {{ $labels.instance }}. Ensure NTP is configured correctly on this host.{% endraw %}"
     summary: "{% raw %}Instance {{ $labels.instance }} - Clock skew detected{% endraw %}"
 
+# - alert: HostOutOfRamMemory
+#   expr: node_memory_MemAvailable / node_memory_MemTotal * 100 < 10
+#   for: 5m
+#   labels:
+#     severity: warning
+#   annotations:
+#     summary: "Host out of memory (instance {{ $labels.instance }})"
+#     description: "Node memory is filling up (< 10% left)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+# - alert: HostOutOfDiskSpace
+#   expr: (node_filesystem_avail{mountpoint="/"}  * 100) / node_filesystem_size{mountpoint="/"} < 10
+#   for: 5m
+#   labels:
+#     severity: critical
+#   annotations:
+#     summary: "Host out of disk space (instance {{ $labels.instance }})"
+#     description: "Disk is almost full (< 10% left)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+# - alert: HostDiskWillFillIn4Hours
+#   expr: predict_linear(node_filesystem_avail{mountpoint="/"}[1h], 4 * 3600) < 0
+#   for: 5m
+#   labels:
+#     severity: warning
+#   annotations:
+#     summary: "Host disk will fill in 4 hours (instance {{ $labels.instance }})"
+#     description: "Disk will fill in 4 hours at current write rate\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+# - alert: HostHighCpuLoad
+#   expr: 100 - (avg by(instance) (irate(node_cpu{mode="idle"}[5m])) * 100) > 80
+#   for: 5m
+#   labels:
+#     severity: warning
+#   annotations:
+#     summary: "Host high CPU load (instance {{ $labels.instance }})"
+#     description: "CPU load is > 80%\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
