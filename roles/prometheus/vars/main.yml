@@ -34,6 +34,8 @@ prometheus_scrape_configs:
     static_configs:
       - targets:
           - "{{ ansible_fqdn | default(ansible_host) | default('localhost') }}:9100"
+          - "192.168.93.84:9100" #generic-runner machine
+          - "192.168.93.31:9100" #runner-1.engageska-portugal.pt
 
   # - job_name: "gitlab-runner"
   #   static_configs:
