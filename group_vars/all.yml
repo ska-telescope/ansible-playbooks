@@ -66,3 +66,4 @@ install_mysql: 'no'
 
 prometheus_docker_tags: 'v2.16.0'
 prometheus_alertmanager_docker_tags: 'v0.20.0'
+prometheus_bleckbox_exporter_docker_tags: 'v0.16.0'

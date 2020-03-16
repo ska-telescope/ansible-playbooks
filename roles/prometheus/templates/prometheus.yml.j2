@@ -29,3 +29,23 @@ alerting:
 
 scrape_configs:
   {{ prometheus_scrape_configs | to_nice_yaml(indent=2) | indent(2,False) }}
+
+  - job_name: 'blackbox'
+    metrics_path: /probe
+    params:
+      module: [ssh_banner]
+    static_configs:
+      - targets:
+        {{ blackbox_ssh_targets | to_nice_yaml(indent=8) | indent(8,False) }} # Targets to probe
+    relabel_configs:
+      # Ensure port is 22, pass as URL parameter
+      - source_labels: [__address__]
+        regex: (.*?)(:.*)?
+        replacement: ${1}:22
+        target_label: __param_target
+      # Make instance label the target
+      - source_labels: [__param_target]
+        target_label: instance
+      # Actually talk to the blackbox exporter though
+      - target_label: __address__
+        replacement: {{ ansible_fqdn | default(ansible_host) | default('localhost') }}:9115

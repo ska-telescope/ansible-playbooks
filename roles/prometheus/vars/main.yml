@@ -35,22 +35,27 @@ prometheus_scrape_configs:
       - targets:
           - "{{ ansible_fqdn | default(ansible_host) | default('localhost') }}:9100"
 
+  # - job_name: "gitlab-runner"
+  #   static_configs:
+  #     - targets:
+  #         - "192.168.93.31:9252"
+
+blackbox_ssh_targets:
+  - "{{ ansible_fqdn | default(ansible_host) | default('localhost') }}:22" #matteo devenv
+  - "192.168.93.37:22" #ssh skampi pipeline cluster node1
+  - "192.168.93.40:22" #ssh skampi pipeline cluster node2
+  - "192.168.93.74:22" #ssh skampi pipeline cluster node3
+  - "192.168.93.38:22" #ssh skampi pipeline cluster node4
+
 prometheus_record_rules:
-  # The count of CPUs per node, useful for getting CPU time as a percent of total.
-  - record: instance:node_cpus:count
-    expr: count(node_cpu{mode="idle"}) without (cpu,mode)
+  - record: instance:node_cpu:load
+    expr: 100 - (avg by(instance) (irate(node_cpu{mode="idle"}[5m])) * 100)
 
-  # CPU in use by CPU.
-  - record: instance_cpu:node_cpu_not_idle:rate5m
-    expr: sum(rate(node_cpu{mode!="idle"}[5m])) without (mode)
+  - record: instance:node_ram:usage
+    expr: (1 - node_memory_MemAvailable / node_memory_MemTotal) * 100
 
-  # CPU in use by mode.
-  - record: instance_mode:node_cpu:rate5m
-    expr: sum(rate(node_cpu[5m])) without (cpu)
-
-  # CPU in use ratio.
-  - record: instance:node_cpu_utilization:ratio
-    expr: sum(rate(node_cpu{mode!="idle"}[5m])) without (mode) / count(node_cpu)
+  - record: instance:node_fs:disk_space
+    expr: node_filesystem_avail{mountpoint="/",job="node"} / node_filesystem_size{mountpoint="/",job="node"} * 100
 
 prometheus_alert_rules:
 - alert: Watchdog
@@ -73,8 +78,16 @@ prometheus_alert_rules:
   annotations:
     description: "{% raw %}{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes.{% endraw %}"
     summary: "{% raw %}Instance {{ $labels.instance }} down{% endraw %}"
+- alert: SshServiceDown
+  expr: "probe_success == 0"
+  for: 5m
+  labels:
+    severity: critical
+  annotations:
+    description: "{% raw %}{{ $labels.target }} of job {{ $labels.job }} has been down for more than 5 minutes.{% endraw %}"
+    summary: "{% raw %}Ssh Service {{ $labels.target }} down{% endraw %}"
 - alert: CriticalCPULoad
-  expr: '100 - (avg by(instance) (irate(node_cpu{mode="idle"}[5m])) * 100) > 80'
+  expr: 'instance:node_cpu:load > 80'
   for: 2m
   labels:
     severity: critical
@@ -82,7 +95,7 @@ prometheus_alert_rules:
     description: "{% raw %}{{ $labels.instance }} of job {{ $labels.job }} has Critical CPU load for more than 2 minutes.{% endraw %}"
     summary: "{% raw %}Instance {{ $labels.instance }} - Critical CPU load{% endraw %}"
 - alert: CriticalRAMUsage
-  expr: '(1 - node_memory_MemAvailable / node_memory_MemTotal) * 100 > 98'
+  expr: 'instance:node_ram:usage > 98'
   for: 5m
   labels:
     severity: critical
@@ -90,7 +103,7 @@ prometheus_alert_rules:
     description: "{% raw %}{{ $labels.instance }} has Critical Memory Usage more than 5 minutes.{% endraw %}"
     summary: "{% raw %}Instance {{ $labels.instance }} has Critical Memory Usage{% endraw %}"
 - alert: CriticalDiskSpace
-  expr: 'node_filesystem_avail{mountpoint="/",job="node"} / node_filesystem_size{mountpoint="/",job="node"} < 0.2'
+  expr: 'instance:node_fs:disk_space < 20'
   for: 4m
   labels:
     severity: critical

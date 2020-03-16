@@ -15,7 +15,13 @@
   become: yes
 
 - include: server.yml
-
-- include: node_exporter.yml
+  when: mode == "server" or mode == "all"
 
 - include: alert_manager.yml
+  when: mode == "server" or mode == "all"
+
+- include: blackbox_exporter.yml
+  when: mode == "server" or mode == "all"
+
+- include: node_exporter.yml
+  when: mode == "exporter" or mode == "all"
