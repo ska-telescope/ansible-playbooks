@@ -1,0 +1,11 @@
+---
+
+- name: Install Elasticsearch using Docker
+  hosts:
+    - docker-cluster
+  become: yes
+  roles:
+    - role: docker
+    when: docker-absent
+    - role: elasticsearch
+    
