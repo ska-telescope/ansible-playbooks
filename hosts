@@ -15,5 +15,5 @@ localhost ansible_user=$USER ansible_connection=local
 192.168.93.26 ansible_user=centos node_role=worker hostname=k8s-node-2
 
 [elastic]
-192.168.93.36 ansible_user=ubuntu 
+#192.168.93.36 ansible_user=ubuntu 
 #192.168.93.57 ansible_user=ubuntu 

@@ -34,7 +34,7 @@ resources:
     properties:
       pool: ext_net
 
-  association:
+  association1:
     type: OS::Nova::FloatingIPAssociation
     properties:
       floating_ip: { get_resource: FloatingIP1 }
@@ -45,8 +45,33 @@ resources:
     properties:
       pool: ext_net
 
-  association:
+  association2:
     type: OS::Nova::FloatingIPAssociation
     properties:
       floating_ip: { get_resource: FloatingIP2 }
       server_id: { get_resource: ElasticsearchNode2}
+
+  ElasticsearchNode3:
+    type: OS::Nova::Server
+    content:
+      ansible:
+        file: '../../deploy_elasticsearch.yaml'
+        extra-vars: ""
+    properties:
+      image: 'Ubuntu 18.04 LTS Jan/2020'
+      flavor: r1.medium
+      key_name: adebeer-sac
+      networks:
+        - network: int_net
+
+  FloatingIP3:
+    type: OS::Nova::FloatingIP
+    properties:
+      pool: ext_net
+
+  association3:
+    type: OS::Nova::FloatingIPAssociation
+    properties:
+      floating_ip: { get_resource: FloatingIP3 }
+      server_id: { get_resource: ElasticsearchNode3}
+
