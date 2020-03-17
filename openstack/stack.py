@@ -11,7 +11,7 @@ import datetime
 import sys
 from threading import Thread
 
-print("Username: " + os.environ["username"] + " & Password: " + os.environ["password"] + " & Project name: " + os.environ["project_name"])
+print("Username: " + os.environ["username"] + " & Password: " + os.environ["password"] + " & Project name: " + os.environ["project_name"] + " & OpenStack Endpoint: " + os.environ["auth_url"])
 
 start_time = datetime.datetime.now()
 
