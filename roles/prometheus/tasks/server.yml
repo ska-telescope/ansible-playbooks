@@ -48,11 +48,6 @@
   when:
     - prometheus_alert_rules != []
 
-# - name: Check alerting rules file
-#   shell: |
-#     go get github.com/prometheus/prometheus/cmd/promtool
-#     promtool check rules {{ prometheus_config_dir }}/rules/ansible_managed.rules
-
 - name: Create record rules file
   template:
     src: "{{playbook_dir}}/roles/prometheus/templates/record.rules.j2"
@@ -63,15 +58,16 @@
   when:
     - prometheus_record_rules != []
 
-# - name: Check record rules file
-#   shell: |
-#     go get github.com/prometheus/prometheus/cmd/promtool
-#     promtool check rules {{ prometheus_config_dir }}/rules/record.rules
-
 - name: Pull prometheus image {{prometheus_docker_tags}}
   docker_image:
     name: prom/prometheus
     tag: "{{prometheus_docker_tags}}"
+
+- name: Setup config folder
+  shell: |
+    [ ! -f {{ k8s_certificate_authority }} ] || cp -rf {{ k8s_certificate_authority }} {{ prometheus_config_dir }}
+    [ ! -f {{ k8s_client_certificate }} ] || cp -rf {{ k8s_client_certificate }} {{ prometheus_config_dir }}
+    [ ! -f {{ k8s_client_key }} ] || cp -rf {{ k8s_client_key }} {{ prometheus_config_dir }}
 
 - name: Start prometheus container
   docker_container:
