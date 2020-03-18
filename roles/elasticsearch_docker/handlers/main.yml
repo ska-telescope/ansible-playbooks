@@ -1,0 +1,8 @@
+---
+- name: restart elasticsearch
+  become: true
+  systemd:
+    name: "{{ elasticsearch_service }}.service"
+    daemon_reload: yes
+    state: restarted
+  listen: restart elasticsearch

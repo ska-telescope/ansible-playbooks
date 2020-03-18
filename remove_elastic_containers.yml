@@ -1,6 +1,10 @@
 - name: Erase elastic
   hosts: elastic
   tasks:
+    - name: Display all variables
+      debug:
+        # var: hostvars[inventory_hostname]
+        msg: Hosts {{ ansible_play_hosts }}
     - name: Tear down existing services
       docker_container:
         name: elasticsearch

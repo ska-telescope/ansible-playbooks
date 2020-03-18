@@ -1,0 +1,55 @@
+---
+- name: Create elasticsearch ca pem
+  become: true
+  copy:
+    dest: "{{ elasticsearch_path }}/config/root-ca.pem"
+    content: "{{ elasticsearch_tls_ca_content }}"
+    mode: 0640
+    owner: 1000
+    group: 1000
+  notify: restart elasticsearch
+  when: elasticsearch_tls_ca_content is defined
+
+- name: Create elasticsearch node pem
+  become: true
+  copy:
+    dest: "{{ elasticsearch_path }}/config/node.pem"
+    content: "{{ elasticsearch_tls_node_content }}"
+    mode: 0640
+    owner: 1000
+    group: 1000
+  notify: restart elasticsearch
+  when: elasticsearch_tls_node_content is defined
+
+- name: Create elasticsearch node-key pem
+  become: true
+  copy:
+    dest: "{{ elasticsearch_path }}/config/node-key.pem"
+    content: "{{ elasticsearch_tls_node_key_content }}"
+    mode: 0640
+    owner: 1000
+    group: 1000
+  notify: restart elasticsearch
+  when: elasticsearch_tls_node_key_content is defined
+
+- name: Create elasticsearch admin pem
+  become: true
+  copy:
+    dest: "{{ elasticsearch_path }}/config/admin.pem"
+    content: "{{ elasticsearch_tls_admin_content }}"
+    mode: 0640
+    owner: 1000
+    group: 1000
+  notify: restart elasticsearch
+  when: elasticsearch_tls_admin_content is defined
+
+- name: Create elasticsearch admin-key pem
+  become: true
+  copy:
+    dest: "{{ elasticsearch_path }}/config/admin-key.pem"
+    content: "{{ elasticsearch_tls_admin_key_content }}"
+    mode: 0640
+    owner: 1000
+    group: 1000
+  notify: restart elasticsearch
+  when: elasticsearch_tls_admin_key_content is defined

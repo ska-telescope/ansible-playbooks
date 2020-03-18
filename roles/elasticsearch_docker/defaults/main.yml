@@ -1,0 +1,35 @@
+---
+elasticsearch_args: []
+elasticsearch_cluster_name: "elasticsearch"
+elasticsearch_config:
+  discovery.zen.minimum_master_nodes: 2
+  action.auto_create_index: false
+  indices.cache.cleanup_interval: "1m"
+  network.host: "0.0.0.0"
+  transport.host: "0.0.0.0"
+  bootstrap.memory_lock: true
+  node.master: true
+  node.data: true
+  node.ingest: true
+  discovery.zen.ping.unicast.hosts: "{{ ansible_play_hosts }}"
+elasticsearch_enabled: true
+elasticsearch_gid: 1000
+elasticsearch_image: elasticsearch:7.6.1
+elasticsearch_jvm_heapsize: "{{ ansible_memtotal_mb // 2}}m"
+elasticsearch_logs_symlink_enabled: true
+elasticsearch_node_name: "{{ inventory_hostname }}"
+elasticsearch_path: "/opt/elasticsearch"
+elasticsearch_service: "elasticsearch"
+elasticsearch_uid: 1000
+
+elasticsearch_shm_size: 64M
+elasticsearch_ports:
+  - 9200:9200
+  - 9300:9300
+
+elasticsearch_volumes:
+  - "{{ elasticsearch_path }}/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:Z"
+  - "{{ elasticsearch_path }}/config/jvm.options:/usr/share/elasticsearch/config/jvm.options:Z"
+  - "{{ elasticsearch_path }}/config/log4j2.properties:/usr/share/elasticsearch/config/log4j2.properties:Z"
+  - "{{ elasticsearch_path }}/data:/usr/share/elasticsearch/data:Z"
+  - "{{ elasticsearch_path }}/logs:/usr/share/elasticsearch/logs:Z"

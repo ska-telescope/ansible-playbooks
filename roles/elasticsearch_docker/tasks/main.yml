@@ -1,0 +1,118 @@
+---
+- name: Create elasticsearch config directory
+  become: true
+  file:
+    path: "{{ elasticsearch_path }}/config"
+    state: directory
+    mode: 0775
+    owner: 1000
+    group: 1000
+
+- name: Create elasticsearch config/scripts directory
+  become: true
+  file:
+    path: "{{ elasticsearch_path }}/scripts"
+    state: directory
+    mode: 0775
+    owner: 1000
+    group: 1000
+
+- name: Create elasticsearch data directory
+  become: true
+  file:
+    path: "{{ elasticsearch_path }}/data"
+    state: directory
+    mode: 0775
+    owner: 1000
+    group: 1000
+
+- name: Create elasticsearch logs directory
+  become: true
+  file:
+    path: "{{ elasticsearch_path }}/logs"
+    state: directory
+    mode: 0775
+    owner: 1000
+    group: 1000
+
+- name: Create elasticsearch logs symlink
+  become: true
+  file:
+    dest: "/var/log/elasticsearch"
+    src: "{{ elasticsearch_path }}/logs"
+    # mode: 0775
+    # owner: 1000
+    # group: 1000
+    state: link
+  when: elasticsearch_logs_symlink_enabled | bool
+
+- name: Create elasticsearch config file
+  become: true
+  template:
+    dest: "{{ elasticsearch_path }}/config/elasticsearch.yml"
+    src: "templates/elasticsearch.yml.j2"
+    mode: 0644
+    owner: 1000
+    group: 1000
+  notify: restart elasticsearch
+
+- name: Create elasticsearch jvm config file
+  become: true
+  template:
+    dest: "{{ elasticsearch_path }}/config/jvm.options"
+    src: "templates/jvm.options.j2"
+    mode: 0644
+    owner: 1000
+    group: 1000
+  notify: restart elasticsearch
+
+- name: Create elasticsearch log4j2 config file
+  become: true
+  template:
+    dest: "{{ elasticsearch_path }}/config/log4j2.properties"
+    src: "templates/log4j2.properties.j2"
+    mode: 0644
+    owner: 1000
+    group: 1000
+  notify: restart elasticsearch
+
+- name: Include open distro certs task
+  include: open_distro_certs.yml
+
+- name: Create elasticsearch container
+  become: true
+  docker_container:
+    name: "{{ elasticsearch_service }}"
+    capabilities:
+      - IPC_LOCK
+    command: "{{ elasticsearch_args }}"
+    detach: true
+    env:
+      ES_JAVA_OPTS: "-Xms{{ elasticsearch_jvm_heapsize }} -Xmx{{ elasticsearch_jvm_heapsize }}"
+    image: "{{ elasticsearch_image }}"
+    network_mode: host
+    ports: "{{ elasticsearch_ports }}"
+    shm_size: "{{ elasticsearch_shm_size }}"
+    state: present
+    ulimits:
+      - "memlock:-1:-1"
+      - "nofile:65536:65536"
+    volumes: "{{ elasticsearch_volumes }}"
+  notify: restart elasticsearch
+
+- name: Create elasticsearch service file
+  become: true
+  template:
+    dest: "/etc/systemd/system/{{ elasticsearch_service }}.service"
+    src: "templates/elasticsearch.service.j2"
+    mode: 0664
+  notify: restart elasticsearch
+  when: ansible_service_mgr == 'systemd'
+
+- name: Enable elasticsearch service
+  become: true
+  service:
+    name: "{{ elasticsearch_service }}.service"
+    state: started
+    enabled: yes
+  when: elasticsearch_enabled | bool
