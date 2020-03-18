@@ -1,11 +1,34 @@
 ---
 
-- name: Install Elasticsearch using Docker
-  hosts:
-    - docker-cluster
-  become: yes
-  roles:
-    - role: docker
-    when: docker-absent
-    - role: elasticsearch
-    
+- name: Start ElasticDB
+  hosts: elastic
+  tasks:
+  - name: Create a volume
+    docker_volume:
+      name: elastic_volume
+  - name: Create a network
+    docker_network:
+      name: network_one
+  - name: Elastic DB UP
+    docker_container:
+      name: db_1
+      domainname: db_1
+      image: docker.elastic.co/elasticsearch/elasticsearch:7.6.1
+      volumes:
+        - "elastic_volume:/usr/share/elasticsearch/data"
+      ports:
+        - "9200:9200"
+        - "9300:9300"
+      env:
+        - discovery.zen.minimum_master_nodes: 1
+        - action.auto_create_index: false
+        - indices.cache.cleanup_interval: "1m"
+        - network.host: "0.0.0.0"
+        - transport.host: "0.0.0.0"
+        - bootstrap.memory_lock: true
+        - node.master: true
+        - node.data: true
+        - node.ingest: true
+      networks:
+        - name: network_one
+       

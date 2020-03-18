@@ -1,0 +1,4 @@
+- name: elastic
+  hosts: elastic
+  roles: 
+    - elasticsearch_docker

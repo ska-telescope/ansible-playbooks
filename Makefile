@@ -132,6 +132,14 @@ skampi:  ## Ansible playbook for install and launching Minikube
 	 --extra-vars='{"use_driver": false, "use_calico": $(USE_CALICO), "use_nginx": $(USE_NGINX), "minikube_disk_size": $(FORMATTED_DISK_SIZE), "minikube_memory": $(V_MEMORY), "minikube_cpus": $(V_CPUS)}' \
 	 deploy_skampi.yml
 
+esup:
+	ansible-playbook -i hosts elastic_test.yml -vv
+
+esclean:  
+	ansible-playbook -i hosts remove_elastic_containers.yml
+
+elastic: esclean esup  ## Ansible playbook for removing and deploying elasticsearch db cluster - testing only
+
 help:  ## show this help.
 	@echo "make targets:"
 	@grep -E '^[0-9a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ": .*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
