@@ -1,0 +1,7 @@
+- name: Erase elastic
+  hosts: elastic
+  tasks:
+    - name: Tear down existing services
+      docker_container:
+        name: elasticsearch
+        state: absent
