@@ -23,5 +23,8 @@
 - include: blackbox_exporter.yml
   when: mode == "server" or mode == "all"
 
+- include: grafana.yml
+  when: mode == "server" or mode == "all"
+
 - include: node_exporter.yml
   when: mode == "exporter" or mode == "all"

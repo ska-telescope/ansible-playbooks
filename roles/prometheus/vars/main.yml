@@ -8,13 +8,16 @@ prometheus_data_dir: /prometheus
 prometheus_alertmanager_config_dir: /etc/alertmanager
 prometheus_alertmanager_data_dir: /alertmanager
 
+grafana_provisioning_config_dir: /etc/grafana/provisioning/datasources
+grafana_data: /var/lib/grafana
+
 slack_api_url: "https://hooks.slack.com/services/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"
 
 k8s_api_server: ""
-k8s_certificate_authority: "ca.crt"
-k8s_client_certificate: "client.crt"
-k8s_client_key: "client.key"
-#k8s_bearer_token: "ZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNklpSjkuZXlKcGMzTWlPaUpyZFdKbGNtNWxkR1Z6TDNObGNuWnBZMlZoWTJOdmRXNTBJaXdpYTNWaVpYSnVaWFJsY3k1cGJ5OXpaWEoyYVdObFlXTmpiM1Z1ZEM5dVlXMWxjM0JoWTJVaU9pSmtaV1poZFd4MElpd2lhM1ZpWlhKdVpYUmxjeTVwYnk5elpYSjJhV05sWVdOamIzVnVkQzl6WldOeVpYUXVibUZ0WlNJNkluQnliMjFsZEdobGRYTXRiM0JsY21GMGIzSXRkRzlyWlc0dGFIZHphMjRpTENKcmRXSmxjbTVsZEdWekxtbHZMM05sY25acFkyVmhZMk52ZFc1MEwzTmxjblpwWTJVdFlXTmpiM1Z1ZEM1dVlXMWxJam9pY0hKdmJXVjBhR1YxY3kxdmNHVnlZWFJ2Y2lJc0ltdDFZbVZ5Ym1WMFpYTXVhVzh2YzJWeWRtbGpaV0ZqWTI5MWJuUXZjMlZ5ZG1salpTMWhZMk52ZFc1MExuVnBaQ0k2SWpOaFkyRXdOR0V3TFRVM01tSXROR1kyWWkwNE9XWTJMVGhoWldaak5EUTVNVGhpT1NJc0luTjFZaUk2SW5ONWMzUmxiVHB6WlhKMmFXTmxZV05qYjNWdWREcGtaV1poZFd4ME9uQnliMjFsZEdobGRYTXRiM0JsY21GMGIzSWlmUS5xclFwZFpvUDhwUkhJeWtXX3JWbFZtd3Z4cmRwdFh2M3VoTTF6b0dudlh4bnlVaUJ2VkIyVVo4LWY0ZkF5dk1vVmlrbmJXNGEyMnY3ZUNSVkxVbGRtN1Y1UklHcXo0WEJvc25YT2VWWmJGSEdMTGJiYlpjS3Y3ZkIydzlJM05tbGlZZnBQNTlXdy1Yd2RsbGpQa293M050MUd2RHduamV1cnkxMmZ0SFRoOG1qOFRKV2l6Xy1ic3hfZlI1Z3VqcldfWUtXdXVOSEg4REN3b3NJdTlQUXdYaDFaNHFKSkZuU3U0V1l1anQ1V2Y4Ykt4VzY5cUFrTkotQ2t2QnNlanZYRkF5RUJNN0ItVkZDYUp3N2I3c0RGdE1tSW03WkhFRVRlUEF2S0U5dktVTmo2X09MenBNQlVTZDNCcHJNNDl2X1o4YTVzaThYTlc3ZTVJamZHTVZzQkE="
+k8s_certificate_authority: "/home/ubuntu/.minikube/ca.crt"
+k8s_client_certificate: "/home/ubuntu/.minikube/client.crt"
+k8s_client_key: "/home/ubuntu/.minikube/client.key"
+k8s_bearer_token: "ZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNklpSjkuZXlKcGMzTWlPaUpyZFdKbGNtNWxkR1Z6TDNObGNuWnBZMlZoWTJOdmRXNTBJaXdpYTNWaVpYSnVaWFJsY3k1cGJ5OXpaWEoyYVdObFlXTmpiM1Z1ZEM5dVlXMWxjM0JoWTJVaU9pSmtaV1poZFd4MElpd2lhM1ZpWlhKdVpYUmxjeTVwYnk5elpYSjJhV05sWVdOamIzVnVkQzl6WldOeVpYUXVibUZ0WlNJNkluQnliMjFsZEdobGRYTXRiM0JsY21GMGIzSXRkRzlyWlc0dGFIZHphMjRpTENKcmRXSmxjbTVsZEdWekxtbHZMM05sY25acFkyVmhZMk52ZFc1MEwzTmxjblpwWTJVdFlXTmpiM1Z1ZEM1dVlXMWxJam9pY0hKdmJXVjBhR1YxY3kxdmNHVnlZWFJ2Y2lJc0ltdDFZbVZ5Ym1WMFpYTXVhVzh2YzJWeWRtbGpaV0ZqWTI5MWJuUXZjMlZ5ZG1salpTMWhZMk52ZFc1MExuVnBaQ0k2SWpOaFkyRXdOR0V3TFRVM01tSXROR1kyWWkwNE9XWTJMVGhoWldaak5EUTVNVGhpT1NJc0luTjFZaUk2SW5ONWMzUmxiVHB6WlhKMmFXTmxZV05qYjNWdWREcGtaV1poZFd4ME9uQnliMjFsZEdobGRYTXRiM0JsY21GMGIzSWlmUS5xclFwZFpvUDhwUkhJeWtXX3JWbFZtd3Z4cmRwdFh2M3VoTTF6b0dudlh4bnlVaUJ2VkIyVVo4LWY0ZkF5dk1vVmlrbmJXNGEyMnY3ZUNSVkxVbGRtN1Y1UklHcXo0WEJvc25YT2VWWmJGSEdMTGJiYlpjS3Y3ZkIydzlJM05tbGlZZnBQNTlXdy1Yd2RsbGpQa293M050MUd2RHduamV1cnkxMmZ0SFRoOG1qOFRKV2l6Xy1ic3hfZlI1Z3VqcldfWUtXdXVOSEg4REN3b3NJdTlQUXdYaDFaNHFKSkZuU3U0V1l1anQ1V2Y4Ykt4VzY5cUFrTkotQ2t2QnNlanZYRkF5RUJNN0ItVkZDYUp3N2I3c0RGdE1tSW03WkhFRVRlUEF2S0U5dktVTmo2X09MenBNQlVTZDNCcHJNNDl2X1o4YTVzaThYTlc3ZTVJamZHTVZzQkE="
 k8s_username: minikube
 
 prometheus_global:
@@ -43,6 +46,20 @@ prometheus_scrape_configs:
           - "{{ ansible_fqdn | default(ansible_host) | default('localhost') }}:9100"
           - "192.168.93.84:9100" #generic-runner machine
           - "192.168.93.31:9100" #runner-1.engageska-portugal.pt
+          - "192.168.93.12:9100" #nexus
+          - "192.168.93.200:9100" #server3-1
+          - "192.168.93.201:9100" #server3-2
+          - "192.168.93.202:9100" #server3-3
+          - "192.168.93.203:9100" #server2-1
+          - "192.168.93.204:9100" #server2-2
+          - "192.168.93.205:9100" #server2-3
+          - "192.168.93.206:9100" #server2-4
+          - "192.168.93.207:9100" #server2-5
+          - "192.168.93.208:9100" #controller1-1
+          - "192.168.93.209:9100" #controller1-2
+          - "192.168.93.210:9100" #storage2-1
+          - "192.168.93.211:9100" #storage1-1
+          - "192.168.93.212:9100" #storage1-2
 
   - job_name: "gitlab-runner"
     static_configs:
