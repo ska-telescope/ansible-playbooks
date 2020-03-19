@@ -9,3 +9,25 @@ The prometheus playbook is now composed by the following tasks:
 The variable file include an example configuration made for testing purpose which includes: 
 * various scrape configs (a scrape config represent an endpoint which usually corresponding to a single process where prometheus collects information). Scrape configs are grouped by job, that is a collection of instances with the same purpose. 
 * alert rules, recording rules and all the necessary information that goes into the prometheus server. 
+
+# Usage
+Call the playbook with the following command to install the prometheus server (which includes the db, the alert manager, the black box exporter and grafana): 
+
+```
+    ansible-playbook deploy_prometheus.yaml --extra-vars "mode='server'" -i hosts
+```
+
+Call the playbook with the following command to install the node-exporter: 
+
+```
+    ansible-playbook deploy_prometheus.yaml --extra-vars "mode='exporter'" -i hosts
+```
+
+Call the playbook with the following command to install both server and exporter: 
+
+```
+    ansible-playbook deploy_prometheus.yaml --extra-vars -i hosts
+```
+
+Remember to check the variable file available in roles/prometheus/vars before calling the playbook. 
+
