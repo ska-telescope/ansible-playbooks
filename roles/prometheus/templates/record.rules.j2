@@ -1,0 +1,6 @@
+{{ ansible_managed | comment }}
+
+groups:
+- name: ansible managed record rules
+  rules:
+  {{ prometheus_record_rules | to_nice_yaml(indent=2) | indent(2,False) }}

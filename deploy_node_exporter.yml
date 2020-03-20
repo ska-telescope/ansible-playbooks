@@ -1,7 +1,7 @@
 ---
 
 - name: deploy_node_exporter
-  hosts: test
+  hosts: nodexporter
   become: true
   become_method: sudo
   become_flags: '-E -S -n'

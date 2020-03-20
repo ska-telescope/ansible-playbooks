@@ -1,0 +1,85 @@
+---
+# tasks file for prometheus
+
+- name: ensure Prometheus data directory
+  file:
+    path: '{{ prometheus_data_dir }}'
+    state: directory
+    mode: 0766
+    owner: "{{ localuser }}"
+    group: "{{ localuser }}"
+  become: yes
+
+- name: ensure Prometheus configuration directory
+  file:
+    path: '{{ prometheus_config_dir }}'
+    state: directory
+    mode: 0755
+    owner: "{{ localuser }}"
+    group: "{{ localuser }}"
+  become: yes
+
+- name: ensure Prometheus rules configuration directory
+  file:
+    path: '{{ prometheus_config_dir }}/rules/'
+    state: directory
+    mode: 0755
+    owner: "{{ localuser }}"
+    group: "{{ localuser }}"
+  become: yes
+
+- name: Generate Prometheus configuration
+  become: true
+  template:
+    src: "{{playbook_dir}}/roles/prometheus/templates/prometheus.yml.j2"
+    dest: "{{ prometheus_config_dir }}/prometheus.yml"
+    force: true
+    owner: "{{ localuser }}"
+    group: "{{ localuser }}"
+    mode: 0755
+
+- name: Create alerting rules file
+  template:
+    src: "{{playbook_dir}}/roles/prometheus/templates/alert.rules.j2"
+    dest: "{{ prometheus_config_dir }}/rules/ansible_managed.rules"
+    owner: "{{ localuser }}"
+    group: "{{ localuser }}"
+    mode: 0755
+  when:
+    - prometheus_alert_rules != []
+
+- name: Create record rules file
+  template:
+    src: "{{playbook_dir}}/roles/prometheus/templates/record.rules.j2"
+    dest: "{{ prometheus_config_dir }}/rules/record.rules"
+    owner: "{{ localuser }}"
+    group: "{{ localuser }}"
+    mode: 0755
+  when:
+    - prometheus_record_rules != []
+
+- name: Pull prometheus image {{prometheus_docker_tags}}
+  docker_image:
+    name: prom/prometheus
+    tag: "{{prometheus_docker_tags}}"
+
+- name: Setup config folder
+  shell: |
+    [ ! -f {{ k8s_certificate_authority }} ] || cp -rf {{ k8s_certificate_authority }} {{ prometheus_config_dir }}
+    [ ! -f {{ k8s_client_certificate }} ] || cp -rf {{ k8s_client_certificate }} {{ prometheus_config_dir }}
+    [ ! -f {{ k8s_client_key }} ] || cp -rf {{ k8s_client_key }} {{ prometheus_config_dir }}
+
+- name: Start prometheus container
+  docker_container:
+    name: prometheus
+    image: "prom/prometheus:{{prometheus_docker_tags}}"
+    state: started
+    user: root
+    restart: yes
+    restart_policy: on-failure
+    ports:
+     - "9090:9090"
+    volumes:
+      - "{{ prometheus_config_dir }}:/etc/prometheus"
+      - "/etc/hosts:/etc/hosts"
+      - "{{ prometheus_data_dir }}:/prometheus"

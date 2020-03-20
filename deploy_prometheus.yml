@@ -1,0 +1,13 @@
+---
+
+- name: deploy_prometheus_server
+  hosts: prometheus
+  vars:
+    mode: "all"
+  become: true
+  become_method: sudo
+  become_flags: '-E -S -n'
+  roles:
+    - updatehosts
+    - docker
+    - prometheus

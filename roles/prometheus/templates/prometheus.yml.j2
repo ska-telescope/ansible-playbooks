@@ -1,0 +1,93 @@
+#jinja2: trim_blocks: True, lstrip_blocks: True
+{{ ansible_managed | comment }}
+# http://prometheus.io/docs/operating/configuration/
+
+global:
+  {{ prometheus_global | to_nice_yaml(indent=2) | indent(2, False) }}
+  external_labels:
+    monitor: 'codelab-monitor'
+
+{% if prometheus_remote_write != [] %}
+remote_write:
+  {{ prometheus_remote_write | to_nice_yaml(indent=2) | indent(2, False) }}
+{% endif %}
+
+{% if prometheus_remote_read != [] %}
+remote_read:
+  {{ prometheus_remote_read | to_nice_yaml(indent=2) | indent(2, False) }}
+{% endif %}
+
+rule_files:
+  - {{ prometheus_config_dir }}/rules/*.rules
+
+{% if prometheus_alertmanager_config | length > 0 %}
+alerting:
+  alertmanagers:
+  {{ prometheus_alertmanager_config | to_nice_yaml(indent=2) | indent(2,False) }}
+  alert_relabel_configs: []
+{% endif %}
+
+scrape_configs:
+  {{ prometheus_scrape_configs | to_nice_yaml(indent=2) | indent(2,False) }}
+
+  - job_name: 'blackbox'
+    metrics_path: /probe
+    params:
+      module: [ssh_banner]
+    static_configs:
+      - targets:
+        {{ blackbox_ssh_targets | to_nice_yaml(indent=8) | indent(8,False) }} # Targets to probe
+    relabel_configs:
+      # Ensure port is 22, pass as URL parameter
+      - source_labels: [__address__]
+        regex: (.*?)(:.*)?
+        replacement: ${1}:22
+        target_label: __param_target
+      # Make instance label the target
+      - source_labels: [__param_target]
+        target_label: instance
+      # Actually talk to the blackbox exporter though
+      - target_label: __address__
+        replacement: {{ ansible_fqdn | default(ansible_host) | default('localhost') }}:9115
+
+{% if k8s_api_server | length > 0 %}
+  - job_name: 'kubernetes-apiservers'
+    scheme: https
+    kubernetes_sd_configs:
+      - api_server: "{{ k8s_api_server }}"
+        role: endpoints
+        # bearer_token: {{ k8s_bearer_token }}
+        basic_auth:
+          username: {{k8s_username}}
+        tls_config:
+          ca_file: /etc/prometheus/ca.crt
+          cert_file: /etc/prometheus/client.crt
+          key_file:  /etc/prometheus/client.key
+          insecure_skip_verify: true
+    relabel_configs:
+    - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+      action: keep
+      regex: default;kubernetes;https
+
+  - job_name: 'k8s_pod'
+    kubernetes_sd_configs:
+      - api_server: "{{ k8s_api_server }}"
+        role: pod
+        # bearer_token: {{ k8s_bearer_token }}
+        basic_auth:
+          username: {{k8s_username}}
+        tls_config:
+          ca_file: /etc/prometheus/ca.crt
+          cert_file: /etc/prometheus/client.crt
+          key_file:  /etc/prometheus/client.key
+          insecure_skip_verify: true
+    relabel_configs:
+    - action: labelmap
+      regex: __meta_kubernetes_pod_label_(.+)
+    - source_labels: [__meta_kubernetes_namespace]
+      action: replace
+      target_label: kubernetes_namespace
+    - source_labels: [__meta_kubernetes_pod_name]
+      action: replace
+      target_label: kubernetes_pod_name
+{% endif %}

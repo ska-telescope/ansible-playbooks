@@ -63,3 +63,8 @@ docker_compose_version: '1.23.2'
 #vscode version 1.30
 start_mysql_server: 'no'
 install_mysql: 'no'
+
+prometheus_docker_tags: 'v2.16.0'
+prometheus_alertmanager_docker_tags: 'v0.20.0'
+prometheus_bleckbox_exporter_docker_tags: 'v0.16.0'
+grafana_docker_tags: '6.6.2'
