@@ -1,0 +1,50 @@
+
+
+- name: Ensure grafana provisioning directory
+  file:
+    path: '{{ grafana_provisioning_config_dir }}'
+    state: directory
+    mode: 0755
+    owner: "{{ localuser }}"
+    group: "{{ localuser }}"
+  become: yes
+
+
+- name: Ensure grafana data directory
+  file:
+    path: '{{ grafana_data }}'
+    state: directory
+    mode: 0755
+    owner: "{{ localuser }}"
+    group: "{{ localuser }}"
+  become: yes
+
+- name: Generate Prometheus datasource on grafana
+  become: true
+  template:
+    src: "{{playbook_dir}}/roles/prometheus/templates/datasource.yaml.j2"
+    dest: "{{ grafana_provisioning_config_dir }}/datasource.yaml"
+    force: true
+    owner: "{{ localuser }}"
+    group: "{{ localuser }}"
+    mode: 0755
+
+- name: Pull grafana image {{grafana_docker_tags}}
+  docker_image:
+    name: grafana/grafana
+    tag: "{{grafana_docker_tags}}"
+
+- name: Start grafana container
+  docker_container:
+    name: grafana
+    image: "grafana/grafana:{{grafana_docker_tags}}"
+    state: started
+    user: root
+    restart: yes
+    restart_policy: on-failure
+    ports:
+     - "3000:3000"
+    volumes:
+      - "{{ grafana_provisioning_config_dir }}:/etc/grafana/provisioning/datasources"
+      - "{{ grafana_data }}:/var/lib/grafana"
+      - "/etc/hosts:/etc/hosts"

@@ -1,2 +1,30 @@
 ---
 # tasks file for prometheus
+
+- name: Install dependencies
+  apt:
+    name:
+        - python3-pip
+    state: latest
+    force: yes 
+    update_cache: yes
+  become: yes
+
+- pip:
+    name: docker-py
+  become: yes
+
+- include: server.yml
+  when: mode == "server" or mode == "all"
+
+- include: alert_manager.yml
+  when: mode == "server" or mode == "all"
+
+- include: blackbox_exporter.yml
+  when: mode == "server" or mode == "all"
+
+- include: grafana.yml
+  when: mode == "server" or mode == "all"
+
+- include: node_exporter.yml
+  when: mode == "exporter" or mode == "all"
