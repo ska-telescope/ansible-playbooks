@@ -67,6 +67,13 @@ prometheus_scrape_configs:
           - "192.168.93.31:9252" # gitlab-docker-runner-1
           - "192.168.93.84:9252" # generic-runner
 
+  - job_name: "elastic"
+    static_configs:
+      - targets:
+          - "192.168.93.36:9114" 
+          - "192.168.93.115:9114" 
+          - "192.168.93.82:9114" 
+
   - job_name: "kube-state-metrics"
     static_configs:
       - targets:
