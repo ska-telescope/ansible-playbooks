@@ -10,6 +10,11 @@ TimeoutSec=0
 RestartSec=2
 Restart=always
 
+# Environment variables inherited from the playbook for Minikube
+{% for var_name, var_value in minikube_environment_vars.items() %}
+Environment="{{ var_name }}={{ var_value }}"
+{% endfor %}
+
 # Note that StartLimit* options were moved from "Service" to "Unit" in systemd 229.
 # Both the old, and new location are accepted by systemd 229 and up, so using the old location
 # to make them work for either version of systemd.

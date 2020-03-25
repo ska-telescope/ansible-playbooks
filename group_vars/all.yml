@@ -11,7 +11,7 @@ kubectl_version: 'v1.15.0'
 kvm2_driver_version: 'v1.1.1'
 minikube_version: 'v1.2.0'
 helm_version: v2.16.1
-calico_version: v3.7
+calico_version: v3.9
 minikube_disk_size: 32g
 minikube_memory: 8192
 minikube_cpus: 4
@@ -43,10 +43,6 @@ minikube_hyperkit_driver_url: '{{ minikube_mirror }}/{{ minikube_version }}/{{ m
 kubectl_name: kubectl
 kubectl_mirror: https://storage.googleapis.com/kubernetes-release/release
 
-# Calico vars
-calico_etcd_url: 'https://docs.projectcalico.org/{{ calico_version }}/getting-started/kubernetes/installation/hosted/etcd.yaml'
-calico_resource_yaml: 'https://docs.projectcalico.org/{{ calico_version }}/getting-started/kubernetes/installation/hosted/calico.yaml'
-
 # Helm vars
 helm_name: helm
 helm_mirror: https://kubernetes-helm.storage.googleapis.com
@@ -68,3 +64,10 @@ prometheus_docker_tags: 'v2.16.0'
 prometheus_alertmanager_docker_tags: 'v0.20.0'
 prometheus_bleckbox_exporter_docker_tags: 'v0.16.0'
 grafana_docker_tags: '6.6.2'
+
+# Environment variables to pass into Minikube deployment
+# use for http_proxy requirements
+minikube_environment_vars: {}
+  # http_proxy: http://my.proxy.server:8888
+  # https_proxy: http://my.proxy.server:8888
+  # no_proxy: 1.2.3.4,10.96.0.0/12
