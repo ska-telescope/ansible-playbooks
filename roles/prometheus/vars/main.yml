@@ -88,13 +88,13 @@ blackbox_ssh_targets:
 
 prometheus_record_rules:
   - record: instance:node_cpu:load
-    expr: 100 - (avg by(instance) (irate(node_cpu{mode="idle"}[5m])) * 100)
+    expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)
 
   - record: instance:node_ram:usage
-    expr: (1 - node_memory_MemAvailable / node_memory_MemTotal) * 100
+    expr: (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100
 
   - record: instance:node_fs:disk_space
-    expr: node_filesystem_avail{mountpoint="/",job="node"} / node_filesystem_size{mountpoint="/",job="node"} * 100
+    expr: node_filesystem_avail_bytes{mountpoint="/",job="node"} / node_filesystem_size_bytes{mountpoint="/",job="node"} * 100
 
 prometheus_alert_rules:
 - alert: Watchdog

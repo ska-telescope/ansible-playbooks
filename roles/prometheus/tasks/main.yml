@@ -1,19 +1,21 @@
 ---
 # tasks file for prometheus
 
-- name: Install dependencies
-  apt:
-    name:
-        - python3-pip
-    state: latest
-    force: yes 
-    update_cache: yes
-  become: yes
+- name: Download get-pip.py
+  get_url:
+    url: https://bootstrap.pypa.io/get-pip.py
+    dest: /tmp/get-pip.py
+    mode: '0744'
 
-- pip:
+- name: get-pip
+  shell: |
+    python3 /tmp/get-pip.py
+
+- name: Install docker-py
+  pip:
     name: docker-py
   become: yes
-
+  
 - include: server.yml
   when: mode == "server" or mode == "all"
 
