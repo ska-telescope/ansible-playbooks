@@ -67,6 +67,13 @@
       become: yes
   when: helm_installed.stat.exists == false
 
+- name: Ensure that the helm plugin directory exists
+  file:
+    path: "~/.helm/plugins"
+    recurse: yes
+    state: directory
+  when: tiller_installed.stat.exists == false
+
 - name: Install tiller plugin
   shell: "helm plugin install {{ tiller_url }}"
   args:

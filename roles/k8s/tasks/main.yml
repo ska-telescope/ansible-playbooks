@@ -135,50 +135,38 @@
       delay: 30
       retries: 10
 
-    - name: Launch calico etcd (sleep to make sure service is allocated for etcd endpoint lookup)
-      shell: 'kubectl apply -f {{ calico_etcd_url }} && sleep 3'
-      args:
-        executable: /bin/bash
-      when: "minikube_use_calico"
+    - name: Install networking
+      block:
 
-    - name: Get the etcd endpoint
-      shell: "kubectl get service -o json --namespace=kube-system calico-etcd | jq  -r .spec.clusterIP"
-      args:
-        executable: /bin/bash
-      register: etcd_endpoints_check
-      when: "minikube_use_calico"
+        - name: Check if "Networking is active"
+          shell: kubectl get deployment calico-kube-controllers --namespace kube-system
+          changed_when: False
+          register: kubectl_calico
+          ignore_errors: true
 
-    - name: set etcd_endpoint fact
-      set_fact:
-        "etcd_endpoint": "{{ etcd_endpoints_check.stdout }}"
-      when: "minikube_use_calico"
+        - name: Init Cluster networking with Calico.
+          shell: kubectl
+                apply -f https://docs.projectcalico.org/{{ calico_version }}/manifests/calico.yaml
+          when: not kubectl_calico.rc == 0
 
-    - name: Get the calico resource definition
-      get_url:
-        url: '{{ calico_resource_yaml }}'
-        dest: '/tmp/calico.yaml'
-      when: "minikube_use_calico"
+        - name: ansible_default_ipv4.interface
+          debug: var=ansible_default_ipv4.interface
 
-    - name: Configure calico to point to our etcd
-      lineinfile:
-        path: /tmp/calico.yaml
-        regexp: '^(.*?)etcd_endpoints: "http://<ETCD_IP>:<ETCD_PORT>"'
-        line: '\1etcd_endpoints: "http://{{ etcd_endpoint }}:6666"'
-        backrefs: yes
-      when: "minikube_use_calico"
+        - name: Reconfigure calico-node.
+          shell: kubectl -n kube-system set env daemonset/calico-node {{ item }}
+          with_items:
+            - "FELIX_XDPENABLED=false"
+            - "CALICO_IPV4POOL_CIDR=10.200.0.0/16"
+            - "IP_AUTODETECTION_METHOD=interface={{ ansible_default_ipv4.interface }}"
+          when: not kubectl_calico.rc == 0
 
-    - name: Launch calico
-      shell: 'kubectl apply -f /tmp/calico.yaml'
-      args:
-        executable: /bin/bash
-      when: "minikube_use_calico"
-
-    - name: Tidy up Calico tmp
-      file:
-        path: '/tmp/calico.yaml'
-        state: absent
-      become: yes
-      when: "minikube_use_calico"
+        - name: Wait for Networking to come up
+          shell: "kubectl get pods --field-selector 'status.phase!=Running' --namespace kube-system"
+          register: calico_check
+          until: calico_check.stdout_lines | reject('search','^No resources found') | list | count == 0
+          retries: 20
+          delay: 30
+      when: minikube_use_calico
 
   when: "not ('minikube-vm' and 'host: Running' and 'kubelet: Running' and 'apiserver: Running' in starting_minikube_status.stdout)"
 
