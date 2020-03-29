@@ -70,9 +70,7 @@ prometheus_scrape_configs:
   - job_name: "elastic"
     static_configs:
       - targets:
-          - "192.168.93.36:9114" 
-          - "192.168.93.115:9114" 
-          - "192.168.93.82:9114" 
+          - "192.168.93.94:9114" 
 
   - job_name: "kube-state-metrics"
     static_configs:
