@@ -13,6 +13,35 @@ from threading import Thread
 import socket
 import json, argparse
 
+def check_port(address, port):
+    location = (address, port)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    return sock.connect_ex(location)
+
+def get_novac(proj_name):
+    auth = v3.Password(auth_url=os.environ["auth_url"],
+                        username=os.environ["username"],
+                        password=os.environ["password"],
+                        project_name=proj_name,
+                        user_domain_id='default',
+                        project_domain_name='default')
+
+    sess = session.Session(auth=auth, verify=False)
+
+    return novaclient.client.Client(2, session=sess)
+
+def get_address(server):
+    address = "-"
+    addresses = server.to_dict()['addresses']
+    for key in addresses:
+        for entry in addresses[key]:
+            if "192.168.93" in entry["addr"]:
+                address = entry["addr"]
+                break
+        if address != "-":
+            break
+    return address
+
 def update_openstack_metadata():
     proj_list = os.environ["project_name"].split(';')
 
@@ -23,34 +52,16 @@ def update_openstack_metadata():
     nodes2ansible = []
 
     for proj_name in proj_list:
-        auth = v3.Password(auth_url=os.environ["auth_url"],
-                        username=os.environ["username"],
-                        password=os.environ["password"],
-                        project_name=proj_name,
-                        user_domain_id='default',
-                        project_domain_name='default')
-
-        sess = session.Session(auth=auth, verify=False)
-
-        novac = novaclient.client.Client(2, session=sess)
-
+        novac = get_novac(proj_name)
         for server in novac.servers.list():
             server_name = str(server.to_dict()['name']).lower()
-            address = "-"
-            addresses = server.to_dict()['addresses']
-            for key in addresses:
-                for entry in addresses[key]:
-                    if "192.168.93" in entry["addr"]:
-                        address = entry["addr"]
-            
+            address = get_address(server)
             if address == "-":
                 continue
 
             updated_metadata = False
             # it is a runner if 9252 is open
-            location = (address, 9252)
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            result_of_check = sock.connect_ex(location)
+            result_of_check = check_port(address, 9252)
             if result_of_check == 0:
                 try: 
                     novac.servers.set_meta_item(server.id, "prom_gitlab_exporter", address+":9252")
@@ -61,9 +72,7 @@ def update_openstack_metadata():
                     print (server)
 
             # it is a node-exporter if 9100 is open
-            location = (address, 9100)
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            result_of_check = sock.connect_ex(location)
+            result_of_check = check_port(address, 9100)
             if result_of_check == 0:
                 try: 
                     novac.servers.set_meta_item(server.id, "prom_node_exporter", address+":9100")
@@ -105,26 +114,10 @@ def generate_targets_from_metadata():
     nodes_targets = []
 
     for proj_name in proj_list:
-        auth = v3.Password(auth_url=os.environ["auth_url"],
-                        username=os.environ["username"],
-                        password=os.environ["password"],
-                        project_name=proj_name,
-                        user_domain_id='default',
-                        project_domain_name='default')
-
-        sess = session.Session(auth=auth, verify=False)
-
-        novac = novaclient.client.Client(2, session=sess)
-
+        novac = get_novac(proj_name)
         for server in novac.servers.list():
             server_name = str(server.to_dict()['name']).lower()
-            address = "-"
-            addresses = server.to_dict()['addresses']
-            for key in addresses:
-                for entry in addresses[key]:
-                    if "192.168.93" in entry["addr"]:
-                        address = entry["addr"]
-            
+            address = get_address(server)
             if address == "-":
                 continue
 
@@ -169,6 +162,10 @@ LOG = logging.getLogger(__name__)
 
 if os.environ.get('http_proxy') or os.environ.get('https_proxy'):
 	LOG.WARN("Proxy env vars set")
+
+if (os.environ.get('auth_url') is None) or (os.environ.get('username') is None) or (os.environ.get('password') is None) or (os.environ.get('project_name') is None):
+    print("Please provide the following environment variables: auth_url, username, password, project_name(comma separated values)")
+    sys.exit(1)
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-u', '--update_metadata', help='update metadata on openstack and generate ansible hosts inventory file',action='store_true')

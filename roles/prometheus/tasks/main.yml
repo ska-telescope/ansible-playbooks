@@ -30,3 +30,6 @@
 
 - include: node_exporter.yml
   when: mode == "exporter" or mode == "all"
+
+- include: runner_exporter.yml
+  when: mode == "runner"
