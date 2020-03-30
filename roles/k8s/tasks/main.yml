@@ -107,7 +107,7 @@
       become_flags: '-E -S -n'
       when: "minikube_use_calico"
 
-    - name: Start Minikube with option vm-driver={{ minikube_driver }}
+    - name: Start Minikube with option vm-driver={{ minikube_driver }} without Calico
       shell: >
         minikube start  --disk-size  {{ minikube_disk_size }}
         --memory  {{ minikube_memory }}
