@@ -10,6 +10,7 @@ import socket
 import datetime
 import sys
 from threading import Thread
+import socket
 
 print("Username: " + os.environ["username"] + " & Password: " + os.environ["password"] + " & Project name: " + os.environ["project_name"] + " & OpenStack Endpoint: " + os.environ["auth_url"])
 
@@ -50,6 +51,20 @@ for proj_name in proj_list:
         
         if address == "-":
             continue
+
+        # it is a runner if 9252 is open
+        location = (address, 9252)
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        result_of_check = sock.connect_ex(location)
+        if result_of_check == 0:
+            runners.append(address)
+
+        # it is a node-exporter if 9100 is open
+        location = (address, 9100)
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        result_of_check = sock.connect_ex(location)
+        if result_of_check == 0:
+            nodes.append(address)
 
         if "runner" in server_name:
             runners.append(address)
