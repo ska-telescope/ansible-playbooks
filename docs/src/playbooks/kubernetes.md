@@ -2,6 +2,8 @@
 
 The simplest way of deploying the MVP is by running it on a Minikube system. Minikube is a single-node cluster provisioned with all the basics that give a developer the opportunity to try out kubernetes.
 
+To deploy Minikube on an environment that requires the use of a proxy, see the Ansible var: `minikube_environment_vars`, in `group_vars/all.yml`.  This shows an example of passing in the appropriate values.
+
 ## Skampi
 
 It is possible to install the integration environment locally with Minikube, as well as deploy the SKA MPI project (the MVP), by running the Ansible playbook or calling the make command:  
