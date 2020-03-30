@@ -18,8 +18,12 @@
 
 - name: Check if helm is installed
   stat:
-    path: '{{ minikube_install_dir }}/{{ helm_name }}-{{ helm_version }}'
+    path: '{{ minikube_install_dir }}/{{ helm_name }}'
   register: helm_installed
+
+- debug:
+    var: helm_installed
+    verbosity: 1
 
 # - name: Check if tiller plugin is installed
 #   stat:
@@ -47,7 +51,11 @@
       args:
         creates: '{{ minikube_install_dir }}/{{ helm_name }}-{{ helm_version }}'
       become: yes
-      register: helm_installed
+      # register: helm_installed
+
+    - debug:
+        var: helm_installed
+        verbosity: 2
 
     - name: link installed helm
       file:
@@ -56,10 +64,10 @@
         state: link
       become: yes
 
-    - name: Initialise Helm
-      shell: "helm init --client-only"
-      args:
-        executable: /bin/bash
+    # - name: Initialise Helm
+    #   shell: "helm init --client-only"
+    #   args:
+    #     executable: /bin/bash
 
     - name: Tidy up Helm tmp
       file:
