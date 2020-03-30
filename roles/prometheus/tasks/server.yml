@@ -28,6 +28,11 @@
     group: "{{ localuser }}"
   become: yes
 
+- name: Copy generated file to configuration directory
+    copy:
+      src: "{{playbook_dir}}/roles/prometheus/generated"
+      dest: "{{ prometheus_config_dir }}"
+
 - name: Generate Prometheus configuration
   become: true
   template:

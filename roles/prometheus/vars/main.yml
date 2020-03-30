@@ -60,12 +60,18 @@ prometheus_scrape_configs:
           - "192.168.93.210:9100" #storage2-1
           - "192.168.93.211:9100" #storage1-1
           - "192.168.93.212:9100" #storage1-2
+    file_sd_configs:
+    - files:
+      - 'gitlab.json'
 
   - job_name: "gitlab-runner"
     static_configs:
       - targets:
           - "192.168.93.31:9252" # gitlab-docker-runner-1
           - "192.168.93.84:9252" # generic-runner
+    file_sd_configs:
+    - files:
+      - 'gitlab.json'
 
   - job_name: "elastic"
     static_configs:
