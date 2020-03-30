@@ -42,10 +42,7 @@ prometheus_scrape_configs:
 
   - job_name: "node"
     static_configs:
-      - targets:
-          - "{{ ansible_fqdn | default(ansible_host) | default('localhost') }}:9100"
-          - "192.168.93.84:9100" #generic-runner machine
-          - "192.168.93.31:9100" #runner-1.engageska-portugal.pt
+    - targets:
           - "192.168.93.12:9100" #nexus
           - "192.168.93.200:9100" #server3-1
           - "192.168.93.201:9100" #server3-2
@@ -62,13 +59,9 @@ prometheus_scrape_configs:
           - "192.168.93.212:9100" #storage1-2
     file_sd_configs:
     - files:
-      - 'gitlab.json'
+      - 'node_targets.json'
 
   - job_name: "gitlab-runner"
-    static_configs:
-      - targets:
-          - "192.168.93.31:9252" # gitlab-docker-runner-1
-          - "192.168.93.84:9252" # generic-runner
     file_sd_configs:
     - files:
       - 'gitlab.json'
