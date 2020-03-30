@@ -48,6 +48,9 @@ helm_name: helm
 helm_mirror: https://get.helm.sh
 # tiller_url: https://github.com/rimusz/helm-tiller
 
+# Traefik vars
+traefik_url: https://containous.github.io/traefik-helm-chart
+
 # development environment 
 pycharm_version: 'community-2018.3.3'
 PYTHON_VERSION: '3.7.3'
