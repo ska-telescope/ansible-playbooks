@@ -18,13 +18,13 @@
 
 - name: Check if helm is installed
   stat:
-    path: '{{ minikube_install_dir }}/{{ helm_name }}'
+    path: '{{ minikube_install_dir }}/{{ helm_name }}-{{ helm_version }}'
   register: helm_installed
 
-- name: Check if tiller plugin is installed
-  stat:
-    path: '{{ user_home }}/.helm/plugins/helm-tiller'
-  register: tiller_installed
+# - name: Check if tiller plugin is installed
+#   stat:
+#     path: '{{ user_home }}/.helm/plugins/helm-tiller'
+#   register: tiller_installed
 
 - name: ensure target directory
   file:
@@ -47,6 +47,7 @@
       args:
         creates: '{{ minikube_install_dir }}/{{ helm_name }}-{{ helm_version }}'
       become: yes
+      register: helm_installed
 
     - name: link installed helm
       file:
@@ -67,15 +68,15 @@
       become: yes
   when: helm_installed.stat.exists == false
 
-- name: Ensure that the helm plugin directory exists
-  file:
-    path: "~/.helm/plugins"
-    recurse: yes
-    state: directory
-  when: tiller_installed.stat.exists == false
+# - name: Ensure that the helm plugin directory exists
+#   file:
+#     path: "~/.helm/plugins"
+#     recurse: yes
+#     state: directory
+#   when: tiller_installed.stat.exists == false
 
-- name: Install tiller plugin
-  shell: "helm plugin install {{ tiller_url }}"
-  args:
-    executable: /bin/bash
-  when: tiller_installed.stat.exists == false
+# - name: Install tiller plugin
+#   shell: "helm plugin install {{ tiller_url }}"
+#   args:
+#     executable: /bin/bash
+#   when: tiller_installed.stat.exists == false
