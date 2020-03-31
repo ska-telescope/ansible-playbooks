@@ -1,0 +1,8 @@
+[
+  {
+    "labels": {
+      "job": "k8smetrics"
+    },
+    "targets": []
+  }
+]

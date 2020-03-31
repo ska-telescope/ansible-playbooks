@@ -59,22 +59,38 @@ prometheus_scrape_configs:
           - "192.168.93.212:9100" #storage1-2
     file_sd_configs:
     - files:
-      - 'node_targets.json'
+      - 'node_exporter.json'
 
   - job_name: "gitlab-runner"
     file_sd_configs:
     - files:
-      - 'gitlab.json'
+      - 'gitlab_exporter.json'
 
-  - job_name: "elastic"
-    static_configs:
-      - targets:
-          - "192.168.93.94:9114" 
+  - job_name: "elasticsearch"
+    file_sd_configs:
+    - files:
+      - 'elasticsearch_exporter.json'
 
-  - job_name: "kube-state-metrics"
+  - job_name: "docker"
+    file_sd_configs:
+    - files:
+      - 'docker_exporter.json'
+
+  - job_name: "k8smetrics"
     static_configs:
       - targets:
           - "{{ ansible_fqdn | default(ansible_host) | default('localhost') }}:32298"
+    file_sd_configs:
+    - files:
+      - 'kubernetes_exporter.json'
+
+  - job_name: "k8stelemetry"
+    static_configs:
+      - targets:
+          - "{{ ansible_fqdn | default(ansible_host) | default('localhost') }}:32298"
+    file_sd_configs:
+    - files:
+      - 'kubernetes_telemetry.json'
 
 blackbox_ssh_targets:
   - "{{ ansible_fqdn | default(ansible_host) | default('localhost') }}:22" #matteo devenv

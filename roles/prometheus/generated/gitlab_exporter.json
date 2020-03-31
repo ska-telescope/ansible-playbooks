@@ -1,7 +1,7 @@
 [
   {
     "labels": {
-      "job": "gitlab-runner"
+      "job": "runner"
     },
     "targets": [
       "192.168.93.84:9252",

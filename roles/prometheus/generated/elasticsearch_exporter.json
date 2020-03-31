@@ -1,0 +1,10 @@
+[
+  {
+    "labels": {
+      "job": "elasticsearch"
+    },
+    "targets": [
+      "192.168.93.94:9114"
+    ]
+  }
+]
