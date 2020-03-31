@@ -77,17 +77,11 @@ prometheus_scrape_configs:
       - 'docker_exporter.json'
 
   - job_name: "k8smetrics"
-    static_configs:
-      - targets:
-          - "{{ ansible_fqdn | default(ansible_host) | default('localhost') }}:32298"
     file_sd_configs:
     - files:
       - 'kubernetes_exporter.json'
 
   - job_name: "k8stelemetry"
-    static_configs:
-      - targets:
-          - "{{ ansible_fqdn | default(ansible_host) | default('localhost') }}:32298"
     file_sd_configs:
     - files:
       - 'kubernetes_telemetry.json'
