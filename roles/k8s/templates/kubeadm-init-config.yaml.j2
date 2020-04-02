@@ -1,0 +1,60 @@
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: InitConfiguration
+localAPIEndpoint:
+  advertiseAddress: {{ ansible_default_ipv4.address }}
+  bindPort: 6443
+bootstrapTokens:
+  - groups:
+      - system:bootstrappers:kubeadm:default-node-token
+    ttl: 24h0m0s
+    usages:
+      - signing
+      - authentication
+nodeRegistration:
+  criSocket: {% if activate_containerd %}/run/containerd/containerd.sock{% else %}/var/run/dockershim.sock{% endif %}
+  
+  name: {{ inventory_hostname }}
+  taints: []
+#  kubeletExtraArgs:
+#    resolv-conf: /run/systemd/resolve/resolv.conf
+#    network-plugin: cni
+#    cgroup-driver: "cgroupfs"
+---
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: ClusterConfiguration
+apiServer:
+  certSANs:
+  - "{{ ansible_default_ipv4.address }}"
+  timeoutForControlPlane: 4m0s
+#  extraArgs:
+#    enable-admission-plugins: "NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,DefaultTolerationSeconds,NodeRestriction,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,ResourceQuota"
+clusterName: kubernetes
+certificatesDir: /etc/kubernetes/pki
+controlPlaneEndpoint: {{ ansible_default_ipv4.address }}:6443
+controllerManager: {}
+dns:
+  type: CoreDNS
+etcd:
+  local:
+    dataDir: /var/lib/k8s/etcd
+imageRepository: k8s.gcr.io
+kubernetesVersion: {{ kubernetes_version }}
+networking:
+  dnsDomain: cluster.local
+  podSubnet: "10.200.0.0/16"
+  serviceSubnet: 10.96.0.0/12
+scheduler: {}
+---
+apiVersion: kubelet.config.k8s.io/v1beta1
+kind: KubeletConfiguration
+failSwapOn: false
+resolvConf: /run/systemd/resolve/resolv.conf
+clusterDNS:
+- "10.96.0.10"
+- "192.168.86.1"
+- "8.8.8.8"
+imageGCHighThresholdPercent: 100
+evictionHard:
+  nodefs.available: "0%"
+  nodefs.inodesFree: "0%"
+  imagefs.available: "0%"

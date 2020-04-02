@@ -1,6 +1,7 @@
 ---
 
 # common variables
+debug: false
 aptcachetime: 3600
 locale: "en_US.UTF-8"
 localuser: "{{ lookup('env','USER') }}"
@@ -15,6 +16,12 @@ calico_version: v3.9
 minikube_disk_size: 32g
 minikube_memory: 8192
 minikube_cpus: 4
+activate_containerd: false
+kubernetes_version: 1.17.3
+nginx_ingress_version: 0.29.0
+kubernetes_ubuntu_version: xenial
+kube_version: "{{ kubernetes_version }}-00"
+traefik_url: https://containous.github.io/traefik-helm-chart
 
 kube_spray_version: 'v2.12.0'
 k8s_version: '1.16.2'

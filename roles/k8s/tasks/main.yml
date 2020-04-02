@@ -12,6 +12,14 @@
   loop_control:
     loop_var: docker_vars
 
+- name: Get the username running the deploy
+  become: no
+  local_action: command whoami
+  register: username_on_the_host
+
+- debug: var=username_on_the_host.stdout_lines[0]
+  when: debug|bool
+
 - name: set facts for minikube
   set_fact:
     "minikube_use_calico": "{{ use_calico|bool }}"
@@ -20,120 +28,253 @@
     "minikube_check": !unsafe >-
       minikube status --format "host: {{.Host}} kubelet: {{.Kubelet}} apiserver: {{.APIServer}} kubectl: {{.Kubeconfig}}"
     "minikube_driver": "{{ 'none' if not use_driver or use_driver == 'none' else ('hyperkit' if ansible_os_family == 'Darwin' else 'kvm2') }}"
+    local_user: "{{ username_on_the_host.stdout_lines[0] }}"
+    local_user_dir: "/home/{{ username_on_the_host.stdout_lines[0] }}"
 
-- name: Before minikube configuration, we check minikube status
-  shell: "{{ minikube_check }} | grep 'host: '"
-  args:
-    executable: /bin/bash
-  register: starting_minikube_status
+  
+- name: Add k8s apt key
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+  become: true
+
+- name: Add k8s apt source
+  lineinfile:
+    line: "deb http://apt.kubernetes.io/ kubernetes-{{ kubernetes_ubuntu_version }} main"
+    path: /etc/apt/sources.list.d/kubernetes.list
+    create: yes
+    owner: root
+    group: root
+    mode: 0644
+  become: true
+
+- name: Update apt cache - again
+  apt:
+    update_cache: yes
+  become: true
+
+- name: Install k8s dependent packages
+  apt:
+    name: "{{ item }}"
+    force: yes
+    state: present
+  become: true
+  with_items:
+    - "conntrack"
+    - "ipvsadm"
+
+- name: Install kubeadm
+  apt:
+    name: "{{ item }}={{ kube_version }}"
+    force: yes
+    state: present
+  with_items:
+    - "kubectl"
+    - "kubeadm"
+    - "kubelet"
+  become: true
+  notify:
+    - restart kubelet
+
+# required for k8s ipvs proxy
+- name: Load ipvs kernel drivers
+  modprobe:
+    name: "{{ item }}"
+    state: present
+  become: true
+  with_items:
+    - br_netfilter
+    - ip_vs_sh
+    - nf_conntrack
+    - ip_vs
+    - ip_vs_rr
+    - ip_vs_wrr
+    - ip_tables
+
+- name: Set net.bridge.bridge-nf-call-iptables to 1
+  sysctl: name=net.bridge.bridge-nf-call-iptables value=1 state=present ignoreerrors=yes
+  become: true
+
+- name: Set net.bridge.bridge-nf-call-ip6tables to 1
+  sysctl: name=net.bridge.bridge-nf-call-ip6tables value=1 state=present ignoreerrors=yes
+  become: true
+
+- name: Set net.bridge.bridge-nf-call-arptables to 1
+  sysctl: name=net.bridge.bridge-nf-call-arptables value=1 state=present ignoreerrors=yes
+  become: true
+
+- name: Set net.ipv4.ip_forward to 1
+  sysctl: name=net.ipv4.ip_forward value=1 state=present ignoreerrors=yes
+  become: true
+
+- name: "Show ansible_default_ipv4.address"
+  debug: var=ansible_default_ipv4.address
+  when: debug|bool
+
+- name: Check if "Cluster is active" is enabled.
+  shell: kubectl --kubeconfig=/etc/kubernetes/admin.conf version
+  changed_when: False
+  register: kubectl_version
+  ignore_errors: true
+  become: true
+
+- name: "Show kubectl_version"
+  debug: var=kubectl_version
+  when: debug|bool
+
+# - name: Before minikube configuration, we check minikube status
+#   shell: "{{ minikube_check }} | grep 'host: '"
+#   args:
+#     executable: /bin/bash
+#   ignore_errors: true
+#   register: starting_minikube_status
 
 - name: Install Minikube
   block:
-    - name: Tidy up previous Minikube
-      become: true
-      file:
-        path: "{{ kfile }}"
-        state: absent
-      with_items:
-        - "{{ user_home }}/.kube"
-        - /var/lib/kubeadm.yaml
-        - /data/minikube
-        - /var/lib/minikube
-        - /var/lib/kubelet
-        - /etc/kubernetes
-        - /etc/cni
-        - /opt/cni
-        - /var/lib/calico
-      loop_control:
-        loop_var: kfile
+    # - name: Tidy up previous Minikube
+    #   become: true
+    #   file:
+    #     path: "{{ kfile }}"
+    #     state: absent
+    #   with_items:
+    #     - "{{ user_home }}/.kube"
+    #     - /var/lib/kubeadm.yaml
+    #     - /data/minikube
+    #     - /var/lib/minikube
+    #     - /var/lib/kubelet
+    #     - /etc/kubernetes
+    #     - /etc/cni
+    #     - /opt/cni
+    #     - /var/lib/calico
+    #   loop_control:
+    #     loop_var: kfile
 
-    - name: Setup the directory for storing Minikube and kubectl configuration.
+    # - name: Setup the directory for storing Minikube and kubectl configuration.
+    #   file:
+    #     path: "{{ user_home }}/.kube"
+    #     state: directory
+    #     owner: root
+    #     group: "{{ 'wheel' if ansible_os_family == 'Darwin' else 'root' }}"
+    #     mode: "0755"
+    #   become: true
+    #   become_method: sudo
+    #   become_flags: '-E -S -n'
+    #   when: "minikube_driver == 'none'"
+
+    # - name: Create empty file(config) under directory.
+    #   file:
+    #     path: "{{ user_home }}/.kube/config"
+    #     state: touch
+    #     mode: "0640"
+    #   become: true
+    #   become_method: sudo
+    #   become_flags: '-E -S -n'
+    #   when: "minikube_driver == 'none'"
+
+    # - name: set minikube environment
+    #   blockinfile:
+    #     dest: "{{ user_home }}/{{ rcfile }}"
+    #     create: yes
+    #     block: |
+    #       export MINIKUBE_WANTUPDATENOTIFICATION=false
+    #       export MINIKUBE_WANTREPORTERRORPROMPT=false
+    #       export MINIKUBE_HOME=$HOME
+    #       export CHANGE_MINIKUBE_NONE_USER=true
+    #       export KUBECONFIG=$HOME/.kube/config
+    #     marker: "# {mark} ANSIBLE MANAGED BLOCK for minikube"
+    #   with_items:
+    #     - .profile
+    #     - .bashrc
+    #   loop_control:
+    #     loop_var: rcfile
+
+    # - name: Start Minikube with option vm-driver={{ minikube_driver }} and with Calico
+    #   shell: >
+    #     minikube start  --disk-size  {{ minikube_disk_size }}
+    #     --memory  {{ minikube_memory }}
+    #     --cpus {{ minikube_cpus }}
+    #     --extra-config=kubelet.network-plugin=cni
+    #     --extra-config=kubelet.resolv-conf={{ minikube_resolver }}
+    #     --extra-config=kubeadm.pod-network-cidr=10.200.0.0/16
+    #     --network-plugin=cni
+    #     --vm-driver={{ minikube_driver }}
+    #   environment:
+    #     MINIKUBE_WANTUPDATENOTIFICATION: false
+    #     MINIKUBE_WANTREPORTERRORPROMPT: false
+    #     MINIKUBE_HOME: "{{ user_home }}"
+    #     CHANGE_MINIKUBE_NONE_USER: true
+    #     KUBECONFIG: "{{ user_home }}/.kube/config"
+    #   become: "{{ 'true' if minikube_driver == 'none' else 'false' }}"
+    #   become_method: sudo
+    #   become_flags: '-E -S -n'
+    #   when: "minikube_use_calico"
+
+    # - name: Start Minikube with option vm-driver={{ minikube_driver }}
+    #   shell: >
+    #     minikube start  --disk-size  {{ minikube_disk_size }}
+    #     --memory  {{ minikube_memory }}
+    #     --cpus {{ minikube_cpus }}
+    #     --extra-config=kubelet.resolv-conf={{ minikube_resolver }}
+    #     --vm-driver={{ minikube_driver }}
+    #   environment:
+    #     MINIKUBE_WANTUPDATENOTIFICATION: false
+    #     MINIKUBE_WANTREPORTERRORPROMPT: false
+    #     MINIKUBE_HOME: "{{ user_home }}"
+    #     CHANGE_MINIKUBE_NONE_USER: true
+    #     KUBECONFIG: "{{ user_home }}/.kube/config"
+    #   become: "{{ 'true' if minikube_driver == 'none' else 'false' }}"
+    #   become_method: sudo
+    #   become_flags: '-E -S -n'
+    #   when: "not minikube_use_calico"
+
+    #   # host: Running kubelet: Running apiserver: Running kubectl: Correctly Configured: pointing to minikube-vm
+    # - name: After minikube configuration, we check minikube status
+    #   shell: "{{ minikube_check }}"
+    #   args:
+    #     executable: /bin/bash
+    #   register: minikube_status
+    #   until: "'minikube-vm' and 'host: Running' and 'kubelet: Running' and 'apiserver: Running' in minikube_status.stdout"
+    #   delay: 30
+    #   retries: 10
+
+
+    - name: kubeadm config
+      template: src=kubeadm-init-config.yaml.j2 dest="/tmp/kubeadm-init-config.yaml"
+      become: true
+
+    - name: Init Cluster on the first master.
+      shell: /usr/bin/kubeadm init
+        --config /tmp/kubeadm-init-config.yaml
+        --ignore-preflight-errors=Swap
+      become: true
+      when: "kubectl_version.stdout.find('Server Version:') == -1"
+
+    - name: Wait for API Server to come up
+      wait_for:
+        host: "{{ ansible_default_ipv4.address }}"
+        port: 6443
+        delay: 10
+
+    - name: retrieve kubectl config
+      fetch: src="/etc/kubernetes/admin.conf" dest="/tmp/admin.conf" flat=yes
+      become: true
+      # when: "inventory_hostname in groups['master']"
+
+    - name: Ensure the ~/.kube directory exists
       file:
-        path: "{{ user_home }}/.kube"
+        path: "{{ local_user_dir }}/.kube"
         state: directory
-        owner: root
-        group: "{{ 'wheel' if ansible_os_family == 'Darwin' else 'root' }}"
-        mode: "0755"
-      become: true
-      become_method: sudo
-      become_flags: '-E -S -n'
-      when: "minikube_driver == 'none'"
+        mode: 0700
+        owner: "{{ local_user }}"
+        group: "{{ local_user }}"
 
-    - name: Create empty file(config) under directory.
-      file:
-        path: "{{ user_home }}/.kube/config"
-        state: touch
-        mode: "0640"
-      become: true
-      become_method: sudo
-      become_flags: '-E -S -n'
-      when: "minikube_driver == 'none'"
-
-    - name: set minikube environment
-      blockinfile:
-        dest: "{{ user_home }}/{{ rcfile }}"
-        create: yes
-        block: |
-          export MINIKUBE_WANTUPDATENOTIFICATION=false
-          export MINIKUBE_WANTREPORTERRORPROMPT=false
-          export MINIKUBE_HOME=$HOME
-          export CHANGE_MINIKUBE_NONE_USER=true
-          export KUBECONFIG=$HOME/.kube/config
-        marker: "# {mark} ANSIBLE MANAGED BLOCK for minikube"
-      with_items:
-        - .profile
-        - .bashrc
-      loop_control:
-        loop_var: rcfile
-
-    - name: Start Minikube with option vm-driver={{ minikube_driver }} and with Calico
-      shell: >
-        minikube start  --disk-size  {{ minikube_disk_size }}
-        --memory  {{ minikube_memory }}
-        --cpus {{ minikube_cpus }}
-        --extra-config=kubelet.network-plugin=cni
-        --extra-config=kubelet.resolv-conf={{ minikube_resolver }}
-        --extra-config=kubeadm.pod-network-cidr=10.200.0.0/16
-        --network-plugin=cni
-        --vm-driver={{ minikube_driver }}
-      environment:
-        MINIKUBE_WANTUPDATENOTIFICATION: false
-        MINIKUBE_WANTREPORTERRORPROMPT: false
-        MINIKUBE_HOME: "{{ user_home }}"
-        CHANGE_MINIKUBE_NONE_USER: true
-        KUBECONFIG: "{{ user_home }}/.kube/config"
-      become: "{{ 'true' if minikube_driver == 'none' else 'false' }}"
-      become_method: sudo
-      become_flags: '-E -S -n'
-      when: "minikube_use_calico"
-
-    - name: Start Minikube with option vm-driver={{ minikube_driver }}
-      shell: >
-        minikube start  --disk-size  {{ minikube_disk_size }}
-        --memory  {{ minikube_memory }}
-        --cpus {{ minikube_cpus }}
-        --extra-config=kubelet.resolv-conf={{ minikube_resolver }}
-        --vm-driver={{ minikube_driver }}
-      environment:
-        MINIKUBE_WANTUPDATENOTIFICATION: false
-        MINIKUBE_WANTREPORTERRORPROMPT: false
-        MINIKUBE_HOME: "{{ user_home }}"
-        CHANGE_MINIKUBE_NONE_USER: true
-        KUBECONFIG: "{{ user_home }}/.kube/config"
-      become: "{{ 'true' if minikube_driver == 'none' else 'false' }}"
-      become_method: sudo
-      become_flags: '-E -S -n'
-      when: "not minikube_use_calico"
-
-      # host: Running kubelet: Running apiserver: Running kubectl: Correctly Configured: pointing to minikube-vm
-    - name: After minikube configuration, we check minikube status
-      shell: "{{ minikube_check }}"
-      args:
-        executable: /bin/bash
-      register: minikube_status
-      until: "'minikube-vm' and 'host: Running' and 'kubelet: Running' and 'apiserver: Running' in minikube_status.stdout"
-      delay: 30
-      retries: 10
+    - name: Setup kubectl config
+      copy:
+        src: /tmp/admin.conf
+        dest: "{{ local_user_dir }}/.kube/config"
+        mode: 0644
+        owner: "{{ local_user }}"
+        group: "{{ local_user }}"
 
     - name: Install networking
       block:
@@ -167,47 +308,96 @@
           retries: 20
           delay: 30
       when: minikube_use_calico
+  # when" "kubectl_version.stdout.find('Server Version:') == -1"
+  # when: "not ('minikube-vm' and 'host: Running' and 'kubelet: Running' and 'apiserver: Running' in starting_minikube_status.stdout)"
+  when: "kubectl_version.stdout.find('Server Version:') == -1"
 
-  when: "not ('minikube-vm' and 'host: Running' and 'kubelet: Running' and 'apiserver: Running' in starting_minikube_status.stdout)"
+- name: storage config
+  template: src=storage.yaml.j2 dest="/tmp/storage.yaml"
 
-- name: Enable default NGINX Ingress Controller
-  shell: minikube addons enable ingress
-  environment:
-    MINIKUBE_WANTUPDATENOTIFICATION: false
-    MINIKUBE_WANTREPORTERRORPROMPT: false
-    MINIKUBE_HOME: "{{ user_home }}"
-    CHANGE_MINIKUBE_NONE_USER: true
-    KUBECONFIG: "{{ user_home }}/.kube/config"
+- name: Check if "Storage is active"
+  shell: kubectl get pod/storage-provisioner --namespace kube-system
+  changed_when: False
+  register: kubectl_storage
+  ignore_errors: true
+
+- name: "Show kubectl_storage"
+  debug: var=kubectl_storage
+  when: debug|bool
+
+- name: Init Storage on the first master.
+  shell: kubectl apply -f /tmp/storage.yaml
+  when: "not kubectl_storage.rc == 0"
   become: true
-  become_method: sudo
-  become_flags: '-E -S -n'
+
+- name: Enable NGINX
+  block:
+    - name: Check if "Ingress is active"
+      shell: kubectl get  deployment.apps/nginx-ingress-controller --namespace ingress-nginx
+      changed_when: False
+      register: kubectl_ingress
+      ignore_errors: true
+
+    - name: "Show kubectl_ingress"
+      debug: var=kubectl_ingress
+      when: debug|bool
+
+    - name: Init Ingress on the first master.
+      shell: kubectl 
+            apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-{{ nginx_ingress_version }}/deploy/static/mandatory.yaml
+      when: "not kubectl_ingress.rc == 0"
+
+    - name: Set Ingress NodePort on the first master.
+      shell: kubectl --kubeconfig=/etc/kubernetes/admin.conf
+            apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-{{ nginx_ingress_version }}/deploy/static/provider/baremetal/service-nodeport.yaml
+      when: "not kubectl_ingress.rc == 0"
+
+    - name: Patch Ingress NodePort 30080,30443 on the first master.
+      shell: |
+            kubectl -n ingress-nginx patch service/ingress-nginx \
+            -p '{"spec":{"ports":[{"port":80,"nodePort":30080},{"port":443,"nodePort":30443}]}}'
+      when: "not kubectl_ingress.rc == 0"
   when: "minikube_use_nginx"
+
+
+# - name: Enable default NGINX Ingress Controller
+#   shell: minikube addons enable ingress
+#   environment:
+#     MINIKUBE_WANTUPDATENOTIFICATION: false
+#     MINIKUBE_WANTREPORTERRORPROMPT: false
+#     MINIKUBE_HOME: "{{ user_home }}"
+#     CHANGE_MINIKUBE_NONE_USER: true
+#     KUBECONFIG: "{{ user_home }}/.kube/config"
+#   become: true
+#   become_method: sudo
+#   become_flags: '-E -S -n'
+#   when: "minikube_use_nginx"
 
 - name: Activate Traefik Ingress Controller
   block:
 
-    - name: Get the ingress status
-      shell: "minikube addons list | grep ingress"
-      args:
-        executable: /bin/bash
-      register: ingress_check
+    # - name: Get the ingress status
+    #   shell: "minikube addons list | grep ingress"
+    #   args:
+    #     executable: /bin/bash
+    #   register: ingress_check
 
-    - name: set etcd_endpoint fact
-      set_fact:
-        "ingress_state": "{{ ingress_check.stdout }}"
+    # - name: set etcd_endpoint fact
+    #   set_fact:
+    #     "ingress_state": "{{ ingress_check.stdout }}"
 
-    - name: Disable default NGINX Ingress Controller
-      shell: minikube addons disable ingress
-      environment:
-        MINIKUBE_WANTUPDATENOTIFICATION: false
-        MINIKUBE_WANTREPORTERRORPROMPT: false
-        MINIKUBE_HOME: "{{ user_home }}"
-        CHANGE_MINIKUBE_NONE_USER: true
-        KUBECONFIG: "{{ user_home }}/.kube/config"
-      become: true
-      become_method: sudo
-      become_flags: '-E -S -n'
-      when: '"enabled" in ingress_state'
+    # - name: Disable default NGINX Ingress Controller
+    #   shell: minikube addons disable ingress
+    #   environment:
+    #     MINIKUBE_WANTUPDATENOTIFICATION: false
+    #     MINIKUBE_WANTREPORTERRORPROMPT: false
+    #     MINIKUBE_HOME: "{{ user_home }}"
+    #     CHANGE_MINIKUBE_NONE_USER: true
+    #     KUBECONFIG: "{{ user_home }}/.kube/config"
+    #   become: true
+    #   become_method: sudo
+    #   become_flags: '-E -S -n'
+    #   when: '"enabled" in ingress_state'
 
     # - name: Copy up Traefik template
     #   copy:
@@ -224,16 +414,25 @@
     #     path: '/tmp/traefik-minikube.yaml'
     #     state: absent
     #   become: yes
-    - name: Install traefik
+
+    - name: Add Traefik helm repo
       shell: |
-        helm init
-        TMP=`mktemp -d`
-        helm fetch stable/traefik --untar --untardir $$TMP
-        helm template $$TMP/traefik -n traefik --namespace kube-system --name traefik0 --tiller-namespace kube-system --set externalIP={{ansible_default_ipv4.address}} | kubectl apply -n kube-system  -f -;
-        rm -rf $$TMP
-      become: true
-      become_method: sudo
-      become_flags: '-E -S -n'
+        helm repo add traefik {{traefik_url}}
+        helm repo update;
+
+    - name: Install traefik
+      shell: "helm install traefik0 traefik/traefik --namespace=kube-system --set externalIPs={{'{'}}{{ansible_default_ipv4.address}}{{'}'}}"
+
+    # - name: Install traefik
+    #   shell: |
+    #     helm init
+    #     TMP=`mktemp -d`
+    #     helm fetch stable/traefik --untar --untardir $$TMP
+    #     helm template $$TMP/traefik -n traefik --namespace kube-system --name traefik0 --tiller-namespace kube-system --set externalIP={{ansible_default_ipv4.address}} | kubectl apply -n kube-system  -f -;
+    #     rm -rf $$TMP
+    #   become: true
+    #   become_method: sudo
+    #   become_flags: '-E -S -n'
 
   when: "not minikube_use_nginx"
 

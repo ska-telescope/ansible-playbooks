@@ -1,0 +1,12 @@
+---
+- name: restart kubelet
+  service: name=kubelet state=restarted enabled=yes
+  become: true
+
+- name: reload systemd
+  command: systemctl daemon-reload
+
+- name: restart docker
+  service:
+    name: docker
+    state: restarted

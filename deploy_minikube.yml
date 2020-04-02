@@ -17,14 +17,14 @@
     - docker
   environment: "{{ minikube_environment_vars }}"
 
-- name: Deploy minikube
-  hosts:
-    - development
-  become: yes
-  roles:
-    - kubectl
-    - minikube
-  environment: "{{ minikube_environment_vars }}"
+# - name: Deploy minikube
+#   hosts:
+#     - development
+#   become: yes
+#   roles:
+#     - kubectl
+#     - minikube
+#   environment: "{{ minikube_environment_vars }}"
 
 # not all tasks should be run as root
 - name: Install helm

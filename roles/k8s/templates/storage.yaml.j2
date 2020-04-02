@@ -1,0 +1,63 @@
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  namespace: kube-system
+  name: standard
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+  labels:
+    addonmanager.kubernetes.io/mode: EnsureExists
+
+provisioner: k8s.io/minikube-hostpath
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: storage-provisioner
+  namespace: kube-system
+  labels:
+    addonmanager.kubernetes.io/mode: Reconcile
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: storage-provisioner
+  labels:
+    addonmanager.kubernetes.io/mode: EnsureExists
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:persistent-volume-provisioner
+subjects:
+  - kind: ServiceAccount
+    name: storage-provisioner
+    namespace: kube-system
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: storage-provisioner
+  namespace: kube-system
+  labels:
+    integration-test: storage-provisioner
+    addonmanager.kubernetes.io/mode: Reconcile
+spec:
+  serviceAccountName: storage-provisioner
+  hostNetwork: true
+  containers:
+  - name: storage-provisioner
+    image: gcr.io/k8s-minikube/storage-provisioner:v1.8.1
+    command: ["/storage-provisioner"]
+    imagePullPolicy: IfNotPresent
+    volumeMounts:
+    - mountPath: /tmp
+      name: tmp
+  volumes:
+  - name: tmp
+    hostPath:
+      path: /tmp
+      type: Directory
