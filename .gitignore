@@ -1,4 +1,5 @@
 heat-cluster
+heat-cluster/*
 .vscode
 .idea
 .vagrant
@@ -13,4 +14,5 @@ venv
 build
 *_build*
 *Pipfile*
+*rc.sh
 
