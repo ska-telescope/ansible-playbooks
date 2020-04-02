@@ -210,19 +210,22 @@
       when: '"enabled" in ingress_state'
 
     - name: Add Traefik helm repo
+        # helm repo add traefik {{traefik_url}}
       shell: |
-        helm repo add traefik {{traefik_url}}
+        helm repo add stable https://kubernetes-charts.storage.googleapis.com/
         helm repo update;
       become: true
       become_method: sudo
       become_flags: '-E -S -n'
 
     - name: Install traefik
-      shell: helm install traefik traefik/traefik --namespace=kube-system --set service.externalIPs='{{'{'}}{{ansible_default_ipv4.address}}{{'}'}}'
-      # helm template $$TMP/traefik -n traefik --namespace kube-system --name traefik0 --tiller-namespace kube-system --set externalIP={{ansible_default_ipv4.address}} | kubectl apply -n kube-system  -f -;
-      # shell: helm install --values=roles/k8s/values/traefik.yml traefik traefik/traefik | kubectl apply -n kube-system  -f -;
+      shell:
+        helm install traefik0 traefik/traefik \
+          --namespace=kube-system \
+          --set externalIPs='{{'{'}}{{ansible_default_ipv4.address}}{{'}'}}'
+      # helm template $$TMP/traefik -n traefik --namespace kube-system --name traefik0 --tiller-namespace kube-system --set externalIP={{ansible_default_ipv4.address}} | kubectl apply -n kube-system -f -;
+      # shell: helm install --values=roles/k8s/values/traefik.yml traefik traefik/traefik | kubectl apply -n kube-system -f -;
       become: true
       become_method: sudo
       become_flags: '-E -S -n'
-
-  when: "not minikube_use_nginx"
+      when: "not minikube_use_nginx"
