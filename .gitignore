@@ -1,3 +1,4 @@
+heat-cluster
 .vscode
 .idea
 .vagrant
@@ -5,6 +6,8 @@
 *.retry
 ubuntu-bionic-18.04-cloudimg-console.log
 PrivateRules.mak
+private_vars.yml
+inventory_helm3
 *.pyc
 venv
 build
