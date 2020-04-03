@@ -174,9 +174,6 @@
   shell: |
     helm repo add stable {{helm_stable_repo_url}}
     helm repo update;
-  # become: true
-  # become_method: sudo
-  # become_flags: '-E -S -n'
 
 - name: Enable default NGINX Ingress Controller
   shell: minikube addons enable ingress
@@ -220,7 +217,4 @@
     - name: Install traefik
       shell:
         helm install traefik0 stable/traefik --namespace=kube-system --set externalIP={{ansible_default_ipv4.address}}
-      become: true
-      become_method: sudo
-      become_flags: '-E -S -n'
       when: "not minikube_use_nginx"
