@@ -170,14 +170,6 @@
 
   when: "not ('minikube-vm' and 'host: Running' and 'kubelet: Running' and 'apiserver: Running' in starting_minikube_status.stdout)"
 
-- name: Add Traefik helm repo
-  shell: |
-    helm repo add stable {{helm_stable_repo_url}}
-    helm repo update;
-  # become: true
-  # become_method: sudo
-  # become_flags: '-E -S -n'
-
 - name: Enable default NGINX Ingress Controller
   shell: minikube addons enable ingress
   environment:
