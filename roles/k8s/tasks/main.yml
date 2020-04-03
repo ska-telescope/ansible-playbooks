@@ -170,7 +170,7 @@
 
   when: "not ('minikube-vm' and 'host: Running' and 'kubelet: Running' and 'apiserver: Running' in starting_minikube_status.stdout)"
 
-- name: Enable default NGINX Ingress Controller
+# - name: Ad- name: Enable default NGINX Ingress Controller
   shell: minikube addons enable ingress
   environment:
     MINIKUBE_WANTUPDATENOTIFICATION: false
@@ -212,7 +212,4 @@
     - name: Install traefik
       shell:
         helm install traefik0 stable/traefik --namespace=kube-system --set externalIP={{ansible_default_ipv4.address}}
-      become: true
-      become_method: sudo
-      become_flags: '-E -S -n'
       when: "not minikube_use_nginx"

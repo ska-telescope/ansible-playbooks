@@ -65,16 +65,3 @@
   shell: |
     helm repo add stable {{helm_stable_repo_url}}
     helm repo update;
-  become: true
-  become_method: sudo
-  become_flags: '-E -S -n'
-
-- name: Fix permissions for helm repo directory
-  file:
-    path: '{{localhome}}/.config'
-    mode: "0755"
-    owner: '{{localuser}}'
-    group: '{{localuser}}' 
-  become: true
-  become_method: sudo
-  become_flags: '-E -S -n'
