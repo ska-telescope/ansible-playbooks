@@ -19,7 +19,7 @@
 - name: Check if helm is installed
   stat:
     path: '{{ minikube_install_dir }}/{{ helm_name }}'
-  register: helm_installed.stat.exists
+  register: helm_installed
 
 - name: ensure target directory
   file:

@@ -1,0 +1,31 @@
+---
+
+- name: set facts for helm
+  set_fact:
+    "user_home": "{{ lookup('env','HOME') }}"
+
+- name: Check if helm is installed
+  stat:
+    path: '{{ minikube_install_dir }}/{{ helm_name }}'
+  register: helm_installed
+
+- name: Uninstall Helm
+  block:
+    - name: Remove Helm binary
+      file:
+        path: '{{ minikube_install_dir }}/{{ helm_name }}'
+        state: absent
+      become: yes
+
+    - name: Remove Helm link
+      file:
+        path: '{{ minikube_install_dir }}/{{ helm_name }}-{{ helm_version }}'
+        state: absent
+      become: yes
+
+    - name: Remove config files
+      file:
+        path: '{{ user_home }}/.config/{{ helm_name }}'
+        state: absent
+      become: yes
+  when: helm_installed.stat.exists == true
