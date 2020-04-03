@@ -28,4 +28,11 @@
         path: '{{ user_home }}/.config/{{ helm_name }}'
         state: absent
       become: yes
+
+    - name: Remove Helm Repository Cache
+      file:
+        path:  '{{ user_home }}/.cache'
+        state: absent
+      become: yes
+      
   when: helm_installed.stat.exists == true
