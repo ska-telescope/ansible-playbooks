@@ -28,11 +28,6 @@
     group: "{{ localuser }}"
   become: yes
 
-- name: Copy generated file to configuration directory
-  copy:
-    src: "{{playbook_dir}}/roles/prometheus/generated/"
-    dest: "{{ prometheus_config_dir }}/"
-
 - name: Copy prom_helper to /usr/local/bin
   copy:
     src: "{{playbook_dir}}/openstack/prom_helper.py"
