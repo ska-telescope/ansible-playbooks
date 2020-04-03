@@ -33,6 +33,35 @@
     src: "{{playbook_dir}}/roles/prometheus/generated/"
     dest: "{{ prometheus_config_dir }}/"
 
+- name: Copy prom_helper to /usr/local/bin
+  copy:
+    src: "{{playbook_dir}}/openstack/prom_helper.py"
+    dest: "/usr/local/bin/prom_helper.py"
+  become: yes
+
+- name: Set environment variables for prom_helper
+  blockinfile:
+    path: /etc/environment
+    block: |
+      auth_url="{{ auth_url }}"
+      username="{{ username }}"
+      password="{{ password }}"
+      project_name="{{ project_name }}"
+  become: yes
+
+- name: Install cron 
+  apt:
+    pkg:
+      - cron
+    state: present
+    update_cache: yes
+
+- name: Add cron job
+  lineinfile:
+    path: /etc/crontab
+    line: 0 4     * * *   root    python3 /usr/local/bin/prom_helper.py -g && mv *.json /etc/prometheus/
+  become: yes
+
 - name: Generate Prometheus configuration
   become: true
   template:

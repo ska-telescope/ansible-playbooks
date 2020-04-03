@@ -11,7 +11,7 @@ prometheus_alertmanager_data_dir: /alertmanager
 grafana_provisioning_config_dir: /etc/grafana/provisioning/datasources
 grafana_data: /var/lib/grafana
 
-slack_api_url: "https://hooks.slack.com/services/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"
+slack_api_url: "https://hooks.slack.com/services/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"
 
 k8s_api_server: ""
 k8s_certificate_authority: "/home/ubuntu/.minikube/ca.crt"
@@ -19,6 +19,11 @@ k8s_client_certificate: "/home/ubuntu/.minikube/client.crt"
 k8s_client_key: "/home/ubuntu/.minikube/client.key"
 k8s_bearer_token: ""
 k8s_username: minikube
+
+auth_url: "http://192.168.93.215:5000/v3/"
+username: "matteodicarlo"
+password: "*************"
+project_name: "geral;system-team;admin"
 
 prometheus_global:
   scrape_interval: 15s
@@ -85,6 +90,11 @@ prometheus_scrape_configs:
     file_sd_configs:
     - files:
       - 'kubernetes_telemetry.json'
+
+  - job_name: "ceph_cluster"
+    file_sd_configs:
+    - files:
+      - 'ceph-mgr.json'
 
 blackbox_ssh_targets:
   - "{{ ansible_fqdn | default(ansible_host) | default('localhost') }}:22" #matteo devenv
