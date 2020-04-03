@@ -19,5 +19,5 @@ route:
 receivers:
 - name: 'slack-notifications'
   slack_configs:
-  - channel: 'Matteo Di Carlo'
-    text: "http://{{ ansible_fqdn | default(ansible_host) | default('localhost') }}:9090/alerts"
+  - channel: 'prometheus-alerts'
+    text: "http://alerts.engageska-portugal.pt/alerts"

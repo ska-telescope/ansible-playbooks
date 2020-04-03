@@ -212,4 +212,54 @@
     - name: Install traefik
       shell:
         helm install traefik0 stable/traefik --namespace=kube-system --set externalIP={{ansible_default_ipv4.address}}
-      when: "not minikube_use_nginx"
+  when: "not minikube_use_nginx"
+
+# https://github.com/kubernetes/kube-state-metrics/tree/master/examples/standard
+- name: Check if "kube-state-metrics is active"
+  shell: kubectl get deployment kube-state-metrics --namespace kube-system
+  changed_when: False
+  register: kubectl_metrics
+  ignore_errors: true
+
+- name: Activate kube-state-metrics
+  block:
+
+    - name: Init kube-state-metrics.
+      shell: kubectl \
+            apply -f https://raw.githubusercontent.com/kubernetes/kube-state-metrics/master/examples/standard/cluster-role-binding.yaml \
+            -f https://raw.githubusercontent.com/kubernetes/kube-state-metrics/master/examples/standard/cluster-role.yaml \
+            -f https://raw.githubusercontent.com/kubernetes/kube-state-metrics/master/examples/standard/deployment.yaml \
+            -f https://raw.githubusercontent.com/kubernetes/kube-state-metrics/master/examples/standard/service-account.yaml \
+            -f https://raw.githubusercontent.com/kubernetes/kube-state-metrics/master/examples/standard/service.yaml
+
+    - name: NodePort configuration for kube-state-metrics
+      blockinfile:
+        path: /tmp/kube-state-metrics-nodeport.yaml
+        create: yes
+        block: |
+          ---
+          apiVersion: v1
+          kind: Service
+          metadata:
+            labels:
+              app.kubernetes.io/name: kube-state-metrics-nodeport
+              app.kubernetes.io/version: 1.9.5
+            name: kube-state-metrics-nodeport
+            namespace: kube-system
+          spec:
+            type: NodePort
+            ports:
+            - name: http-metrics
+              port: 8080
+              nodePort: 32080
+              targetPort: http-metrics
+            - name: telemetry
+              port: 8081
+              nodePort: 32081
+              targetPort: telemetry
+            selector:
+              app.kubernetes.io/name: kube-state-metrics
+
+    - name: Init kube-state-metrics.
+      shell: kubectl apply -f /tmp/kube-state-metrics-nodeport.yaml
+  when: not kubectl_metrics.rc == 0

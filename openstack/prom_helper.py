@@ -13,6 +13,45 @@ from threading import Thread
 import socket
 import json, argparse
 
+NAMESPACE_PREFIX = 'prom:'
+EXPORTERS = {'gitlab_exporter': {'name': 'runner', 'port': 9252},
+             'node_exporter': {'name': 'node', 'port': 9100},
+             'elasticsearch_exporter': {'name': 'elasticsearch', 'port': 9114},
+             'ceph-mgr': {'name': 'ceph_cluster', 'port': 9283},
+             'docker_exporter': {'name': 'docker', 'port': 9323},
+             'kubernetes_exporter': {'name': 'k8smetrics', 'port': 32080},
+             'kubernetes_telemetry': {'name': 'k8stelemetry', 'port': 32081}
+             }
+
+def check_port(address, port):
+    location = (address, port)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    return sock.connect_ex(location)
+
+def get_novac(proj_name):
+    auth = v3.Password(auth_url=os.environ["auth_url"],
+                        username=os.environ["username"],
+                        password=os.environ["password"],
+                        project_name=proj_name,
+                        user_domain_id='default',
+                        project_domain_name='default')
+
+    sess = session.Session(auth=auth, verify=False)
+
+    return novaclient.client.Client(2, session=sess)
+
+def get_address(server):
+    address = "-"
+    addresses = server.to_dict()['addresses']
+    for key in addresses:
+        for entry in addresses[key]:
+            if "192.168.93" in entry["addr"]:
+                address = entry["addr"]
+                break
+        if address != "-":
+            break
+    return address
+
 def update_openstack_metadata():
     proj_list = os.environ["project_name"].split(';')
 
@@ -23,55 +62,27 @@ def update_openstack_metadata():
     nodes2ansible = []
 
     for proj_name in proj_list:
-        auth = v3.Password(auth_url=os.environ["auth_url"],
-                        username=os.environ["username"],
-                        password=os.environ["password"],
-                        project_name=proj_name,
-                        user_domain_id='default',
-                        project_domain_name='default')
-
-        sess = session.Session(auth=auth, verify=False)
-
-        novac = novaclient.client.Client(2, session=sess)
-
+        novac = get_novac(proj_name)
         for server in novac.servers.list():
             server_name = str(server.to_dict()['name']).lower()
-            address = "-"
-            addresses = server.to_dict()['addresses']
-            for key in addresses:
-                for entry in addresses[key]:
-                    if "192.168.93" in entry["addr"]:
-                        address = entry["addr"]
-            
+            address = get_address(server)
             if address == "-":
                 continue
 
             updated_metadata = False
-            # it is a runner if 9252 is open
-            location = (address, 9252)
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            result_of_check = sock.connect_ex(location)
-            if result_of_check == 0:
-                try: 
-                    novac.servers.set_meta_item(server.id, "prom_gitlab_exporter", address+":9252")
-                    runners.append(address)
-                    updated_metadata = True
-                except:
-                    print("Problem with server " + server.id)
-                    print (server)
-
-            # it is a node-exporter if 9100 is open
-            location = (address, 9100)
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            result_of_check = sock.connect_ex(location)
-            if result_of_check == 0:
-                try: 
-                    novac.servers.set_meta_item(server.id, "prom_node_exporter", address+":9100")
-                    nodes.append(address)
-                    updated_metadata = True
-                except:
-                    print("Problem with server " + server.id)
-                    print (server)
+            for exporter_name, details in EXPORTERS.items():
+                result_of_check = check_port(address, details['port'])
+                if result_of_check == 0:
+                    try:
+                        novac.servers.set_meta_item(server.id, NAMESPACE_PREFIX + exporter_name, address+":"+str(details['port']))
+                        if exporter_name == 'gitlab_exporter':
+                            runners.append(address)
+                        elif exporter_name == 'node_exporter':
+                            nodes.append(address)
+                        updated_metadata = True
+                    except:
+                        print("Problem with server " + server.id)
+                        print (server)
 
             if(updated_metadata):
                 continue
@@ -101,65 +112,36 @@ def update_openstack_metadata():
 def generate_targets_from_metadata():
     proj_list = os.environ["project_name"].split(';')
 
-    runners_targets = []
-    nodes_targets = []
+    targets = {}
 
     for proj_name in proj_list:
-        auth = v3.Password(auth_url=os.environ["auth_url"],
-                        username=os.environ["username"],
-                        password=os.environ["password"],
-                        project_name=proj_name,
-                        user_domain_id='default',
-                        project_domain_name='default')
-
-        sess = session.Session(auth=auth, verify=False)
-
-        novac = novaclient.client.Client(2, session=sess)
-
+        novac = get_novac(proj_name)
         for server in novac.servers.list():
             server_name = str(server.to_dict()['name']).lower()
-            address = "-"
-            addresses = server.to_dict()['addresses']
-            for key in addresses:
-                for entry in addresses[key]:
-                    if "192.168.93" in entry["addr"]:
-                        address = entry["addr"]
-            
+            address = get_address(server)
             if address == "-":
                 continue
 
-            try:
-                runners_targets.append(server.to_dict()['metadata']['prom_gitlab_exporter'])
-            except KeyError:
-                pass
+            for exporter_name, details in EXPORTERS.items():
+                if not exporter_name in targets:
+                    targets[exporter_name] = []
+                try:
+                    targets[exporter_name].append(server.to_dict()['metadata'][NAMESPACE_PREFIX + exporter_name])
+                except KeyError:
+                    pass
 
-            try:
-                nodes_targets.append(server.to_dict()['metadata']['prom_node_exporter'])
-            except KeyError:
-                pass
+    for exporter_name, export_targets in targets.items():
+        json_job = [{
+            "labels": {
+                "job": EXPORTERS[exporter_name]['name']
+                },
+                "targets": export_targets
+        }]
 
-    json_nodes = [{
-        "labels": {
-            "job": "node"
-            },
-            "targets": nodes_targets
-    }]
-
-    print("Generating node_targets.json")
-    with open("node_targets.json", "w") as outfile:
-        json.dump(json_nodes, outfile, indent=2)
-
-    json_runners = [{
-        "labels": {
-            "job": "gitlab-runner"
-            },
-            "targets": runners_targets
-    }]
-
-    print("Generating gitlab.json")
-    with open("gitlab.json", "w") as outfile:
-        json.dump(json_runners, outfile, indent=2)
-
+        json_file = exporter_name + ".json"
+        print("Generating %s" % json_file)
+        with open(json_file, "w") as outfile:
+            json.dump(json_job, outfile, indent=2)
 
 start_time = datetime.datetime.now()
 
@@ -169,6 +151,10 @@ LOG = logging.getLogger(__name__)
 
 if os.environ.get('http_proxy') or os.environ.get('https_proxy'):
 	LOG.WARN("Proxy env vars set")
+
+if (os.environ.get('auth_url') is None) or (os.environ.get('username') is None) or (os.environ.get('password') is None) or (os.environ.get('project_name') is None):
+    print("Please provide the following environment variables: auth_url, username, password, project_name(comma separated values)")
+    sys.exit(1)
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-u', '--update_metadata', help='update metadata on openstack and generate ansible hosts inventory file',action='store_true')

@@ -14,19 +14,19 @@ The variable file include an example configuration made for testing purpose whic
 Call the playbook with the following command to install the prometheus server (which includes the db, the alert manager, the black box exporter and grafana): 
 
 ```
-    ansible-playbook deploy_prometheus.yaml --extra-vars "mode='server'" -i hosts
+    ansible-playbook deploy_prometheus.yaml --extra-vars "mode='server'" -i hosts -e 'ansible_python_interpreter=/usr/bin/python3'
 ```
 
 Call the playbook with the following command to install the node-exporter: 
 
 ```
-    ansible-playbook deploy_prometheus.yaml --extra-vars "mode='exporter'" -i hosts
+    ansible-playbook deploy_prometheus.yaml --extra-vars "mode='exporter'" -i hosts -e 'ansible_python_interpreter=/usr/bin/python3'
 ```
 
 Call the playbook with the following command to install both server and exporter: 
 
 ```
-    ansible-playbook deploy_prometheus.yaml --extra-vars -i hosts
+    ansible-playbook deploy_prometheus.yaml --extra-vars -i hosts -e 'ansible_python_interpreter=/usr/bin/python3'
 ```
 
 Remember to check the variable file available in roles/prometheus/vars before calling the playbook. 
