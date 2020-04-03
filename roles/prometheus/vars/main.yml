@@ -44,6 +44,8 @@ prometheus_scrape_configs:
     static_configs:
       - targets:
           - "{{ ansible_fqdn | default(ansible_host) | default('localhost') }}:9090"
+          - "192.168.93.208:9090" #controller1-1
+          - "192.168.93.209:9090" #controller1-2
 
   - job_name: "node"
     static_configs:
