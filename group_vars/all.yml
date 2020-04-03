@@ -46,7 +46,7 @@ kubectl_mirror: https://storage.googleapis.com/kubernetes-release/release
 # Helm vars
 helm_name: helm
 helm_mirror: https://get.helm.sh
-# tiller_url: https://github.com/rimusz/helm-tiller
+helm_stable_repo_url: https://kubernetes-charts.storage.googleapis.com
 
 # Traefik vars
 traefik_url: https://containous.github.io/traefik-helm-chart
