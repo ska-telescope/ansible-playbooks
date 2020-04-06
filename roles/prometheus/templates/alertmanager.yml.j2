@@ -16,6 +16,9 @@ route:
   repeat_interval: 1h
   group_by: [alertname, datacenter, app]
 
+inhibit_rules:
+{{ alerts_inhibit_rules | to_nice_yaml(indent=2) | indent(2,False) }}
+
 receivers:
 - name: 'slack-notifications'
   slack_configs:
