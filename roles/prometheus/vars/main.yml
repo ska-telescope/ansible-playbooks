@@ -12,7 +12,8 @@ grafana_provisioning_config_dir: /etc/grafana/provisioning/datasources
 grafana_data: /var/lib/grafana
 
 # Alert Manager
-slack_api_url: "https://hooks.slack.com/services/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"
+# slack_api_url has to be set in the command line
+slack_api_url: "*********************"
 
 alerts_inhibit_rules: []
 # - target_match:
