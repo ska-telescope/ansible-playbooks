@@ -34,6 +34,11 @@
     name: grafana/grafana
     tag: "{{grafana_docker_tags}}"
 
+- name: Stop grafana container
+  docker_container:
+    name: grafana
+    state: absent
+
 - name: Start grafana container
   docker_container:
     name: grafana
@@ -47,4 +52,4 @@
     volumes:
       - "{{ grafana_provisioning_config_dir }}:/etc/grafana/provisioning/datasources"
       - "{{ grafana_data }}:/var/lib/grafana"
-      - "/etc/hosts:/etc/hosts"
+      - "/etc/hosts:/etc/hosts:ro"

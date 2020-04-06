@@ -4,6 +4,12 @@
 prometheus_binary_dir: /usr/local/bin
 prometheus_config_dir: /etc/prometheus
 prometheus_data_dir: /prometheus
+prometheus_node_metric_relabel_configs: []
+elasticsearch_instance_add_cluster_label:
+  - regex: '^192\.168\.93\.(94|96|112):(\d+)'
+    replacement: ska-systems1
+    source_labels: [instance]
+    target_label: cluster
 
 prometheus_alertmanager_config_dir: /etc/alertmanager
 prometheus_alertmanager_data_dir: /alertmanager
@@ -67,6 +73,7 @@ prometheus_scrape_configs:
     file_sd_configs:
     - files:
       - 'node_exporter.json'
+    metric_relabel_configs: "{{ elasticsearch_instance_add_cluster_label + prometheus_node_metric_relabel_configs }}"
 
   - job_name: "gitlab-runner"
     file_sd_configs:

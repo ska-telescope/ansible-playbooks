@@ -98,6 +98,11 @@
     [ ! -f {{ k8s_client_certificate }} ] || cp -rf {{ k8s_client_certificate }} {{ prometheus_config_dir }}
     [ ! -f {{ k8s_client_key }} ] || cp -rf {{ k8s_client_key }} {{ prometheus_config_dir }}
 
+- name: Stop prometheus container
+  docker_container:
+    name: prometheus
+    state: absent
+
 - name: Start prometheus container
   docker_container:
     name: prometheus
@@ -110,5 +115,5 @@
      - "9090:9090"
     volumes:
       - "{{ prometheus_config_dir }}:/etc/prometheus"
-      - "/etc/hosts:/etc/hosts"
+      - "/etc/hosts:/etc/hosts:ro"
       - "{{ prometheus_data_dir }}:/prometheus"

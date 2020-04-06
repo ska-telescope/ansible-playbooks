@@ -27,6 +27,11 @@
     name: quay.io/prometheus/alertmanager
     tag: "{{prometheus_alertmanager_docker_tags}}"
 
+- name: Stop alertmanager container
+  docker_container:
+    name: alertmanager
+    state: absent
+
 - name: Start Prometheus alertmanager container
   docker_container:
     name: alertmanager
@@ -38,6 +43,6 @@
     ports:
      - "9093:9093"
     volumes:
-      - "{{ prometheus_alertmanager_config_dir }}:/etc/alertmanager"
-      - "/etc/hosts:/etc/hosts"
+      - "{{ prometheus_alertmanager_config_dir }}:/etc/alertmanager:ro"
+      - "/etc/hosts:/etc/hosts:ro"
       - "{{ prometheus_alertmanager_data_dir }}:/alertmanager"
