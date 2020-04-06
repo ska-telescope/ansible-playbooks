@@ -1,0 +1,42 @@
+---
+
+- name: make sure grafana configuration directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    recurse: yes
+  with_items:
+    # - "/etc/grafana/dashboards/kubernetes-dashboard"
+    - "/etc/grafana/provisioning/datasources"
+    - "/etc/grafana/provisioning/dashboards/kubernetes-dashboard"
+    - "/etc/grafana/provisioning/notifiers"
+
+- name: Copy up resource files
+  copy:
+    src: "{{ role_path }}/files/dashboards/kubernetes/{{ item }}"
+    dest: "/etc/grafana/provisioning/dashboards/kubernetes-dashboard/{{ item }}"
+  with_items:
+    - apiserver.json
+    - cluster-total.json
+    - controller-manager.json
+    - k8s-resources-cluster.json
+    - k8s-resources-namespace.json
+    - k8s-resources-node.json
+    - k8s-resources-pod.json
+    - k8s-resources-workload.json
+    - k8s-resources-workloads-namespace.json
+    - kubelet.json
+    - namespace-by-pod.json
+    - namespace-by-workload.json
+    - persistentvolumesusage.json
+    - pod-total.json
+    - proxy.json
+    - scheduler.json
+    - statefulset.json
+    - workload-total.json
+
+- name: Write dashboards provisioning config file
+  template:
+    src: dashboards-kubernetes-dashboard.yml.j2
+    dest: /etc/grafana/provisioning/dashboards/kubernetes-dashboard.yml
+    mode: 0640

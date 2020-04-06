@@ -4,10 +4,10 @@
 - debug: var=ansible_hostname
 
 - name: "Build hosts file"
-  lineinfile: 
-      path: /etc/hosts 
-      regexp: '.*{{ ansible_hostname }}' 
-      line: "{{ansible_default_ipv4.address}}\t{{ ansible_hostname }}" 
+  lineinfile:
+      path: /etc/hosts
+      regexp: '.*{{ ansible_hostname }}'
+      line: "{{ ansible_default_ipv4.address }}\t{{ ansible_hostname }}"
       state: present
-  when: 
+  when:
     - ansible_default_ipv4 is defined

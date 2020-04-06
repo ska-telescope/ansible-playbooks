@@ -1,7 +1,7 @@
 ---
 # tasks file for prometheus
 
-- name: Install distutils 
+- name: Install distutils
   apt:
     pkg:
       - python3-distutils
@@ -15,7 +15,7 @@
     dest: /tmp/get-pip.py
     mode: '0744'
 
-- name: get-pip
+- name: get-pip # noqa 301 Commands should not change things if nothing needs doing
   shell: |
     python3 /tmp/get-pip.py
 
@@ -42,6 +42,15 @@
 
 - include: grafana.yml
   when: mode == "server" or mode == "all"
+
+- include: grafana_ceph.yml
+  when: mode == "exporter" or mode == "all"
+
+- include: grafana_elasticstack.yml
+  when: mode == "exporter" or mode == "all"
+
+- include: grafana_kubernetes.yml
+  when: mode == "exporter" or mode == "all"
 
 - include: node_exporter.yml
   when: mode == "exporter" or mode == "all"

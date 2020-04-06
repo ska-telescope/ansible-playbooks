@@ -4,5 +4,5 @@
     insertafter: "check_interval = 0"
     line: listen_address = ":9252"
 
-- name: Restart gitlab-runner service
+- name: Restart gitlab-runner service # noqa 301 305
   shell: "gitlab-runner restart"

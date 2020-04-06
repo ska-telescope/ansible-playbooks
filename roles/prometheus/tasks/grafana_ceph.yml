@@ -1,0 +1,55 @@
+---
+
+- name: make sure grafana configuration directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    recurse: yes
+  with_items:
+    - "/etc/grafana/provisioning/datasources"
+    - "/etc/grafana/provisioning/dashboards/ceph-dashboard"
+    - "/etc/grafana/provisioning/notifiers"
+
+- name: download ceph grafana dashboards
+  get_url:
+    url: "https://raw.githubusercontent.com/ceph/ceph/{{ grafana_dashboard_version }}/monitoring/grafana/dashboards/{{ item }}"
+    dest: "/etc/grafana/provisioning/dashboards/ceph-dashboard/{{ item }}"
+  with_items: "{{ grafana_dashboard_files }}"
+
+- name: Write dashboards provisioning config file
+  template:
+    src: dashboards-ceph-dashboard.yml.j2
+    dest: /etc/grafana/provisioning/dashboards/ceph-dashboard.yml
+    mode: 0640
+
+# - name: copy grafana SSL certificate file
+#   copy:
+#     src: "{{ grafana_crt }}"
+#     dest: "/etc/grafana/ceph-dashboard.crt"
+#     owner: "{{ grafana_uid }}"
+#     group: "{{ grafana_uid }}"
+#     mode: 0640
+#   when:
+#     - grafana_crt | length > 0
+#     - dashboard_protocol == "https"
+
+# - name: copy grafana SSL certificate key
+#   copy:
+#     src: "{{ grafana_key }}"
+#     dest: "/etc/grafana/ceph-dashboard.key"
+#     owner: "{{ grafana_uid }}"
+#     group: "{{ grafana_uid }}"
+#     mode: 0440
+#   when:
+#     - grafana_key | length > 0
+#     - dashboard_protocol == "https"
+
+# - name: generate a Self Signed OpenSSL certificate for dashboard
+#   shell: |
+#     test -f /etc/grafana/ceph-dashboard.key -a -f /etc/grafana/ceph-dashboard.crt || \
+#     (openssl req -new -nodes -x509 -subj '/O=IT/CN=ceph-grafana' -days 3650 -keyout /etc/grafana/ceph-dashboard.key -out /etc/grafana/ceph-dashboard.crt -extensions v3_ca && \
+#     chown {{ grafana_uid }}:{{ grafana_uid }} /etc/grafana/ceph-dashboard.key /etc/grafana/ceph-dashboard.crt)
+#   when:
+#     - dashboard_protocol == "https"
+#     - grafana_key | length == 0 or grafana_crt | length == 0
+
