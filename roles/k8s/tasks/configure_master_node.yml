@@ -65,3 +65,7 @@
   command: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 
 - include: roles/helm/tasks/cluster.yml
+
+- name: Install traefik
+  shell:
+    helm install traefik0 stable/traefik --namespace=kube-system --set externalIP={{ansible_default_ipv4.address}}
