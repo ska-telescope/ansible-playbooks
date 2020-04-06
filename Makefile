@@ -134,6 +134,13 @@ skampi:  ## Ansible playbook for install and launching Minikube
 	 --extra-vars='{"ansible_become_pass": $(PASSWORD), "use_driver": false, "use_calico": $(USE_CALICO), "use_nginx": $(USE_NGINX), "minikube_disk_size": $(FORMATTED_DISK_SIZE), "minikube_memory": $(V_MEMORY), "minikube_cpus": $(V_CPUS)}' \
 	 deploy_skampi.yml
 
+k8s-heat-cluster: ## Create a cluster using heat-cluster inventory
+	ansible-playbook -i heat-cluster/hosts_k8s \
+		-v \
+		-e @heat-cluster/playbooks/group_vars/generic \
+		-e @heat-cluster/private_vars_k8s_helm3.yml \
+		setup_cluster.yml
+
 help:  ## show this help.
 	@echo "make targets:"
 	@grep -E '^[0-9a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ": .*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
