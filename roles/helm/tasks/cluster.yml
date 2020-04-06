@@ -1,32 +1,37 @@
 - name: Download helm install script
   get_url:
-    url: https://raw.githubusercontent.com/helm/helm/master/scripts/get
-    dest: /root/helm.sh
+    url: https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+    dest: /root/get_helm.sh
     mode: '0700'
 
 - name: Replace "/usr/local/bin" by "/bin"
   replace:
-    path: /root/helm.sh
+    path: /root/get_helm.sh
     regexp: '/usr/local/bin'
     replace: "/bin"
 
 - name: Install Helm
-  shell: "/root/helm.sh -v {{ helm_version }}"
+  shell: "/root/get_helm.sh -v {{ helm_version }}"
   args:
     executable: /bin/bash
 
-- name: Initialise Helm
-  shell: "helm init"
-  args:
-    executable: /bin/bash
+# - name: Initialise Helm
+#   shell: "helm init"
+#   args:
+#     executable: /bin/bash
 
 - name: Tidy up Helm script
   file:
-    path: '/root/helm.sh'
+    path: '/root/get_helm.sh'
     state: absent
 
-- name: Install tiller plugin
-  shell: "helm plugin install https://github.com/rimusz/helm-tiller"
-  args:
-    executable: /bin/bash
-  ignore_errors: yes
+# - name: Install tiller plugin
+#   shell: "helm plugin install https://github.com/rimusz/helm-tiller"
+#   args:
+#     executable: /bin/bash
+#   ignore_errors: yes
+
+- name: Add stable helm repo
+  shell: |
+    helm repo add stable {{helm_stable_repo_url}}
+    helm repo update;
