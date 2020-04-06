@@ -11,7 +11,7 @@ prometheus_alertmanager_data_dir: /alertmanager
 grafana_provisioning_config_dir: /etc/grafana/provisioning/datasources
 grafana_data: /var/lib/grafana
 
-slack_api_url: "https://hooks.slack.com/services/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"
+slack_api_url: "https://hooks.slack.com/services/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"
 
 k8s_api_server: ""
 k8s_certificate_authority: "/home/ubuntu/.minikube/ca.crt"
