@@ -15,4 +15,4 @@
     ports:
      - "9115:9115"
     volumes:
-      - "/etc/hosts:/etc/hosts"
+      - "/etc/hosts:/etc/hosts:ro"

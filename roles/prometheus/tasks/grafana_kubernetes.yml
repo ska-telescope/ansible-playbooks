@@ -6,7 +6,6 @@
     state: directory
     recurse: yes
   with_items:
-    # - "/etc/grafana/dashboards/kubernetes-dashboard"
     - "/etc/grafana/provisioning/datasources"
     - "/etc/grafana/provisioning/dashboards/kubernetes-dashboard"
     - "/etc/grafana/provisioning/notifiers"

@@ -51,16 +51,31 @@
     state: present
     update_cache: yes
 
+# the generated prometheus_node_metric_relabel_configs.yaml must
+#  go in the playbook_dir ready to run
 - name: Add cron job
   lineinfile:
     path: /etc/crontab
-    line: 30 *     * * *   root    python3 /usr/local/bin/prom_helper.py -g && mv *.json /etc/prometheus/
+    regexp: 'prom_helper.py'
+    line: >-
+      30 *     * * *   root    python3 /usr/local/bin/prom_helper.py -g &&
+      mv *.json /etc/prometheus/ &&
+      cp prometheus_node_metric_relabel_configs.yaml {{ playbook_dir }}/
   become: yes
 
+# touch prometheus_node_metric_relabel_configs.yaml just incase it does not exist
 - name: Add cron job for the playbook
   lineinfile:
     path: /etc/crontab
-    line: 0 4     * * *   root    cd {{playbook_dir}} && git pull && ansible-playbook deploy_prometheus.yml -i hosts --extra-vars "password='{{ password }}' slack_api_url='{{slack_api_url}}'" -e 'ansible_python_interpreter=/usr/bin/python3'
+    regexp: 'deploy_prometheus.yml'
+    line: >-
+      0 4     * * *   root    cd {{ playbook_dir }} &&
+      touch prometheus_node_metric_relabel_configs.yaml &&
+      git pull &&
+      ansible-playbook deploy_prometheus.yml -i hosts --tags "cron"
+      --extra-vars "password='{{ password }}' slack_api_url='{{ slack_api_url }}'"
+      -e 'ansible_python_interpreter=/usr/bin/python3'
+      -e @prometheus_node_metric_relabel_configs.yaml
   become: yes
 
 - name: Generate Prometheus configuration
@@ -152,7 +167,7 @@
 - name: Start prometheus container
   docker_container:
     name: prometheus
-    image: "prom/prometheus:{{ prometheus_docker_tags} }"
+    image: "prom/prometheus:{{ prometheus_docker_tags }}"
     state: started
     user: root
     restart: yes
@@ -160,6 +175,6 @@
     ports:
      - "9090:9090"
     volumes:
-      - "{{ prometheus_config_dir }}:/etc/prometheus"
+      - "{{ prometheus_config_dir }}:/etc/prometheus:ro"
       - "/etc/hosts:/etc/hosts:ro"
       - "{{ prometheus_data_dir }}:/prometheus"
