@@ -54,7 +54,13 @@
 - name: Add cron job
   lineinfile:
     path: /etc/crontab
-    line: 0 4     * * *   root    python3 /usr/local/bin/prom_helper.py -g && mv *.json /etc/prometheus/
+    line: 30 *     * * *   root    python3 /usr/local/bin/prom_helper.py -g && mv *.json /etc/prometheus/
+  become: yes
+
+- name: Add cron job for the playbook
+  lineinfile:
+    path: /etc/crontab
+    line: 0 4     * * *   root    cd {{playbook_dir}} && git pull && ansible-playbook deploy_prometheus.yml -i hosts --extra-vars "password='{{ password }}' slack_api_url='{{slack_api_url}}'" -e 'ansible_python_interpreter=/usr/bin/python3'
   become: yes
 
 - name: Generate Prometheus configuration
