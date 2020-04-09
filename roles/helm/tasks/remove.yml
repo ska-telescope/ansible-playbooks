@@ -22,7 +22,7 @@
 
     - name: Remove Helm link
       file:
-        path: '{{ minikube_install_dir }}/{{ helm_name }}-*
+        path: '{{ minikube_install_dir }}/{{ helm_name }}-*'
         state: absent
       become: yes
 
