@@ -8,7 +8,7 @@
   command: helm reset
   ignore_errors: yes
 
-- name: Find all files with helm in name
+- name: Find all helm-related files in previously known locations
   find:
     paths: "{{ minikube_install_dir }}"
     patterns: '{{ helm_name }}*'
@@ -19,6 +19,21 @@
     path: "{{ item.path }}"
     state: absent
   with_items: "{{ files_to_delete.files }}"
+
+- name: Find alternative locations also
+  shell: which helm
+  register: helm_path
+  ignore_errors: yes
+
+- debug:
+    msg: '{{ helm_path.stdout }}'
+    verbosity: 1
+
+- name: Remove if any helm executable still exists
+  file:
+    path: '{{ helm_path.stdout }}'
+    state: absent
+  
 
 #   file:
 #     path: '{{ minikube_install_dir }}/{{ helm_name }}'
