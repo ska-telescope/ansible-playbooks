@@ -4,11 +4,16 @@
   set_fact:
     "user_home": "{{ lookup('env','HOME') }}"
 
-- name: Reset Helm (uninstall Tiller)
-  command: helm reset
-  become: yes
-  ignore_errors: yes
+    - name: Reset Helm
+    shell: helm reset
+    become: yes
+    ignore_errors: yes
 
+    - name: uninstall Tiller # should be unnecessary, but let's double-check
+    shell: kubectl delete deployment.apps/tiller-deploy  service/tiller-deploy -n kube-system
+    become: yes
+    ignore_errors: yes
+    
 - name: Find all helm-related files in previously known locations
   find:
     paths: "{{ minikube_install_dir }}"
