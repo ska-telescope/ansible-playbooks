@@ -6,6 +6,7 @@
 
 - name: Reset Helm (uninstall Tiller)
   command: helm reset
+  become: yes
   ignore_errors: yes
 
 - name: Find all helm-related files in previously known locations
