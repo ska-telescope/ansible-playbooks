@@ -4,38 +4,40 @@
   set_fact:
     "user_home": "{{ lookup('env','HOME') }}"
 
-- name: Check if helm is installed
-  stat:
-    path: '{{ minikube_install_dir }}/{{ helm_name }}'
-  register: helm_installed
+- name: Reset Helm (uninstall Tiller)
+  command: helm reset
 
-- name: Uninstall Helm
-  block:
-    - name: Reset Helm (uninstall Tiller)
-      command: helm reset
+- name: Find all files with helm in name
+  find:
+    paths: "{{ minikube_install_dir }}"
+    patterns: '{{ helm_name }}*'
+  register: files_to_delete
 
-    - name: Remove Helm binary
-      file:
-        path: '{{ minikube_install_dir }}/{{ helm_name }}'
-        state: absent
-      become: yes
+- name: Remove all Helm files
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ files_to_delete.files }}"
 
-    - name: Remove Helm link
-      file:
-        path: '{{ minikube_install_dir }}/{{ helm_name }}-*'
-        state: absent
-      become: yes
+#   file:
+#     path: '{{ minikube_install_dir }}/{{ helm_name }}'
+#     state: absent
+#   become: yes
 
-    - name: Remove config files
-      file:
-        path: '{{ user_home }}/.config/{{ helm_name }}'
-        state: absent
-      become: yes
+# - name: Remove Helm link
+#   file:
+#     path: '{{ minikube_install_dir }}/{{ helm_name }}-*'
+#     state: absent
+#   become: yes
 
-    - name: Remove Helm Repository Cache
-      file:
-        path:  '{{ user_home }}/.cache'
-        state: absent
-      become: yes
-      
-  when: helm_installed.stat.exists == true
+- name: Remove config files
+  file:
+    path: '{{ user_home }}/.config/{{ helm_name }}'
+    state: absent
+  become: yes
+
+- name: Remove Helm Repository Cache
+  file:
+    path:  '{{ user_home }}/.cache'
+    state: absent
+  become: yes
