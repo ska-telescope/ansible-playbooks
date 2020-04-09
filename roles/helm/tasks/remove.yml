@@ -11,6 +11,10 @@
 
 - name: Uninstall Helm
   block:
+    - name: Remove Tiller using helm reset
+      command: helm reset
+      ignore_errors: yes
+
     - name: Remove Helm binary
       file:
         path: '{{ minikube_install_dir }}/{{ helm_name }}'

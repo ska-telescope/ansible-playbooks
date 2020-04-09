@@ -1,0 +1,61 @@
+---
+- name: Check if skampi exists
+  stat: 
+    path: /usr/src/skampi/Makefile
+  register: skampiDir
+
+- name: Creates directory /usr/src/skampi
+  file:
+    path: /usr/src/skampi
+    state: directory
+  when: skampiDir.stat.exists == false
+
+- git:
+    repo: 'https://gitlab.com/ska-telescope/skampi.git'
+    dest: /usr/src/skampi
+    update: yes
+    force: yes
+    ssh_opts: "-o StrictHostKeyChecking=no"
+
+- name: Change file ownership, group and permissions
+  file:
+    # become: yes
+    path: /usr/src/skampi
+    recurse: yes
+    owner: '{{ ansible_user }}'
+    group: '{{ ansible_user }}'
+
+- name: Replace helm fetch with helm pull 
+  replace: 
+    path: /usr/src/skampi/Makefile
+    regexp: 'helm fetch'
+    replace: 'helm pull'
+    force: yes
+    ssh_opts: "-o StrictHostKeyChecking=no"
+
+- name: Change file ownership, group and permissions
+  file:
+    # become: yes
+    path: /usr/src/skampi
+    recurse: yes
+    owner: '{{ ansible_user }}'
+    group: '{{ ansible_user }}'
+
+- name: Replace helm fetch with helm pull 
+  replace: 
+    path: /usr/src/skampi/Makefile
+    regexp: 'helm fetch'
+    replace: 'helm pull'
+    
+- name: First deploy the Tango Base
+  become: yes
+  shell: |
+    cd /usr/src/skampi
+    make deploy HELM_CHART=tango-base 
+    
+- name: Start the integrated system
+  become: yes
+  shell: |
+    cd /usr/src/skampi
+    make deploy_all KUBE_NAMESPACE=integration 
+    kubectl get all,pv,pvc,ingress -n integration
