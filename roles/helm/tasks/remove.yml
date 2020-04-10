@@ -25,6 +25,7 @@
   file:
     path: "{{ item.path }}"
     state: absent
+  become: yes
   with_items: "{{ files_to_delete.files }}"
 
 - name: Find alternative locations also
@@ -46,12 +47,6 @@
     path: '{{ minikube_install_dir }}/{{ helm_name }}'
     state: absent
   become: yes
-
-# - name: Remove Helm link
-#   file:
-#     path: '{{ minikube_install_dir }}/{{ helm_name }}-{{ helm_version }}'
-#     state: absent
-#   become: yes
 
 - name: Remove config files
   file:
