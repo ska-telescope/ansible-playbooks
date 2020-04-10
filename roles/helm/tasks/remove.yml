@@ -4,21 +4,26 @@
   set_fact:
     "user_home": "{{ lookup('env','HOME') }}"
 
-    - name: Reset Helm
-    shell: helm reset
-    become: yes
-    ignore_errors: yes
+- name: Reset Helm
+  shell: helm reset
+  become: yes
+  ignore_errors: yes
 
-    - name: uninstall Tiller # should be unnecessary, but let's double-check
-    shell: kubectl delete deployment.apps/tiller-deploy  service/tiller-deploy -n kube-system
-    become: yes
-    ignore_errors: yes
+- name: uninstall Tiller # should be unnecessary, but let's double-check
+  shell: kubectl delete deployment.apps/tiller-deploy  service/tiller-deploy -n kube-system
+  become: yes
+  ignore_errors: yes
     
 - name: Find all helm-related files in previously known locations
   find:
     paths: "{{ minikube_install_dir }}"
     patterns: '{{ helm_name }}*'
+    recurse: yes
   register: files_to_delete
+
+# - debug: Display Helm files to delete 
+#     msg: "This is the list {{ files_to_delete }}" 
+#   verbosity: 1
 
 - name: Remove all Helm files
   file:
@@ -40,15 +45,15 @@
     path: '{{ helm_path.stdout }}'
     state: absent
   
-
-#   file:
-#     path: '{{ minikube_install_dir }}/{{ helm_name }}'
-#     state: absent
-#   become: yes
+- name: Remove symlink
+  file:
+    path: '{{ minikube_install_dir }}/{{ helm_name }}'
+    state: absent
+  become: yes
 
 # - name: Remove Helm link
 #   file:
-#     path: '{{ minikube_install_dir }}/{{ helm_name }}-*'
+#     path: '{{ minikube_install_dir }}/{{ helm_name }}-{{ helm_version }}'
 #     state: absent
 #   become: yes
 
