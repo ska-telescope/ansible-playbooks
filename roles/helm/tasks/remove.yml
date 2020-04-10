@@ -11,7 +11,7 @@
 
 - name: uninstall Tiller # should be unnecessary, but let's double-check
   shell: kubectl delete deployment.apps/tiller-deploy  service/tiller-deploy -n kube-system
-  become: yes
+  # become: yes
   ignore_errors: yes
     
 - name: Find all helm-related files in previously known locations
@@ -20,10 +20,6 @@
     patterns: '{{ helm_name }}*'
     recurse: yes
   register: files_to_delete
-
-# - debug: Display Helm files to delete 
-#     msg: "This is the list {{ files_to_delete }}" 
-#   verbosity: 1
 
 - name: Remove all Helm files
   file:
@@ -68,3 +64,12 @@
     path:  '{{ user_home }}/.cache'
     state: absent
   become: yes
+
+- name: Remove plugin files
+  file:
+    path: "{{ item }}"
+    state: absent
+  become: yes
+  with_items:
+    - '{{ user_home }}/.local/share/{{ helm_name }}'
+    - '{{ user_home }}/.helm'
