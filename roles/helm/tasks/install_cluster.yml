@@ -1,23 +1,23 @@
 - name: Download helm install script
   get_url:
     url: https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
-    dest: /root/get_helm.sh
+    dest: /tmp/get_helm.sh
     mode: '0700'
 
 - name: Replace "/usr/local/bin" by "/bin"
   replace:
-    path: /root/get_helm.sh
+    path: /tmp/get_helm.sh
     regexp: '/usr/local/bin'
     replace: "/bin"
 
 - name: Install Helm
-  shell: "/root/get_helm.sh -v {{ helm_version }}"
+  shell: "/tmp/get_helm.sh -v {{ helm_version }}"
   args:
     executable: /bin/bash
 
 - name: Tidy up Helm script
   file:
-    path: '/root/get_helm.sh'
+    path: '/tmp/get_helm.sh'
     state: absent
 
 - name: Add stable helm repo
