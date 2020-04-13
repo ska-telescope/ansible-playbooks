@@ -2,6 +2,5 @@
 
 - name: Upgrade from Helm 2 to Helm 3
   hosts: development
-  tasks: 
-    - include: roles/helm/tasks/remove.yml
-    - include: roles/helm/tasks/install_cluster.yml
+  roles:
+    - helm
