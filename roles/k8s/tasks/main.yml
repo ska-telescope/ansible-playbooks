@@ -170,7 +170,7 @@
 
   when: "not ('minikube-vm' and 'host: Running' and 'kubelet: Running' and 'apiserver: Running' in starting_minikube_status.stdout)"
 
-# - name: Ad- name: Enable default NGINX Ingress Controller
+- name: Enable default NGINX Ingress Controller
   shell: minikube addons enable ingress
   environment:
     MINIKUBE_WANTUPDATENOTIFICATION: false
