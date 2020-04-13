@@ -4,6 +4,26 @@
     dest: /tmp/get_helm.sh
     mode: '0700'
 
+- name: Add /usr/local/bin to system path
+  copy:
+    dest: 
+  shell: export PATH=/usr/local/bin:$PATH
+
+  # Also make /usr/local/bin available for future sessions
+- name: Add /usr/local/bin to system path in profile
+  copy: 
+    content: pathmunge /usr/local/bin
+    dest: /etc/profile.d/helm_path.sh
+    force: no
+  become: yes
+  when: ansible_distribution == 'CentOS'
+
+- name: Make helm_path file executable
+  file:
+    path: /etc/profile.d/helm_path.sh
+    mode: +x
+  become: yes
+
 - name: Install Helm
   shell: "/tmp/get_helm.sh -v {{ helm_version }}"
   args:
