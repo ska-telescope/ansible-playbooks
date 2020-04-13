@@ -41,6 +41,7 @@
   file:
     path: '{{ helm_path.stdout }}'
     state: absent
+  become: yes
   
 - name: Remove symlink
   file:

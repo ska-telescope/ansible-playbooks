@@ -4,11 +4,11 @@
     dest: /tmp/get_helm.sh
     mode: '0700'
 
-- name: Replace "/usr/local/bin" by "/bin"
-  replace:
-    path: /tmp/get_helm.sh
-    regexp: '/usr/local/bin'
-    replace: "/bin"
+# - name: Replace "/usr/local/bin" by "/bin"
+#   replace:
+#     path: /tmp/get_helm.sh
+#     regexp: '/usr/local/bin'
+#     replace: "/bin"
 
 - name: Install Helm
   shell: "/tmp/get_helm.sh -v {{ helm_version }}"
