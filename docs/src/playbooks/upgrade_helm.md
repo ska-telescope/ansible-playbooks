@@ -22,4 +22,4 @@ You can also investigate if the deployment worked, using kubectl:
     kubectl get all -A
 ```
 
-It may happen that some of your `pv`/`pvc` deployments are not running - you can delete them using `kubectl` and redeploy with `make redeploy` as above.
+It may happen that some of your `pv`/`pvc` deployments do not run properly - you can delete them using `kubectl` and redeploy with `make redeploy` as above.

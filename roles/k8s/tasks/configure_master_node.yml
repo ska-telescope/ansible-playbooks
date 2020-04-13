@@ -64,7 +64,7 @@
 - name: Install Network Add-on
   command: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 
-- include: roles/helm/tasks/cluster.yml
+- include: roles/helm/tasks/install.yml
 
 - name: Install traefik
   shell:
