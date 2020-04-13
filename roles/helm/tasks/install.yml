@@ -7,9 +7,8 @@
 - name: Add /usr/local/bin to system path
   copy:
     dest: 
-  shell: export PATH=/usr/local/bin:$PATH
+    shell: export PATH=/usr/local/bin:$PATH
 
-  # Also make /usr/local/bin available for future sessions
 - name: Add /usr/local/bin to system path in profile
   copy: 
     content: pathmunge /usr/local/bin
