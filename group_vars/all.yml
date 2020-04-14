@@ -10,7 +10,7 @@ localhome: "{{ lookup('env','HOME') }}"
 kubectl_version: 'v1.15.0'
 kvm2_driver_version: 'v1.1.1'
 minikube_version: 'v1.2.0'
-helm_version: v2.16.1
+helm_version: v3.1.2
 calico_version: v3.9
 minikube_disk_size: 32g
 minikube_memory: 8192
@@ -45,8 +45,11 @@ kubectl_mirror: https://storage.googleapis.com/kubernetes-release/release
 
 # Helm vars
 helm_name: helm
-helm_mirror: https://kubernetes-helm.storage.googleapis.com
-tiller_url: https://github.com/rimusz/helm-tiller
+helm_mirror: https://get.helm.sh
+helm_stable_repo_url: https://kubernetes-charts.storage.googleapis.com
+
+# Traefik vars
+traefik_url: https://containous.github.io/traefik-helm-chart
 
 # development environment 
 pycharm_version: 'community-2018.3.3'
