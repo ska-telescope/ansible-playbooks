@@ -3,7 +3,7 @@ In order to upgrade your existing cluster to use Helm 3, you will need to uninst
 
 There is a possibility that you may still need to delete PersistentVolumes and PersistentVolumeClaims, depending on your local setup, if they are not deployed correctly after the upgrade.
 
-# Usage
+## Usage
 Call the `upgrade_helm.yml` playbook on your Minikube cluster: 
 
 ```
