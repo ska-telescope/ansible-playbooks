@@ -28,5 +28,5 @@ TODO: above two playbooks need to be merged.
 ### Openstack provisioners
 * `openstack.yml`
 
-### Upgrade Hel
+### Upgrade Helm
 * `upgrade_helm.yml` - upgrade from Helm 2 to Helm 3
