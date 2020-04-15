@@ -125,7 +125,7 @@ minikube:  ## Ansible playbook for installing k8s and launching Minikube
 	 -vvvv \
    --limit=development \
 	 --extra-vars='{"use_driver": $(DRIVER), "use_calico": $(USE_CALICO), "use_nginx": $(USE_NGINX), "minikube_disk_size": $(FORMATTED_DISK_SIZE), "minikube_memory": $(V_MEMORY), "minikube_cpus": $(V_CPUS)}' \
-	 minikube.yml
+	 deploy_minikube.yml
 
 skampi:  ## Ansible playbook for installing k8s and launching skampi on a Minikube cluster
 	PYTHONUNBUFFERED=1 ANSIBLE_FORCE_COLOR=true ANSIBLE_CONFIG='ansible-local.cfg' \
