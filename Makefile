@@ -140,7 +140,8 @@ remove_minikube: ## Destroy minikube after removing deployments
 	sudo rm -rf ~/.kube && \
 	sudo rm -rf /var/lib/kubeadm.yaml /data/minikube /var/lib/minikube /var/lib/kubelet /etc/kubernetes && \
 	sudo rm -rf ~/.minikube && \
-	sudo rm -rf /usr/local/bin/minikube*
+	sudo rm -rf /usr/local/bin/minikube* && \
+	sudo rm -rf /usr/local/bin/kubectl*
 
 	
 ansible_install: ## Add the repository and install in the current system python
