@@ -134,6 +134,15 @@ skampi:  ## Ansible playbook for installing k8s and launching skampi on a Miniku
 	 --extra-vars='{"use_driver": false, "use_calico": $(USE_CALICO), "use_nginx": $(USE_NGINX), "minikube_disk_size": $(FORMATTED_DISK_SIZE), "minikube_memory": $(V_MEMORY), "minikube_cpus": $(V_CPUS)}' \
 	 deploy_skampi.yml
 
+remove_minikube: ## Destroy minikube after removing deployments
+	sudo minikube stop && \
+	sudo minikube delete && \
+	sudo rm -rf ~/.kube && \
+	sudo rm -rf /var/lib/kubeadm.yaml /data/minikube /var/lib/minikube /var/lib/kubelet /etc/kubernetes && \
+	sudo rm -rf ~/.minikube && \
+	sudo rm -rf /usr/local/bin/minikube*
+
+	
 ansible_install: ## Add the repository and install in the current system python
 	sudo apt-add-repository --yes --update ppa:ansible/ansible && sudo apt-get install ansible -y
 
