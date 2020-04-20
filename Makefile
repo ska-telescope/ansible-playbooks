@@ -22,7 +22,7 @@ V_IP ?= 172.16.0.92  ## Vagrant private network IP
 
 # Minikube
 DRIVER ?= true  ## Run Minikube via 'kvm2' driver (true) or 'none' (false)
-USE_CALICO ?= true  ## Use Calico for Pod Networking
+USE_CALICO ?= false  ## Use Calico for Pod Networking
 USE_NGINX ?= false  ## Use NGINX as the Ingress Controller
 
 # Format the disk size for minikube - 999g
