@@ -1,0 +1,2 @@
+externalIP: "{{ansible_default_ipv4.address}}"
+namespace: kube-system

@@ -64,35 +64,8 @@
 - name: Install Network Add-on
   command: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 
-- name: Download helm install script
-  get_url:
-    url: https://raw.githubusercontent.com/helm/helm/master/scripts/get
-    dest: /root/helm.sh
-    mode: '0700'
+- include: roles/helm/tasks/install.yml
 
-- name: Replace "/usr/local/bin" by "/bin"
-  replace:
-    path: /root/helm.sh
-    regexp: '/usr/local/bin'
-    replace: "/bin"
-
-- name: Install Helm
-  shell: "/root/helm.sh -v {{ helm_version }}"
-  args:
-    executable: /bin/bash
-
-- name: Initialise Helm
-  shell: "helm init"
-  args:
-    executable: /bin/bash
-
-- name: Tidy up Helm script
-  file:
-    path: '/root/helm.sh'
-    state: absent
-
-- name: Install tiller plugin
-  shell: "helm plugin install https://github.com/rimusz/helm-tiller"
-  args:
-    executable: /bin/bash
-  ignore_errors: yes
+- name: Install traefik
+  shell:
+    helm install traefik0 stable/traefik --namespace=kube-system --set externalIP={{ansible_default_ipv4.address}}

@@ -1,0 +1,6 @@
+---
+
+- name: Upgrade from Helm 2 to Helm 3
+  hosts: development
+  roles:
+    - helm

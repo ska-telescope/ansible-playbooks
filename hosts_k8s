@@ -1,0 +1,28 @@
+# Ansible Shade uses OpenStack clients running locally
+[openstack]
+localhost ansible_connection=local ansible_python_interpreter=python3
+
+# hack because of jinja2 scoping in loops
+
+[cluster:children]
+kubernetes-master-nodes
+kubernetes-worker-nodes
+
+[kubernetes-master-nodes]
+helm3-k8s-test-master-0 ansible_host=192.168.93.85 docker_vol_diskid="2032bc16-65ba-43a9-9" data_vol_diskid=""  data2_vol_diskid="" node_role=master dns=kubernetes-v3.engageska-portugal.pt
+
+
+[kubernetes-worker-nodes]
+helm3-k8s-test-worker-0 ansible_host=192.168.93.91 docker_vol_diskid="8475b3f5-fd6a-49ee-b" data_vol_diskid=""  data2_vol_diskid="" node_role=worker
+helm3-k8s-test-worker-1 ansible_host=192.168.93.118 docker_vol_diskid="d73c700b-3e4d-43b3-8" data_vol_diskid=""  data2_vol_diskid="" node_role=worker
+
+
+# Specific roles for cluster deployment assignments
+[cluster_nodes:children]
+kubernetes-master-nodes 
+kubernetes-worker-nodes
+
+
+[cluster:vars]
+ansible_user=centos
+
