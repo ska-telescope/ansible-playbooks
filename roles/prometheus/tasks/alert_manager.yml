@@ -15,22 +15,27 @@
 - name: Generate Prometheus alertmanager configuration
   become: true
   template:
-    src: "{{playbook_dir}}/roles/prometheus/templates/alertmanager.yml.j2"
+    src: "{{ playbook_dir }}/roles/prometheus/templates/alertmanager.yml.j2"
     dest: "{{ prometheus_alertmanager_config_dir }}/alertmanager.yml"
     force: true
     owner: "{{ localuser }}"
     group: "{{ localuser }}"
     mode: 0755
 
-- name: Pull Prometheus alertmanager image {{prometheus_alertmanager_docker_tags}}
+- name: Pull Prometheus alertmanager image {{ prometheus_alertmanager_docker_tags }}
   docker_image:
     name: quay.io/prometheus/alertmanager
-    tag: "{{prometheus_alertmanager_docker_tags}}"
+    tag: "{{ prometheus_alertmanager_docker_tags }}"
+
+- name: Stop alertmanager container
+  docker_container:
+    name: alertmanager
+    state: absent
 
 - name: Start Prometheus alertmanager container
   docker_container:
     name: alertmanager
-    image: "quay.io/prometheus/alertmanager:{{prometheus_alertmanager_docker_tags}}"
+    image: "quay.io/prometheus/alertmanager:{{ prometheus_alertmanager_docker_tags }}"
     state: started
     user: root
     restart: yes
@@ -38,6 +43,6 @@
     ports:
      - "9093:9093"
     volumes:
-      - "{{ prometheus_alertmanager_config_dir }}:/etc/alertmanager"
-      - "/etc/hosts:/etc/hosts"
+      - "{{ prometheus_alertmanager_config_dir }}:/etc/alertmanager:ro"
+      - "/etc/hosts:/etc/hosts:ro"
       - "{{ prometheus_alertmanager_data_dir }}:/alertmanager"

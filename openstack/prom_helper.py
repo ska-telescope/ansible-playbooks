@@ -12,6 +12,7 @@ import sys
 from threading import Thread
 import socket
 import json, argparse
+import re
 
 NAMESPACE_PREFIX = 'prom:'
 EXPORTERS = {'gitlab_exporter': {'name': 'runner', 'port': 9252},
@@ -22,6 +23,7 @@ EXPORTERS = {'gitlab_exporter': {'name': 'runner', 'port': 9252},
              'kubernetes_exporter': {'name': 'k8smetrics', 'port': 32080},
              'kubernetes_telemetry': {'name': 'k8stelemetry', 'port': 32081}
              }
+RELABEL_KEY = 'prometheus_node_metric_relabel_configs'
 
 def check_port(address, port):
     location = (address, port)
@@ -113,6 +115,7 @@ def generate_targets_from_metadata():
     proj_list = os.environ["project_name"].split(';')
 
     targets = {}
+    hostrelabelling = {RELABEL_KEY: []}
 
     for proj_name in proj_list:
         novac = get_novac(proj_name)
@@ -121,6 +124,13 @@ def generate_targets_from_metadata():
             address = get_address(server)
             if address == "-":
                 continue
+
+            hostrelabelling[RELABEL_KEY].append(
+                                   {'source_labels': ["instance"],
+                                    'regex': re.escape(address)+':(\d+)',
+                                    'action': "replace",
+                                    'target_label': "instance",
+                                    'replacement': server_name})
 
             for exporter_name, details in EXPORTERS.items():
                 if not exporter_name in targets:
@@ -142,6 +152,11 @@ def generate_targets_from_metadata():
         print("Generating %s" % json_file)
         with open(json_file, "w") as outfile:
             json.dump(json_job, outfile, indent=2)
+
+    yaml_file = "%s.yaml" % RELABEL_KEY
+    print("Generating %s" % yaml_file)
+    with open(yaml_file, "w") as outfile:
+        yaml.dump(hostrelabelling, outfile, indent=2)
 
 start_time = datetime.datetime.now()
 

@@ -30,7 +30,7 @@
 
 - name: Copy prom_helper to /usr/local/bin
   copy:
-    src: "{{playbook_dir}}/openstack/prom_helper.py"
+    src: "{{ playbook_dir }}/openstack/prom_helper.py"
     dest: "/usr/local/bin/prom_helper.py"
   become: yes
 
@@ -44,29 +44,44 @@
       project_name="{{ project_name }}"
   become: yes
 
-- name: Install cron 
+- name: Install cron
   apt:
     pkg:
       - cron
     state: present
     update_cache: yes
 
+# the generated prometheus_node_metric_relabel_configs.yaml must
+#  go in the playbook_dir ready to run
 - name: Add cron job
   lineinfile:
     path: /etc/crontab
-    line: 30 *     * * *   root    python3 /usr/local/bin/prom_helper.py -g && mv *.json /etc/prometheus/
+    regexp: 'prom_helper.py'
+    line: >-
+      30 *     * * *   root    python3 /usr/local/bin/prom_helper.py -g &&
+      mv *.json /etc/prometheus/ &&
+      cp prometheus_node_metric_relabel_configs.yaml {{ playbook_dir }}/
   become: yes
 
+# touch prometheus_node_metric_relabel_configs.yaml just incase it does not exist
 - name: Add cron job for the playbook
   lineinfile:
     path: /etc/crontab
-    line: 0 4     * * *   root    cd {{playbook_dir}} && git pull && ansible-playbook deploy_prometheus.yml -i hosts --extra-vars "password='{{ password }}' slack_api_url='{{slack_api_url}}'" -e 'ansible_python_interpreter=/usr/bin/python3'
+    regexp: 'deploy_prometheus.yml'
+    line: >-
+      0 4     * * *   root    cd {{ playbook_dir }} &&
+      touch prometheus_node_metric_relabel_configs.yaml &&
+      git pull &&
+      ansible-playbook deploy_prometheus.yml -i hosts --tags "cron"
+      --extra-vars "password='{{ password }}' slack_api_url='{{ slack_api_url }}'"
+      -e 'ansible_python_interpreter=/usr/bin/python3'
+      -e @prometheus_node_metric_relabel_configs.yaml
   become: yes
 
 - name: Generate Prometheus configuration
   become: true
   template:
-    src: "{{playbook_dir}}/roles/prometheus/templates/prometheus.yml.j2"
+    src: "{{ playbook_dir }}/roles/prometheus/templates/prometheus.yml.j2"
     dest: "{{ prometheus_config_dir }}/prometheus.yml"
     force: true
     owner: "{{ localuser }}"
@@ -75,7 +90,7 @@
 
 - name: Create alerting rules file
   template:
-    src: "{{playbook_dir}}/roles/prometheus/templates/alert.rules.j2"
+    src: "{{ playbook_dir }}/roles/prometheus/templates/alert.rules.j2"
     dest: "{{ prometheus_config_dir }}/rules/ansible_managed.rules"
     owner: "{{ localuser }}"
     group: "{{ localuser }}"
@@ -85,7 +100,7 @@
 
 - name: Create record rules file
   template:
-    src: "{{playbook_dir}}/roles/prometheus/templates/record.rules.j2"
+    src: "{{ playbook_dir }}/roles/prometheus/templates/record.rules.j2"
     dest: "{{ prometheus_config_dir }}/rules/record.rules"
     owner: "{{ localuser }}"
     group: "{{ localuser }}"
@@ -93,21 +108,66 @@
   when:
     - prometheus_record_rules != []
 
-- name: Pull prometheus image {{prometheus_docker_tags}}
+- name: copy ceph alerting rules
+  copy:
+    src: "{{ role_path }}/files/rules/ceph/ceph_dashboard.rules"
+    dest: "/etc/prometheus/rules/ceph_dashboard.rules"
+    owner: "{{ localuser }}"
+    group: "{{ localuser }}"
+    mode: 0644
+
+- name: copy elasticstack alerting rules
+  copy:
+    src: "{{ role_path }}/files/rules/elasticstack/elasticsearch.rules"
+    dest: "/etc/prometheus/rules/elasticsearch.rules"
+    owner: "{{ localuser }}"
+    group: "{{ localuser }}"
+    mode: 0644
+
+- name: copy kubernetes alerting rules
+  copy:
+    src: "{{ role_path }}/files/rules/kubernetes/{{ item }}"
+    dest: "/etc/prometheus/rules/kubernetes_{{ item }}"
+    owner: "{{ localuser }}"
+    group: "{{ localuser }}"
+    mode: 0644
+  with_items:
+    - prometheus_alerts.yaml
+    - prometheus_rules.yaml
+
+- name: Copy up resource files
+  copy:
+    src: "{{ role_path }}/files/{{ item }}"
+    dest: "{{ prometheus_config_dir }}/{{ item }}"
+  with_items:
+    - ceph-mgr.json
+    - docker_exporter.json
+    - elasticsearch_exporter.json
+    - gitlab_exporter.json
+    - kubernetes_exporter.json
+    - kubernetes_telemetry.json
+    - node_exporter.json
+
+- name: Pull prometheus image {{ prometheus_docker_tags }}
   docker_image:
     name: prom/prometheus
-    tag: "{{prometheus_docker_tags}}"
+    tag: "{{ prometheus_docker_tags }}"
 
-- name: Setup config folder
+- name: Setup config folder # noqa 301 Commands should not change things if nothing needs doing
   shell: |
     [ ! -f {{ k8s_certificate_authority }} ] || cp -rf {{ k8s_certificate_authority }} {{ prometheus_config_dir }}
     [ ! -f {{ k8s_client_certificate }} ] || cp -rf {{ k8s_client_certificate }} {{ prometheus_config_dir }}
     [ ! -f {{ k8s_client_key }} ] || cp -rf {{ k8s_client_key }} {{ prometheus_config_dir }}
 
+- name: Stop prometheus container
+  docker_container:
+    name: prometheus
+    state: absent
+
 - name: Start prometheus container
   docker_container:
     name: prometheus
-    image: "prom/prometheus:{{prometheus_docker_tags}}"
+    image: "prom/prometheus:{{ prometheus_docker_tags }}"
     state: started
     user: root
     restart: yes
@@ -115,6 +175,6 @@
     ports:
      - "9090:9090"
     volumes:
-      - "{{ prometheus_config_dir }}:/etc/prometheus"
-      - "/etc/hosts:/etc/hosts"
+      - "{{ prometheus_config_dir }}:/etc/prometheus:ro"
+      - "/etc/hosts:/etc/hosts:ro"
       - "{{ prometheus_data_dir }}:/prometheus"

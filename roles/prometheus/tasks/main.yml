@@ -1,7 +1,7 @@
 ---
 # tasks file for prometheus
 
-- name: Install distutils 
+- name: Install distutils
   apt:
     pkg:
       - python3-distutils
@@ -15,7 +15,7 @@
     dest: /tmp/get-pip.py
     mode: '0744'
 
-- name: get-pip
+- name: get-pip # noqa 301 Commands should not change things if nothing needs doing
   shell: |
     python3 /tmp/get-pip.py
 
@@ -31,16 +31,7 @@
   - { name: rackspace-novaclient, version: 2.1 }
   - { name: python-heatclient, version: 2.0.0 }
 
-- include: server.yml
-  when: mode == "server" or mode == "all"
-
-- include: alert_manager.yml
-  when: mode == "server" or mode == "all"
-
 - include: blackbox_exporter.yml
-  when: mode == "server" or mode == "all"
-
-- include: grafana.yml
   when: mode == "server" or mode == "all"
 
 - include: node_exporter.yml
@@ -48,3 +39,28 @@
 
 - include: runner_exporter.yml
   when: mode == "runner"
+
+- include: grafana_ceph.yml
+  when: mode == "exporter" or mode == "all"
+
+- include: grafana_elasticstack.yml
+  when: mode == "exporter" or mode == "all"
+
+- include: grafana_kubernetes.yml
+  when: mode == "exporter" or mode == "all"
+
+# launch prom/alert/grafana after configuration
+- include: server.yml
+  when: mode == "server" or mode == "all"
+  tags:
+  - cron
+
+- include: alert_manager.yml
+  when: mode == "server" or mode == "all"
+  tags:
+  - cron
+
+- include: grafana.yml
+  when: mode == "server" or mode == "all"
+  tags:
+  - cron
