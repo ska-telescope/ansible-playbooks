@@ -1,10 +1,10 @@
 ---
 - name: install libselinux-python
   yum:
-    name: 
+    name:
       - libselinux-python
       - prometheus-node-exporter
-    state: latest
+    state: present
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat'
 
 - name: Configure /etc/apt/sources.list
@@ -19,16 +19,15 @@
 
       deb http://it.archive.ubuntu.com/ubuntu/ focal-updates main universe restricted multiverse
       deb-src http://it.archive.ubuntu.com/ubuntu/ focal-updates main universe restricted multiverse
-  when: 
+  when:
     - ansible_distribution == 'Ubuntu'
 
 - name: Install prometheus-node-exporter
   become: yes
   apt:
-    name:
-        - prometheus-node-exporter
-    state: latest
-    force: yes 
+    name: prometheus-node-exporter
+    state: present
+    force: yes
     update_cache: yes
-  when: 
+  when:
     - ansible_distribution == 'Ubuntu'

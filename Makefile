@@ -34,6 +34,7 @@ FORMATTED_DISK_SIZE = $(shell echo $(V_DISK_SIZE) | sed 's/[^0-9]*//g')g
 
 # define targets for creating a k8s cluster
 -include k8s_cluster.mk
+-include PrivateRules.mak
 
 vars: ## Vagrant and DISPLAY variables
 	@echo "V_BOX: $(V_BOX)"
@@ -118,15 +119,16 @@ vagrant_down: vars  ## destroy vagrant instance
 	USE_NGINX=$(USE_NGINX) \
 		vagrant destroy -f
 
-minikube:  ## Ansible playbook for install and launching Minikube
+minikube:  ## Ansible playbook for installing k8s and launching Minikube
 	PYTHONUNBUFFERED=1 ANSIBLE_FORCE_COLOR=true ANSIBLE_CONFIG='ansible-local.cfg' \
 	ansible-playbook --inventory=hosts \
-	 -v \
+	 -vvvv \
    --limit=development \
 	 --extra-vars='{"use_driver": $(DRIVER), "use_calico": $(USE_CALICO), "use_nginx": $(USE_NGINX), "minikube_disk_size": $(FORMATTED_DISK_SIZE), "minikube_memory": $(V_MEMORY), "minikube_cpus": $(V_CPUS)}' \
 	 deploy_minikube.yml
 
-skampi:  ## Ansible playbook for install and launching Minikube
+skampi:  ## Ansible playbook for installing k8s and launching skampi on a Minikube cluster
+	PYTHONUNBUFFERED=1 ANSIBLE_FORCE_COLOR=true ANSIBLE_CONFIG='ansible-local.cfg' \
 	ansible-playbook --inventory=hosts \
 	 -vvv \
 	 --extra-vars='{"use_driver": false, "use_calico": $(USE_CALICO), "use_nginx": $(USE_NGINX), "minikube_disk_size": $(FORMATTED_DISK_SIZE), "minikube_memory": $(V_MEMORY), "minikube_cpus": $(V_CPUS)}' \

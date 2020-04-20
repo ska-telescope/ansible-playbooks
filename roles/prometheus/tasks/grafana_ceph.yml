@@ -1,0 +1,23 @@
+---
+
+- name: make sure grafana configuration directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    recurse: yes
+  with_items:
+    - "/etc/grafana/provisioning/datasources"
+    - "/etc/grafana/provisioning/dashboards/ceph-dashboard"
+    - "/etc/grafana/provisioning/notifiers"
+
+- name: download ceph grafana dashboards
+  get_url:
+    url: "https://raw.githubusercontent.com/ceph/ceph/{{ grafana_dashboard_version }}/monitoring/grafana/dashboards/{{ item }}"
+    dest: "/etc/grafana/provisioning/dashboards/ceph-dashboard/{{ item }}"
+  with_items: "{{ grafana_dashboard_files }}"
+
+- name: Write dashboards provisioning config file
+  template:
+    src: dashboards-ceph-dashboard.yml.j2
+    dest: /etc/grafana/provisioning/dashboards/ceph-dashboard.yml
+    mode: 0640

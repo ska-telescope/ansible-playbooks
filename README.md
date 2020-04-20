@@ -34,7 +34,9 @@ or with sudo:
 * Add the ssh key to the managed hosts (if not localhost). 
 
 ## Playbooks
-The `deploy_tangoenv.yml` playbook can be used for deploying a local Tango Controls development environment:
+This repository contains a large number of ansible-playbooks that can assist a developer with installing and configuring software and infrastructure on local, virtual or cloud based machines.
+
+The `deploy_tangoenv.yml` playbook can be used for deploying a local Tango Controls development environment, as described on the [SKA Developer Portal](https://developer.skatelescope.org/en/latest/tools/tango-devenv-setup.html#creating-a-development-environment):
 
 ### Deploy Tango Environment
 
@@ -47,7 +49,10 @@ or with a password (replace `$PASSWORD` with an actual password):
     export PASSWORD=my-sudo-user-password
     ansible-playbook -i hosts deploy_tangoenv.yml --extra-vars "ansible_become_pass=$PASSWORD"
 ```
-
+To finish the installation, reboot the system:
+```
+    sudo reboot
+```
 To work with pytango, activate the virtualenv:
 ``` 
     source /venv/bin/activate

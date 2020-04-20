@@ -82,9 +82,7 @@
     chown -R {{ ansible_user }} /home/{{ ansible_user }}/.kube
     chgrp -R {{ ansible_user }} /home/{{ ansible_user }}/.kube
 
-- name: Install helm
-  shell: |
-    curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash
+- include: roles/helm/tasks/install.yml
 
 - name: Copy /etc/kubernetes/addons/ingress-dp.yaml
   copy:

@@ -1,0 +1,46 @@
+[{
+        "labels": {
+            "job": "node",
+            "instance": "wattle"
+        },
+        "targets": [
+            "192.168.86.47:9100"
+        ]
+    },
+    {
+        "labels": {
+            "job": "node",
+            "instance": "ceph_system_core-master-0"
+        },
+        "targets": [
+            "192.168.93.103:9100"
+        ]
+    },
+    {
+        "labels": {
+            "job": "node",
+            "instance": "ceph_system_core-master-2"
+        },
+        "targets": [
+            "192.168.93.107:9100"
+        ]
+    },
+    {
+        "labels": {
+            "job": "node",
+            "instance": "ceph_system_core-master-1"
+        },
+        "targets": [
+            "192.168.93.88:9100"
+        ]
+    },
+    {
+        "labels": {
+            "job": "node",
+            "instance": "generic-runner"
+        },
+        "targets": [
+            "192.168.93.84:9100"
+        ]
+    }
+]

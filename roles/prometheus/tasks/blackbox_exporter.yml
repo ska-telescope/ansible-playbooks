@@ -1,13 +1,13 @@
 
-- name: Pull blackbox exporter image {{prometheus_bleckbox_exporter_docker_tags}}
+- name: Pull blackbox exporter image {{ prometheus_bleckbox_exporter_docker_tags }}
   docker_image:
     name: prom/blackbox-exporter
-    tag: "{{prometheus_bleckbox_exporter_docker_tags}}"
+    tag: "{{ prometheus_bleckbox_exporter_docker_tags }}"
 
 - name: Start blackbox exporter container
   docker_container:
     name: blackbox-exporter
-    image: "prom/blackbox-exporter:{{prometheus_bleckbox_exporter_docker_tags}}"
+    image: "prom/blackbox-exporter:{{ prometheus_bleckbox_exporter_docker_tags }}"
     state: started
     user: root
     restart: yes
@@ -15,4 +15,4 @@
     ports:
      - "9115:9115"
     volumes:
-      - "/etc/hosts:/etc/hosts"
+      - "/etc/hosts:/etc/hosts:ro"

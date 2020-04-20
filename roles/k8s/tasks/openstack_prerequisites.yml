@@ -1,7 +1,7 @@
 ---
 - name: set hostname
   hostname:
-    name: "{{ hostname }}"
+    name: "{{ inventory_hostname }}"
 
 - name: remove .novalocal from /etc/hostname
   replace:
@@ -13,8 +13,8 @@
   copy:
    dest: /etc/hosts
    content: |
-    127.0.0.1   {{ hostname }} localhost localhost.localdomain localhost4 localhost4.localdomain4
-    ::1         {{ hostname }} localhost localhost.localdomain localhost6 localhost6.localdomain6
+    127.0.0.1   {{ inventory_hostname }} localhost localhost.localdomain localhost4 localhost4.localdomain4
+    ::1         {{ inventory_hostname }} localhost localhost.localdomain localhost6 localhost6.localdomain6
 
 - name: Delete hostname set and update from cloud-init
   lineinfile:
