@@ -25,6 +25,7 @@
   shell: "{{ minikube_check }} | grep 'host: '"
   args:
     executable: /bin/bash
+  ignore_errors: true
   register: starting_minikube_status
 
 - name: Install Minikube
