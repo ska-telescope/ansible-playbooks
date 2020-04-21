@@ -20,7 +20,7 @@
 
 - name: set facts for minikube
   set_fact:
-    "minikube_use_calico": false
+    "minikube_use_calico": "false"
     "minikube_use_nginx": "{{ use_nginx|bool }}"
     "user_home": "{{ lookup('env','HOME') }}"
     "minikube_check": !unsafe >-
@@ -31,12 +31,9 @@
   shell: "{{ minikube_check }} | grep 'host: '"
   args:
     executable: /bin/bash
+  ignore_errors: true
   register: starting_minikube_status
-  ignore_errors: true ## is this step needed?
-
-# - debug:
-#     var: starting_minikube_status
-#     verbosity: 1
+  ignore_errors: true 
 
 - name: Install Minikube
   block:

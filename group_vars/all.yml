@@ -7,7 +7,7 @@ localuser: "{{ lookup('env','USER') }}"
 localhome: "{{ lookup('env','HOME') }}"
 
 # core software versions to deploy
-kubectl_version: 'v1.18.0'
+kubectl_version: 'v1.18.2'
 kvm2_driver_version: 'v1.1.1'
 minikube_version: 'v1.9.2'
 helm_version: v3.1.2
@@ -16,8 +16,7 @@ minikube_disk_size: 32g
 minikube_memory: 8192
 minikube_cpus: 4
 
-kube_spray_version: 'v2.12.0'
-k8s_version: '1.18.0'
+k8s_version: '1.18.2'
 
 oidc_issuer_url: 'https://gitlab.com'
 oidc_client_id: '417ea12283741e0d74b22778d2dd3f5d0dcee78828c6e9a8fd5e8589025b8d2f'

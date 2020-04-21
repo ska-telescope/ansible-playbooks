@@ -55,12 +55,6 @@
     state: absent
   become: yes
 
-- name: Remove Helm Repository Cache
-  file:
-    path:  '{{ user_home }}/.cache'
-    state: absent
-  become: yes
-
 - name: Remove plugin files
   file:
     path: "{{ item }}"
