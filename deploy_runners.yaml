@@ -10,6 +10,7 @@
     update_hosts: 'yes'
     executor: 'docker'
     docker_image: 'docker:19.03.1'
+    mode: "runner"
   become: true
   become_method: sudo
   become_flags: '-E -S -n'
@@ -17,4 +18,5 @@
     - ska-docker
     - updatehosts
     - runner
+    - prometheus
 
