@@ -1,5 +1,5 @@
 stages:
-  # - build
+  - build
   - trigger
 
 test_ubuntu_18:
@@ -78,7 +78,7 @@ test_debian_buster-slim:
 
 hog_runner_cpu:
   image: debian:buster-slim
-  stage: trigger
+  stage: build
   tags:
     - docker-executor-prom
   script: 
