@@ -2,7 +2,7 @@
 localhost ansible_user=$USER ansible_connection=local
 
 [prometheus]
-localhost ansible_user=$USER ansible_connection=local
+localhost ansible_user=$USER ansible_connection=local ansible_python_interpreter=python3
 
 [nodexporter]
 localhost ansible_user=$USER ansible_connection=local
@@ -11,7 +11,7 @@ localhost ansible_user=$USER ansible_connection=local
 localhost ansible_user=$USER ansible_connection=local
 
 [runners]
-localhost ansible_user=$USER ansible_connection=local
+localhost ansible_user=$USER ansible_connection=local ansible_python_interpreter=python3
 
 [kubernetes-master-nodes]
 192.168.93.62 ansible_user=centos node_role=master hostname=k8s-master dns=kubernetes-v3.engageska-portugal.pt

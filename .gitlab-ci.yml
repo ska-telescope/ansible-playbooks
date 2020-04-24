@@ -75,3 +75,11 @@ test_debian_buster-slim:
   - ansible-playbook -i hosts deploy_tangoenv.yml --extra-vars "install_ska_docker='no' start_tango='no' install_ide='no'"
   - source /venv/bin/activate
   - python3 -c "import tango; print(tango.utils.info())"
+
+hog_runner_cpu:
+  image: debian:buster-slim
+  stage: trigger
+  tags:
+    - docker-executor-prom
+  script: 
+    - ./data/loadcpu.sh 8 10
