@@ -1,5 +1,5 @@
 stages:
-  - build
+  # - build
   - trigger
 
 test_ubuntu_18:
