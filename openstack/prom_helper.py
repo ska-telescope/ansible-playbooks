@@ -133,12 +133,7 @@ def generate_targets_from_metadata():
                                     'regex': re.escape(address)+':(\d+)',
                                     'action': "replace",
                                     'target_label': "instance",
-                                    'replacement': server_name})
-
-            with open('/etc/hosts', "r+") as f:
-                str_file = f.read()
-                if not server_name in str_file:
-                    f.writelines(address + "  " + server_name + "\n")
+                                    'replacement': server_name+':9100'})
 
             for exporter_name, details in EXPORTERS.items():
                 if not exporter_name in targets:
