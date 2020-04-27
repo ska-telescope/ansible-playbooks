@@ -128,18 +128,18 @@ def generate_targets_from_metadata():
             if address == "-":
                 continue
 
-            hostrelabelling[RELABEL_KEY].append(
-                                   {'source_labels': ["instance"],
-                                    'regex': re.escape(address),
-                                    'action': "replace",
-                                    'target_label': "instance",
-                                    'replacement': server_name})
-
             for exporter_name, details in EXPORTERS.items():
                 if not exporter_name in targets:
                     targets[exporter_name] = []
                 try:
                     targets[exporter_name].append(server.to_dict()['metadata'][NAMESPACE_PREFIX + exporter_name])
+
+                    hostrelabelling[RELABEL_KEY].append(
+                                   {'source_labels': ["instance"],
+                                    'regex': re.escape(address)+':(\d+)',
+                                    'action': "replace",
+                                    'target_label': "instance",
+                                    'replacement': server_name+':'+details['port']})
                 except KeyError:
                     pass
 
