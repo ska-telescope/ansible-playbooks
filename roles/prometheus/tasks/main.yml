@@ -49,6 +49,9 @@
 - include: grafana_kubernetes.yml
   when: mode == "server" or mode == "all"
 
+- include: grafana_nodexporter.yml
+  when: mode == "server" or mode == "all"
+
 # launch prom/alert/grafana after configuration
 - include: server.yml
   when: mode == "server" or mode == "all"
