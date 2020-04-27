@@ -139,7 +139,7 @@ def generate_targets_from_metadata():
                                     'regex': re.escape(address)+':(\d+)',
                                     'action': "replace",
                                     'target_label': "instance",
-                                    'replacement': server_name+':'+details['port']})
+                                    'replacement': server_name+':'+str(details['port'])})
                 except KeyError:
                     pass
 
