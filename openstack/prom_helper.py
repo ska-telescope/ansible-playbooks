@@ -130,10 +130,10 @@ def generate_targets_from_metadata():
 
             hostrelabelling[RELABEL_KEY].append(
                                    {'source_labels': ["instance"],
-                                    'regex': re.escape(address)+':(\d+)',
+                                    'regex': re.escape(address),
                                     'action': "replace",
                                     'target_label': "instance",
-                                    'replacement': server_name+':9100'})
+                                    'replacement': server_name})
 
             for exporter_name, details in EXPORTERS.items():
                 if not exporter_name in targets:
