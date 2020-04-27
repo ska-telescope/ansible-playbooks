@@ -1,6 +1,6 @@
 ---
 
-- name: make sure grafana configuration directories exist
+- name: elastic dashboard make sure grafana configuration directories exist
   file:
     path: "{{ item }}"
     state: directory
@@ -10,14 +10,14 @@
     - "/etc/grafana/provisioning/dashboards/elasticstack-dashboard"
     - "/etc/grafana/provisioning/notifiers"
 
-- name: Copy up resource files
+- name: elastic dashboard Copy up resource files
   copy:
     src: "{{ role_path }}/files/dashboards/elasticstack/{{ item }}"
     dest: "/etc/grafana/provisioning/dashboards/elasticstack-dashboard/{{ item }}"
   with_items:
     - dashboard.json
 
-- name: Write dashboards provisioning config file
+- name: elastic dashboard Write dashboards provisioning config file
   template:
     src: dashboards-elasticstack-dashboard.yml.j2
     dest: /etc/grafana/provisioning/dashboards/elasticstack-dashboard.yml

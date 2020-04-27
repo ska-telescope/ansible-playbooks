@@ -1,6 +1,6 @@
 ---
 
-- name: Node-exporter make sure grafana configuration directories exist
+- name: nodexporter-dashboard make sure grafana configuration directories exist
   file:
     path: "{{ item }}"
     state: directory
@@ -10,14 +10,14 @@
     - "/etc/grafana/provisioning/dashboards/nodexporter-dashboard"
     - "/etc/grafana/provisioning/notifiers"
 
-- name: Copy up resource files
+- name: nodexporter-dashboard Copy up resource files
   copy:
     src: "{{ role_path }}/files/dashboards/node-exporter/{{ item }}"
     dest: "/etc/grafana/provisioning/dashboards/nodexporter-dashboard/{{ item }}"
   with_items:
     - node-exporter.json
 
-- name: Write dashboards provisioning config file
+- name: nodexporter-dashboard Write dashboards provisioning config file
   template:
     src: dashboards-nodexporter-dashboard.yml.j2
     dest: /etc/grafana/provisioning/dashboards/nodexporter-dashboard.yml
