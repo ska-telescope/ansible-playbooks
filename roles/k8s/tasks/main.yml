@@ -12,6 +12,12 @@
   loop_control:
     loop_var: docker_vars
 
+- name: Install conntrack package ## Requirement for Kubernetes 1.18 +
+  apt:
+    name: conntrack
+    state: present
+  become: true
+
 - name: set facts for minikube
   set_fact:
     "minikube_use_calico": "{{ use_calico|bool }}"
@@ -26,6 +32,11 @@
   args:
     executable: /bin/bash
   register: starting_minikube_status
+  ignore_errors: true ## is this step needed?
+
+# - debug:
+#     var: starting_minikube_status
+#     verbosity: 1
 
 - name: Install Minikube
   block:
@@ -211,7 +222,8 @@
 
     - name: Install traefik
       shell:
-        helm install traefik0 stable/traefik --namespace=kube-system --set externalIP={{ansible_default_ipv4.address}}
+        if ! helm list -n kube-system | grep -q traefik0; then \
+        helm install traefik0 stable/traefik --namespace=kube-system --set externalIP={{ansible_default_ipv4.address}}; fi
   when: "not minikube_use_nginx"
 
 # https://github.com/kubernetes/kube-state-metrics/tree/master/examples/standard

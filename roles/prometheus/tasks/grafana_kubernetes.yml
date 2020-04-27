@@ -1,6 +1,6 @@
 ---
 
-- name: make sure grafana configuration directories exist
+- name: kubernetes dashboard make sure grafana configuration directories exist
   file:
     path: "{{ item }}"
     state: directory
@@ -10,7 +10,7 @@
     - "/etc/grafana/provisioning/dashboards/kubernetes-dashboard"
     - "/etc/grafana/provisioning/notifiers"
 
-- name: Copy up resource files
+- name: kubernetes dashboard Copy up resource files
   copy:
     src: "{{ role_path }}/files/dashboards/kubernetes/{{ item }}"
     dest: "/etc/grafana/provisioning/dashboards/kubernetes-dashboard/{{ item }}"
@@ -34,7 +34,7 @@
     - statefulset.json
     - workload-total.json
 
-- name: Write dashboards provisioning config file
+- name: kubernetes dashboard Write dashboards provisioning config file
   template:
     src: dashboards-kubernetes-dashboard.yml.j2
     dest: /etc/grafana/provisioning/dashboards/kubernetes-dashboard.yml
