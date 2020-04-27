@@ -41,13 +41,16 @@
     when: mode == "exporter" or mode == "all"
   
   - include: grafana_ceph.yml
-    when: mode == "exporter" or mode == "all"
+    when: mode == "server" or mode == "all"
   
   - include: grafana_elasticstack.yml
-    when: mode == "exporter" or mode == "all"
+    when: mode == "server" or mode == "all"
   
   - include: grafana_kubernetes.yml
-    when: mode == "exporter" or mode == "all"
+    when: mode == "server" or mode == "all"
+  
+  - include: grafana_gitlab_runners.yml
+    when: mode == "server" or mode == "all"
   
   # launch prom/alert/grafana after configuration
   - include: server.yml
