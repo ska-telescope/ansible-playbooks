@@ -1,6 +1,6 @@
 ---
 
-- name: make sure grafana configuration directories exist
+- name: Node-exporter make sure grafana configuration directories exist
   file:
     path: "{{ item }}"
     state: directory
