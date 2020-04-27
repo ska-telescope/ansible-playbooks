@@ -50,6 +50,7 @@ def get_address(server):
             if "192.168.93" in entry["addr"]:
                 address = entry["addr"]
                 break
+            address = entry["addr"]
         if address != "-":
             break
     return address
@@ -68,6 +69,7 @@ def update_openstack_metadata():
         for server in novac.servers.list():
             server_name = str(server.to_dict()['name']).lower()
             address = get_address(server)
+            print("Server " + server_name + " address " + str(address))
             if address == "-":
                 continue
 
@@ -89,10 +91,11 @@ def update_openstack_metadata():
             if(updated_metadata):
                 continue
 
+            str_append = address + " ## " + server_name
             if "runner" in server_name:
-                runners2ansible.append(address)
+                runners2ansible.append(str_append)
             else:
-                nodes2ansible.append(address)
+                nodes2ansible.append(str_append)
 
     print("Generating ansible hosts file")
     with open("hosts", "w") as outfile:
@@ -125,18 +128,18 @@ def generate_targets_from_metadata():
             if address == "-":
                 continue
 
-            hostrelabelling[RELABEL_KEY].append(
-                                   {'source_labels': ["instance"],
-                                    'regex': re.escape(address)+':(\d+)',
-                                    'action': "replace",
-                                    'target_label': "instance",
-                                    'replacement': server_name})
-
             for exporter_name, details in EXPORTERS.items():
                 if not exporter_name in targets:
                     targets[exporter_name] = []
                 try:
                     targets[exporter_name].append(server.to_dict()['metadata'][NAMESPACE_PREFIX + exporter_name])
+
+                    hostrelabelling[RELABEL_KEY].append(
+                                   {'source_labels': ["instance"],
+                                    'regex': re.escape(address)+':(\d+)',
+                                    'action': "replace",
+                                    'target_label': "instance",
+                                    'replacement': server_name+':'+str(details['port'])})
                 except KeyError:
                     pass
 
