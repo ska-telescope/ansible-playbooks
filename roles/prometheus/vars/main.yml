@@ -220,14 +220,15 @@ prometheus_alert_rules:
   annotations:
     description: "{% raw %}Clock skew detected on {{ $labels.instance }}. Ensure NTP is configured correctly on this host.{% endraw %}"
     summary: "{% raw %}Instance {{ $labels.instance }} - Clock skew detected{% endraw %}"
-- alert: NumberRestartPerContainer
-  expr: 'kube_pod_container_status_restarts_total > 30'
-  for: 1m
-  labels:
-    severity: critical
-  annotations:
-    description: "{% raw %} Container {{ $labels.container }} of pod {{ $labels.kubernetes_pod_name }} in namespace {{ $labels.kubernetes_namespace }} keeps restarting.{% endraw %}"
-    summary: "{% raw %}Container {{ $labels.container }} - Too many restarts{% endraw %}"
+## Disable as Skampi containers continually restart due to unsolved errors - PXH
+# - alert: NumberRestartPerContainer
+#   expr: 'kube_pod_container_status_restarts_total > 30'
+#   for: 1m
+#   labels:
+#     severity: critical
+#   annotations:
+#     description: "{% raw %} Container {{ $labels.container }} of pod {{ $labels.kubernetes_pod_name }} in namespace {{ $labels.kubernetes_namespace }} keeps restarting.{% endraw %}"
+#     summary: "{% raw %}Container {{ $labels.container }} - Too many restarts{% endraw %}"
 - alert: NumberRestartPerInitContainerContainer
   expr: 'kube_pod_init_container_status_restarts_total > 10'
   for: 1m

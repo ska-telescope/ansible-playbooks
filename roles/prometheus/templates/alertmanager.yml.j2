@@ -14,7 +14,7 @@ route:
   group_wait: 10s
   group_interval: 10s
   repeat_interval: 1h
-  group_by: [alertname, datacenter, app]
+  group_by: [alertname, datacentre]
 
 {% if alerts_inhibit_rules != [] %}
 inhibit_rules:

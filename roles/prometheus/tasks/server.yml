@@ -127,7 +127,7 @@
 - name: copy kubernetes alerting rules
   copy:
     src: "{{ role_path }}/files/rules/kubernetes/{{ item }}"
-    dest: "/etc/prometheus/rules/kubernetes_{{ item }}"
+    dest: "/etc/prometheus/rules/kubernetes_{{ item }}.rules"
     owner: "{{ localuser }}"
     group: "{{ localuser }}"
     mode: 0644
@@ -169,6 +169,12 @@
     name: prometheus
     image: "prom/prometheus:{{ prometheus_docker_tags }}"
     state: started
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+      - "--web.console.templates=/usr/share/prometheus/consoles"
+      - "--web.external-url={{ prometheus_url | default('http://'+ansible_default_ipv4.address+':9090') }}"
     user: root
     restart: yes
     restart_policy: on-failure

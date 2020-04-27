@@ -5,7 +5,7 @@
 global:
   {{ prometheus_global | to_nice_yaml(indent=2) | indent(2, False) }}
   external_labels:
-    monitor: 'codelab-monitor'
+    datacentre: 'engage-ska-monitor'
 
 {% if prometheus_remote_write != [] %}
 remote_write:
@@ -24,7 +24,9 @@ rule_files:
 alerting:
   alertmanagers:
   {{ prometheus_alertmanager_config | to_nice_yaml(indent=2) | indent(2,False) }}
-  alert_relabel_configs: []
+  alert_relabel_configs:
+  {{ elasticsearch_instance_add_cluster_label | to_nice_yaml(indent=2) | indent(2,False) }}
+  {{ prometheus_node_metric_relabel_configs | to_nice_yaml(indent=2) | indent(2,False) }}
 {% endif %}
 
 scrape_configs:

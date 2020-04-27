@@ -1,6 +1,6 @@
 ---
   # tasks file for prometheus
-  
+
   - name: Prerequisites for almost all the tasks
     block:
     - name: Install distutils
@@ -10,17 +10,17 @@
           - python3-requests
         state: present
         update_cache: yes
-  
+
     - name: Download get-pip.py
       get_url:
         url: https://bootstrap.pypa.io/get-pip.py
         dest: /tmp/get-pip.py
         mode: '0744'
-  
+
     - name: get-pip # noqa 301 Commands should not change things if nothing needs doing
       shell: |
         python3 /tmp/get-pip.py
-  
+
     - name: install certain python modules for docker
       pip:
         name: "{{ item.name }}"
@@ -33,25 +33,25 @@
       - { name: rackspace-novaclient, version: 2.1 }
       - { name: python-heatclient, version: 2.0.0 }
     when: mode != "runner"
-  
+
   - include: blackbox_exporter.yml
     when: mode == "server" or mode == "all"
-  
+
   - include: node_exporter.yml
     when: mode == "exporter" or mode == "all"
-  
+
   - include: grafana_ceph.yml
     when: mode == "server" or mode == "all"
-  
+
   - include: grafana_elasticstack.yml
     when: mode == "server" or mode == "all"
-  
+
   - include: grafana_kubernetes.yml
     when: mode == "server" or mode == "all"
-  
+
   - include: grafana_gitlab_runners.yml
     when: mode == "server" or mode == "all"
-  
+
   - include: grafana_nodexporter.yml
     when: mode == "server" or mode == "all"
 
@@ -60,17 +60,16 @@
     when: mode == "server" or mode == "all"
     tags:
     - cron
-  
+
   - include: alert_manager.yml
     when: mode == "server" or mode == "all"
     tags:
     - cron
-  
+
   - include: grafana.yml
     when: mode == "server" or mode == "all"
     tags:
     - cron
-  
+
   - include: runner_exporter.yml
     when: mode == "runner"
-  
