@@ -25,4 +25,4 @@ receivers:
 - name: 'slack-notifications'
   slack_configs:
   - channel: 'prometheus-alerts'
-   text: "<!channel> \nAlert: {{ '{{' }} .GroupLabels.alertname {{ '}}' }} \nSummary: {{ '{{' }} .CommonAnnotations.summary {{ '}}' }} \n\nDescription: {{ '{{' }} .CommonAnnotations.description {{ '}}' }} \nSee: http://alerts.engageska-portugal.pt/alerts/{{ '{{' }} .GroupLabels.app {{ '}}' }}/{{ '{{' }} .GroupLabels.alertname {{ '}}' }}"
+    text: "<!channel> \nAlert: {{ '{{' }} .GroupLabels.alertname {{ '}}' }} \nSummary: {{ '{{' }} .CommonAnnotations.summary {{ '}}' }} \n\nDescription: {{ '{{' }} .CommonAnnotations.description {{ '}}' }} \nSee: http://alerts.engageska-portugal.pt/alerts/{{ '{{' }} .GroupLabels.app {{ '}}' }}/{{ '{{' }} .GroupLabels.alertname {{ '}}' }}"

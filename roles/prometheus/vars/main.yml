@@ -56,12 +56,22 @@ alerts_inhibit_rules: []
 #   target_match:
 #     severity: 'warning'
 
-k8s_api_server: ""
-k8s_certificate_authority: "/home/ubuntu/.minikube/ca.crt"
-k8s_client_certificate: "/home/ubuntu/.minikube/client.crt"
-k8s_client_key: "/home/ubuntu/.minikube/client.key"
-k8s_bearer_token: ""
-k8s_username: minikube
+# can only do one cluster - v1
+k8s_api_server_addr: "192.168.93.47"
+k8s_api_server_port: "6443"
+k8s_api_server: "https://{{ k8s_api_server_addr }}:{{ k8s_api_server_port }}"
+k8s_certificate_authority: ""
+k8s_client_certificate: ""
+k8s_client_key: ""
+k8s_bearer_token: "/etc/prometheus/bearer.token"
+k8s_username: ""
+
+# k8s_api_server: ""
+# k8s_certificate_authority: "/home/ubuntu/.minikube/ca.crt"
+# k8s_client_certificate: "/home/ubuntu/.minikube/client.crt"
+# k8s_client_key: "/home/ubuntu/.minikube/client.key"
+# k8s_bearer_token: ""
+# k8s_username: minikube
 
 playbook_dir: /usr/src/ansible-playbooks/
 
