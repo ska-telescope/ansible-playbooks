@@ -18,6 +18,12 @@ test_ubuntu_18:
   - ansible-playbook -i hosts deploy_tangoenv.yml --extra-vars "install_ska_docker='no' start_tango='no' install_ide='no'"
   - source /venv/bin/activate
   - python3 -c "import tango; print(tango.utils.info())"
+  only:
+    changes:
+    - roles/pytango/**/*
+    - roles/ska-docker/**/*
+    - roles/tango/**/*
+    - roles/docker/**/*
   
 test_ubuntu_16:
   image: ubuntu:16.04
@@ -35,6 +41,12 @@ test_ubuntu_16:
   - ansible-playbook -i hosts deploy_tangoenv.yml --extra-vars "install_ska_docker='no' start_tango='no' install_ide='no'"
   - source /venv/bin/activate
   - python3 -c "import tango; print(tango.utils.info())"
+  only:
+    changes:
+    - roles/pytango/**/*
+    - roles/ska-docker/**/*
+    - roles/tango/**/*
+    - roles/docker/**/*
 
 test_debian_stretch-slim:
   image: debian:stretch-slim
@@ -55,6 +67,12 @@ test_debian_stretch-slim:
   - ansible-playbook -i hosts deploy_tangoenv.yml --extra-vars "install_ska_docker='no' start_tango='no' install_ide='no'"
   - source /venv/bin/activate
   - python3 -c "import tango; print(tango.utils.info())"
+  only:
+    changes:
+    - roles/pytango/**/*
+    - roles/ska-docker/**/*
+    - roles/tango/**/*
+    - roles/docker/**/*
 
 test_debian_buster-slim:
   image: debian:buster-slim
@@ -75,3 +93,9 @@ test_debian_buster-slim:
   - ansible-playbook -i hosts deploy_tangoenv.yml --extra-vars "install_ska_docker='no' start_tango='no' install_ide='no'"
   - source /venv/bin/activate
   - python3 -c "import tango; print(tango.utils.info())"
+  only:
+    changes:
+    - roles/pytango/**/*
+    - roles/ska-docker/**/*
+    - roles/tango/**/*
+    - roles/docker/**/*
