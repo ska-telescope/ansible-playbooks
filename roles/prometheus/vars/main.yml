@@ -63,6 +63,8 @@ k8s_client_key: "/home/ubuntu/.minikube/client.key"
 k8s_bearer_token: ""
 k8s_username: minikube
 
+playbook_dir: /usr/src/ansible-playbooks/
+
 auth_url: "http://192.168.93.215:5000/v3/"
 username: "matteodicarlo"
 password: "*************"
@@ -127,7 +129,7 @@ prometheus_scrape_configs:
     - files:
       - 'docker_exporter.json'
 
-  - job_name: "k8smetrics"
+  - job_name: "kube-state-metrics"
     file_sd_configs:
     - files:
       - 'kubernetes_exporter.json'

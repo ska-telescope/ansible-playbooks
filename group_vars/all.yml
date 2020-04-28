@@ -16,7 +16,6 @@ minikube_disk_size: 32g
 minikube_memory: 8192
 minikube_cpus: 4
 
-kube_spray_version: 'v2.12.0'
 k8s_version: '1.18.0'
 
 oidc_issuer_url: 'https://gitlab.com'
@@ -51,7 +50,7 @@ helm_stable_repo_url: https://kubernetes-charts.storage.googleapis.com
 # Traefik vars
 traefik_url: https://containous.github.io/traefik-helm-chart
 
-# development environment 
+# development environment
 pycharm_version: 'community-2018.3.3'
 PYTHON_VERSION: '3.7.3'
 TANGO_VERSION: '9.3.3'
