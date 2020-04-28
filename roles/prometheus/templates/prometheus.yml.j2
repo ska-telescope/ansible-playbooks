@@ -59,10 +59,11 @@ scrape_configs:
     - targets:
       - "{{ k8s_api_server_addr }}:10251"
 
-  - job_name: kube-proxy
-    static_configs:
-    - targets:
-      - "{{ k8s_api_server_addr }}:10249"
+  ## Disable kube-proxy job as it is not open on kubernetes-v1 - PXH
+  # - job_name: kube-proxy
+  #   static_configs:
+  #   - targets:
+  #     - "{{ k8s_api_server_addr }}:10249"
 
   - job_name: kube-controller-manager
     static_configs:
