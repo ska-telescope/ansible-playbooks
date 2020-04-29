@@ -24,7 +24,6 @@ EXPORTERS = {'gitlab_exporter': {'name': 'runner', 'port': 9252},
              'kubernetes_telemetry': {'name': 'k8stelemetry', 'port': 32081}
              }
 RELABEL_KEY = 'prometheus_node_metric_relabel_configs'
-ONLY_ONE = ['elasticsearch_exporter']
 
 def check_port(address, port):
     location = (address, port)
@@ -145,8 +144,6 @@ def generate_targets_from_metadata():
                     pass
 
     for exporter_name, export_targets in targets.items():
-        if exporter_name in ONLY_ONE and len(export_targets) > 0:
-            export_targets = [export_targets[0]]
         json_job = [{
             "labels": {
                 "job": EXPORTERS[exporter_name]['name']
