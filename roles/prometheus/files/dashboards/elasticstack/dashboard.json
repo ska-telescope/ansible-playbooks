@@ -2067,7 +2067,7 @@
                 "hide": 0,
                 "includeAll": false,
                 "label": "Cluster:",
-                "multi": true,
+                "multi": false,
                 "name": "cluster",
                 "options": [],
                 "query": "label_values(elasticsearch_cluster_health_status,cluster)",
@@ -2089,7 +2089,7 @@
                 "hide": 0,
                 "includeAll": false,
                 "label": "Instance:",
-                "multi": true,
+                "multi": false,
                 "name": "instance",
                 "options": [],
                 "query": "label_values(elasticsearch_cluster_health_status,instance)",
@@ -2136,6 +2136,6 @@
     },
     "timezone": "utc",
     "title": "ElasticSearch Dashboard",
-    "uid": "n_nxrE_mkX",
+    "uid": "n_nxrE_mk",
     "version": 1
 }
