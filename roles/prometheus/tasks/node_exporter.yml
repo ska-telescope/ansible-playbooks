@@ -1,10 +1,7 @@
 ---
-- name: install libselinux-python
-  yum:
-    name:
-      - libselinux-python
-      - prometheus-node-exporter
-    state: present
+- name: install prometheus-node-exporter
+  shell: |
+    curl -s https://packagecloud.io/install/repositories/prometheus-rpm/release/script.rpm.sh | sudo bash && sudo yum install node_exporter-0.18.1-1.el7.centos.x86_64 -y && sudo service node_exporter start && sudo service node_exporter status
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat'
 
 - name: Configure /etc/apt/sources.list
