@@ -44,8 +44,16 @@
 - include: runner_exporter.yml
   when: mode == "runner"
 
-- include: docker_exporter.yml
+- name: Check if docker prometheus exporter is already set
+  wait_for:
+    port: 9323
+    timeout: 3
+  register: check_port
+  ignore_errors: true
   when: mode == "docker"
+
+- include: docker_exporter.yml
+  when: mode == "docker" and check_port.failed
 
 - include: grafana_ceph.yml
   when: mode == "server" or mode == "all"
