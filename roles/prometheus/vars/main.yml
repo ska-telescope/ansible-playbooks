@@ -1,6 +1,8 @@
 ---
 # vars file for prometheus
 
+node_exporter_version: 0.18.1-1.el7
+
 prometheus_binary_dir: /usr/local/bin
 prometheus_config_dir: /etc/prometheus
 prometheus_data_dir: /prometheus
@@ -202,7 +204,7 @@ prometheus_alert_rules:
     summary: "{% raw %}Ssh Service {{ $labels.target }} down{% endraw %}"
 - alert: CriticalCPULoad
   expr: 'instance:node_cpu:load > 98'
-  for: 2m
+  for: 10m
   labels:
     severity: critical
   annotations:

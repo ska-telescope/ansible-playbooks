@@ -1,75 +1,90 @@
 ---
-  # tasks file for prometheus
+# tasks file for prometheus
 
-  - name: Prerequisites for almost all the tasks
-    block:
-    - name: Install distutils
-      apt:
-        pkg:
-          - python3-distutils
-          - python3-requests
-        state: present
-        update_cache: yes
+- name: Install distutils
+  apt:
+    pkg:
+      - python3-distutils
+      - python3-requests
+    state: present
+    update_cache: yes
+  when: mode == "server" or mode == "all"
 
-    - name: Download get-pip.py
-      get_url:
-        url: https://bootstrap.pypa.io/get-pip.py
-        dest: /tmp/get-pip.py
-        mode: '0744'
+- name: Download get-pip.py
+  get_url:
+    url: https://bootstrap.pypa.io/get-pip.py
+    dest: /tmp/get-pip.py
+    mode: '0744'
+  when: mode == "server" or mode == "all"
 
-    - name: get-pip # noqa 301 Commands should not change things if nothing needs doing
-      shell: |
-        python3 /tmp/get-pip.py
+- name: get-pip # noqa 301 Commands should not change things if nothing needs doing
+  shell: |
+    python3 /tmp/get-pip.py
+  when: mode == "server" or mode == "all"
 
-    - name: install certain python modules for docker
-      pip:
-        name: "{{ item.name }}"
-        version: "{{ item.version }}"
-        state: present
-      with_items:
-      - { name: docker, version: 4.2.0 }
-      - { name: keystoneauth1, version: 3.1.0 }
-      - { name: python-novaclient, version: 2.27.0 }
-      - { name: rackspace-novaclient, version: 2.1 }
-      - { name: python-heatclient, version: 2.0.0 }
-    when: mode != "runner"
+- name: install certain python modules for docker
+  pip:
+    name: "{{ item.name }}"
+    version: "{{ item.version }}"
+    state: present
+  with_items:
+  - { name: docker, version: 4.2.0 }
+  - { name: keystoneauth1, version: 3.1.0 }
+  - { name: python-novaclient, version: 2.27.0 }
+  - { name: rackspace-novaclient, version: 2.1 }
+  - { name: python-heatclient, version: 2.0.0 }
+  when: mode == "server" or mode == "all"
 
-  - include: blackbox_exporter.yml
-    when: mode == "server" or mode == "all"
+- include: blackbox_exporter.yml
+  when: mode == "server" or mode == "all"
 
-  - include: node_exporter.yml
-    when: mode == "exporter" or mode == "all"
+- include: node_exporter.yml
+  when: mode == "exporter" or mode == "all"
 
-  - include: grafana_ceph.yml
-    when: mode == "server" or mode == "all"
+- include: runner_exporter.yml
+  when: mode == "runner"
 
-  - include: grafana_elasticstack.yml
-    when: mode == "server" or mode == "all"
+- name: Check if docker prometheus exporter is already set
+  wait_for:
+    port: 9323
+    timeout: 3
+  register: check_port
+  ignore_errors: true
+  when: mode == "docker"
 
-  - include: grafana_kubernetes.yml
-    when: mode == "server" or mode == "all"
+- include: docker_exporter.yml
+  when: mode == "docker" and check_port.failed
 
-  - include: grafana_gitlab_runners.yml
-    when: mode == "server" or mode == "all"
+- include: grafana_ceph.yml
+  when: mode == "server" or mode == "all"
 
-  - include: grafana_nodexporter.yml
-    when: mode == "server" or mode == "all"
+- include: grafana_elasticstack.yml
+  when: mode == "server" or mode == "all"
 
-  # launch prom/alert/grafana after configuration
-  - include: server.yml
-    when: mode == "server" or mode == "all"
-    tags:
-    - cron
+- include: grafana_kubernetes.yml
+  when: mode == "server" or mode == "all"
 
-  - include: alert_manager.yml
-    when: mode == "server" or mode == "all"
-    tags:
-    - cron
+- include: grafana_gitlab_runners.yml
+  when: mode == "server" or mode == "all"
 
-  - include: grafana.yml
-    when: mode == "server" or mode == "all"
-    tags:
-    - cron
+- include: grafana_nodexporter.yml
+  when: mode == "server" or mode == "all"
 
-  - include: runner_exporter.yml
-    when: mode == "runner"
+# launch prom/alert/grafana after configuration
+- include: server.yml
+  when: mode == "server" or mode == "all"
+  tags:
+  - cron
+
+- include: alert_manager.yml
+  when: mode == "server" or mode == "all"
+  tags:
+  - cron
+
+- include: grafana.yml
+  when: mode == "server" or mode == "all"
+  tags:
+  - cron
+
+- include: runner_exporter.yml
+  when: mode == "runner"
