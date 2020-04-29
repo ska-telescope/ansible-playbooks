@@ -1,6 +1,8 @@
 ---
 # vars file for prometheus
 
+node_exporter_version: 0.18.1-1.el7
+
 prometheus_binary_dir: /usr/local/bin
 prometheus_config_dir: /etc/prometheus
 prometheus_data_dir: /prometheus
@@ -56,12 +58,24 @@ alerts_inhibit_rules: []
 #   target_match:
 #     severity: 'warning'
 
-k8s_api_server: ""
-k8s_certificate_authority: "/home/ubuntu/.minikube/ca.crt"
-k8s_client_certificate: "/home/ubuntu/.minikube/client.crt"
-k8s_client_key: "/home/ubuntu/.minikube/client.key"
-k8s_bearer_token: ""
-k8s_username: minikube
+# can only do one cluster - v1
+k8s_api_server_addr: "192.168.93.47"
+k8s_api_server_port: "6443"
+k8s_api_server: "https://{{ k8s_api_server_addr }}:{{ k8s_api_server_port }}"
+k8s_certificate_authority: ""
+k8s_client_certificate: ""
+k8s_client_key: ""
+k8s_bearer_token: "/etc/prometheus/bearer.token"
+k8s_username: ""
+
+# k8s_api_server: ""
+# k8s_certificate_authority: "/home/ubuntu/.minikube/ca.crt"
+# k8s_client_certificate: "/home/ubuntu/.minikube/client.crt"
+# k8s_client_key: "/home/ubuntu/.minikube/client.key"
+# k8s_bearer_token: ""
+# k8s_username: minikube
+
+playbook_dir: /usr/src/ansible-playbooks/
 
 auth_url: "http://192.168.93.215:5000/v3/"
 username: "matteodicarlo"
@@ -127,7 +141,7 @@ prometheus_scrape_configs:
     - files:
       - 'docker_exporter.json'
 
-  - job_name: "k8smetrics"
+  - job_name: "kube-state-metrics"
     file_sd_configs:
     - files:
       - 'kubernetes_exporter.json'
@@ -220,14 +234,15 @@ prometheus_alert_rules:
   annotations:
     description: "{% raw %}Clock skew detected on {{ $labels.instance }}. Ensure NTP is configured correctly on this host.{% endraw %}"
     summary: "{% raw %}Instance {{ $labels.instance }} - Clock skew detected{% endraw %}"
-- alert: NumberRestartPerContainer
-  expr: 'kube_pod_container_status_restarts_total > 30'
-  for: 1m
-  labels:
-    severity: critical
-  annotations:
-    description: "{% raw %} Container {{ $labels.container }} of pod {{ $labels.kubernetes_pod_name }} in namespace {{ $labels.kubernetes_namespace }} keeps restarting.{% endraw %}"
-    summary: "{% raw %}Container {{ $labels.container }} - Too many restarts{% endraw %}"
+## Disable as Skampi containers continually restart due to unsolved errors - PXH
+# - alert: NumberRestartPerContainer
+#   expr: 'kube_pod_container_status_restarts_total > 30'
+#   for: 1m
+#   labels:
+#     severity: critical
+#   annotations:
+#     description: "{% raw %} Container {{ $labels.container }} of pod {{ $labels.kubernetes_pod_name }} in namespace {{ $labels.kubernetes_namespace }} keeps restarting.{% endraw %}"
+#     summary: "{% raw %}Container {{ $labels.container }} - Too many restarts{% endraw %}"
 - alert: NumberRestartPerInitContainerContainer
   expr: 'kube_pod_init_container_status_restarts_total > 10'
   for: 1m

@@ -5,7 +5,7 @@
 global:
   {{ prometheus_global | to_nice_yaml(indent=2) | indent(2, False) }}
   external_labels:
-    monitor: 'codelab-monitor'
+    datacentre: 'engage-ska-monitor'
 
 {% if prometheus_remote_write != [] %}
 remote_write:
@@ -24,7 +24,9 @@ rule_files:
 alerting:
   alertmanagers:
   {{ prometheus_alertmanager_config | to_nice_yaml(indent=2) | indent(2,False) }}
-  alert_relabel_configs: []
+  alert_relabel_configs:
+  {{ elasticsearch_instance_add_cluster_label | to_nice_yaml(indent=2) | indent(2,False) }}
+  {{ prometheus_node_metric_relabel_configs | to_nice_yaml(indent=2) | indent(2,False) }}
 {% endif %}
 
 scrape_configs:
@@ -51,43 +53,85 @@ scrape_configs:
         replacement: {{ ansible_fqdn | default(ansible_host) | default('localhost') }}:9115
 
 {% if k8s_api_server | length > 0 %}
-  - job_name: 'kubernetes-apiservers'
-    scheme: https
+
+  - job_name: kube-scheduler
+    static_configs:
+    - targets:
+      - "{{ k8s_api_server_addr }}:10251"
+
+  ## Disable kube-proxy job as it is not open on kubernetes-v1 - PXH
+  # - job_name: kube-proxy
+  #   static_configs:
+  #   - targets:
+  #     - "{{ k8s_api_server_addr }}:10249"
+
+  - job_name: kube-controller-manager
+    static_configs:
+    - targets:
+      - "{{ k8s_api_server_addr }}:10252"
+
+# https://github.com/prometheus/prometheus/blob/master/documentation/examples/prometheus-kubernetes.yml
+  - job_name: 'kube-apiserver'
     kubernetes_sd_configs:
-      - api_server: "{{ k8s_api_server }}"
-        role: endpoints
-        # bearer_token: {{ k8s_bearer_token }}
-        basic_auth:
-          username: {{k8s_username}}
-        tls_config:
-          ca_file: /etc/prometheus/ca.crt
-          cert_file: /etc/prometheus/client.crt
-          key_file:  /etc/prometheus/client.key
-          insecure_skip_verify: true
+    - role: endpoints
+      api_server: "{{ k8s_api_server }}"
+      # TLS config required in two places
+      tls_config:
+        ca_file: /etc/prometheus/ca.crt
+      bearer_token_file: {{ k8s_bearer_token }}
+    scheme: https
+    # TLS config required in two places
+    tls_config:
+      ca_file: /etc/prometheus/ca.crt
+    bearer_token_file: {{ k8s_bearer_token }}
     relabel_configs:
     - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
       action: keep
       regex: default;kubernetes;https
 
-  - job_name: 'k8s_pod'
+  - job_name: 'kubelet'
     kubernetes_sd_configs:
-      - api_server: "{{ k8s_api_server }}"
-        role: pod
-        # bearer_token: {{ k8s_bearer_token }}
-        basic_auth:
-          username: {{k8s_username}}
-        tls_config:
-          ca_file: /etc/prometheus/ca.crt
-          cert_file: /etc/prometheus/client.crt
-          key_file:  /etc/prometheus/client.key
-          insecure_skip_verify: true
-    relabel_configs:
+    - role: node
+      api_server: "{{ k8s_api_server }}"
+      # TLS config required in two places
+      tls_config:
+        ca_file: /etc/prometheus/ca.crt
+      bearer_token_file: {{ k8s_bearer_token }}
+    scheme: https
+    # TLS config required in two places
+    tls_config:
+      insecure_skip_verify: true
+    bearer_token_file: {{ k8s_bearer_token }}
+    metric_relabel_configs:
     - action: labelmap
-      regex: __meta_kubernetes_pod_label_(.+)
-    - source_labels: [__meta_kubernetes_namespace]
-      action: replace
-      target_label: kubernetes_namespace
-    - source_labels: [__meta_kubernetes_pod_name]
-      action: replace
-      target_label: kubernetes_pod_name
+      regex: __meta_kubernetes_node_label_(.+)
+    - target_label: __address__
+      replacement: kubernetes.default.svc:443
+    - source_labels: [__meta_kubernetes_node_name]
+      regex: (.+)
+      target_label: __metrics_path__
+      replacement: /api/v1/nodes/${1}/proxy/metrics
+
+  - job_name: 'cadvisor'
+    kubernetes_sd_configs:
+    - role: node
+      api_server: "{{ k8s_api_server }}"
+      # TLS config required in two places
+      tls_config:
+        ca_file: /etc/prometheus/ca.crt
+      bearer_token_file: {{ k8s_bearer_token }}
+    scheme: https
+    # TLS config required in two places
+    tls_config:
+      insecure_skip_verify: true
+    bearer_token_file: {{ k8s_bearer_token }}
+    metric_relabel_configs:
+    - action: labelmap
+      regex: __meta_kubernetes_node_label_(.+)
+    - target_label: __address__
+      replacement: kubernetes.default.svc:443
+    - source_labels: [__meta_kubernetes_node_name]
+      regex: (.+)
+      target_label: __metrics_path__
+      replacement: /api/v1/nodes/${1}/proxy/metrics/cadvisor
 {% endif %}

@@ -8,41 +8,37 @@
    dest: /etc/docker/daemon.json
    content: |
     {
-      "metrics-addr" : "127.0.0.1:9323",
+      "metrics-addr" : "0.0.0.0:9323",
       "experimental" : true
     }
-  when: not stat_result.stat.exists 
+  when: not stat_result.stat.exists
 
 - name: Load daemon.json
-  shell: cat "/etc/docker/daemon.json"
-  register: daemon
-
-- set_fact:
-    daemon: "{{ daemon.stdout | default([]) }}"
+  set_fact:
+    daemon: "{{ lookup('file', '/etc/docker/daemon.json') | from_json }}"
 
 - debug:
     var: daemon
 
 - name: Configure metrics-addr
   set_fact:
-    daemon: "{{ daemon | default([]) | combine({ 'metrics-addr': '127.0.0.1:9323' }) }}"
-  when: daemon['metrics-addr'] is not defined 
+    daemon: "{{ daemon | default([]) | combine({ 'metrics-addr': '0.0.0.0:9323' }) }}"
+  when: daemon['metrics-addr'] is not defined
 
 - name: Configure experimental
   set_fact:
     daemon: "{{ daemon | default([]) | combine({ 'experimental': true }) }}"
-  when: daemon['experimental'] is not defined 
+  when: daemon['experimental'] is not defined
 
 - debug:
     var: daemon
 
 - name: Write daemon.json
-  copy: 
-    content: "{{ daemon | to_nice_json }}" 
+  copy:
+    content: "{{ daemon | to_nice_json }}"
     dest: /etc/docker/daemon.json
 
 - name: restart and docker
   systemd:
     name: docker
     state: restarted
-  

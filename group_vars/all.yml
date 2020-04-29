@@ -7,17 +7,16 @@ localuser: "{{ lookup('env','USER') }}"
 localhome: "{{ lookup('env','HOME') }}"
 
 # core software versions to deploy
-kubectl_version: 'v1.15.0'
+kubectl_version: 'v1.18.0'
 kvm2_driver_version: 'v1.1.1'
-minikube_version: 'v1.2.0'
+minikube_version: 'v1.9.2'
 helm_version: v3.1.2
 calico_version: v3.9
 minikube_disk_size: 32g
 minikube_memory: 8192
 minikube_cpus: 4
 
-kube_spray_version: 'v2.12.0'
-k8s_version: '1.16.2'
+k8s_version: '1.18.0'
 
 oidc_issuer_url: 'https://gitlab.com'
 oidc_client_id: '417ea12283741e0d74b22778d2dd3f5d0dcee78828c6e9a8fd5e8589025b8d2f'
@@ -51,7 +50,7 @@ helm_stable_repo_url: https://kubernetes-charts.storage.googleapis.com
 # Traefik vars
 traefik_url: https://containous.github.io/traefik-helm-chart
 
-# development environment 
+# development environment
 pycharm_version: 'community-2018.3.3'
 PYTHON_VERSION: '3.7.3'
 TANGO_VERSION: '9.3.3'
@@ -63,7 +62,9 @@ docker_compose_version: '1.23.2'
 start_mysql_server: 'no'
 install_mysql: 'no'
 
+prometheus_url: https://alerts.engageska-portugal.pt
 prometheus_docker_tags: 'v2.16.0'
+prometheus_alertmanager_url: http://192.168.93.26:9093
 prometheus_alertmanager_docker_tags: 'v0.20.0'
 prometheus_bleckbox_exporter_docker_tags: 'v0.16.0'
 grafana_docker_tags: '6.6.2'

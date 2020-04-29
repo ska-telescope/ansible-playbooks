@@ -49,14 +49,16 @@ groups:
     annotations:
       summary: "PG(s) Stuck"
       description: "This indicates there are pg's in a stuck state, manual intervention needed to resolve."
-  - alert: OSD Host Loss Check
-    expr: max(sum(ceph_osd_stat_bytes - ceph_osd_stat_bytes_used)) * 0.9 < scalar(max(sum by (instance) (ceph_osd_stat_bytes + on (ceph_daemon) group_left (instance) (ceph_disk_occupation*0))))
-    for: 1m
-    labels:
-      severity: page
-    annotations:
-      summary: "OSD Host Loss Check"
-      description: "This indicates that the cluster @ 90% full is not enough to support the loss of the largest OSD host."
+  ## disable this check because it does not work with small clusters
+  ## with full occupancy of disks - PXH
+  #- alert: OSD Host Loss Check
+  #  expr: max(sum(ceph_osd_stat_bytes - ceph_osd_stat_bytes_used)) * 0.9 < scalar(max(sum by (instance) (ceph_osd_stat_bytes + on (ceph_daemon) group_left (instance) (ceph_disk_occupation*0))))
+  #  for: 1m
+  #  labels:
+  #    severity: page
+  #  annotations:
+  #    summary: "OSD Host Loss Check"
+  #    description: "This indicates that the cluster @ 90% full is not enough to support the loss of the largest OSD host."
   - alert: Slow OSD Responses
     expr: ((irate(node_disk_read_time_seconds_total[5m]) / clamp_min(irate(node_disk_reads_completed_total[5m]), 1) + irate(node_disk_write_time_seconds_total[5m]) / clamp_min(irate(node_disk_writes_completed_total[5m]), 1)) and on (instance, device) ceph_disk_occupation) > 1
     for: 1m
