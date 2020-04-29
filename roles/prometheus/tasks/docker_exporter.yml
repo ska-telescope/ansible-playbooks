@@ -1,44 +1,58 @@
-- name: Check that the daemon.json exists
-  stat:
-    path: /etc/docker/daemon.json
-  register: stat_result
 
-- name: Create daemon.json file
-  copy:
-   dest: /etc/docker/daemon.json
-   content: |
-    {
-      "metrics-addr" : "0.0.0.0:9323",
-      "experimental" : true
-    }
-  when: not stat_result.stat.exists
+- name: Check if docker prometheus exporter is already set
+  wait_for:
+    port: 9323
+    timeout: 3
+  register: check_port
+  ignore_errors: true
 
-- name: Load daemon.json
-  set_fact:
-    daemon: "{{ lookup('file', '/etc/docker/daemon.json') | from_json }}"
+- name: activate metrics
+  block:
 
-- debug:
-    var: daemon
+    - name: Check that the daemon.json exists
+      stat:
+        path: /etc/docker/daemon.json
+      register: stat_result
 
-- name: Configure metrics-addr
-  set_fact:
-    daemon: "{{ daemon | default([]) | combine({ 'metrics-addr': '0.0.0.0:9323' }) }}"
-  when: daemon['metrics-addr'] is not defined
+    - name: Create daemon.json file
+      copy:
+        dest: /etc/docker/daemon.json
+        content: |
+          {
+            "metrics-addr" : "0.0.0.0:9323",
+            "experimental" : true
+          }
+      when: not stat_result.stat.exists
 
-- name: Configure experimental
-  set_fact:
-    daemon: "{{ daemon | default([]) | combine({ 'experimental': true }) }}"
-  when: daemon['experimental'] is not defined
+    - name: Load daemon.json
+      set_fact:
+        daemon: "{{ lookup('file', '/etc/docker/daemon.json') | from_json }}"
 
-- debug:
-    var: daemon
+    - name: debug daemon
+      debug:
+        var: daemon
 
-- name: Write daemon.json
-  copy:
-    content: "{{ daemon | to_nice_json }}"
-    dest: /etc/docker/daemon.json
+    - name: Configure metrics-addr
+      set_fact:
+        daemon: "{{ daemon | default([]) | combine({ 'metrics-addr': '0.0.0.0:9323' }) }}"
+      when: daemon['metrics-addr'] is not defined
 
-- name: restart and docker
-  systemd:
-    name: docker
-    state: restarted
+    - name: Configure experimental
+      set_fact:
+        daemon: "{{ daemon | default([]) | combine({ 'experimental': true }) }}"
+      when: daemon['experimental'] is not defined
+
+    - debug:
+        var: daemon
+
+    - name: Write daemon.json
+      copy:
+        content: "{{ daemon | to_nice_json }}"
+        dest: /etc/docker/daemon.json
+
+    - name: restart and docker
+      systemd:
+        name: docker
+        state: restarted
+
+  when: check_port.failed
