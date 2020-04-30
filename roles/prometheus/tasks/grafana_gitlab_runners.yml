@@ -1,6 +1,6 @@
 ---
 
-- name: make sure grafana configuration directories exist
+- name: gitlab-runners Make sure grafana configuration directories exist
   file:
     path: "{{ item }}"
     state: directory
@@ -10,15 +10,15 @@
     - "/etc/grafana/provisioning/dashboards/gitlab-runners-dashboard"
     - "/etc/grafana/provisioning/notifiers"
 
-- name: Copy up resource files
+- name: gitlab-runners Copy up resource files
   copy:
-    src: "{{ role_path }}/files/dashboards/gitlab-runners-dashboard/{{ item }}"
+    src: "{{ role_path }}/files/dashboards/gitlab-runners/{{ item }}"
     dest: "/etc/grafana/provisioning/dashboards/gitlab-runners-dashboard/{{ item }}"
   with_items:
     - simple.json
     - gitlab-runner-service_rev2.json
 
-- name: Write dashboards provisioning config file
+- name: gitlab-runners Write dashboards provisioning config file
   template:
     src: dashboards-gitlab-runners-dashboard.yml.j2
     dest: /etc/grafana/provisioning/dashboards/gitlab-runners-dashboard.yml

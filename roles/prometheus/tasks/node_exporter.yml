@@ -34,3 +34,5 @@
 
 - name: Reboot
   reboot:
+  when: 
+    - ansible_connection != 'local'

@@ -32,9 +32,9 @@ FORMATTED_DISK_SIZE = $(shell echo $(V_DISK_SIZE) | sed 's/[^0-9]*//g')g
 .PHONY: vars k8s minikube localip vagrantip vagrant_install vagrant_up vagrant_down help inventory kubespray cluster components reset skampi
 .DEFAULT_GOAL := help
 
-# define targets for creating a k8s cluster
--include k8s_cluster.mk
+# define private rules and additional makefiles
 -include PrivateRules.mak
+-include prometheus.mk
 
 vars: ## Vagrant and DISPLAY variables
 	@echo "V_BOX: $(V_BOX)"
