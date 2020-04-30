@@ -274,4 +274,4 @@
 
     - name: Init kube-state-metrics.
       shell: kubectl apply -f /tmp/kube-state-metrics-nodeport.yaml
-  when: not kubectl_metrics.rc == 0
+  when: not kubectl_metrics.rc == 0 and kube_state_metrics
