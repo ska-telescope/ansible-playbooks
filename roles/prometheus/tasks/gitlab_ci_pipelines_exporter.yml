@@ -1,0 +1,42 @@
+---
+
+- name: Generate gitlab_ci_pipelines_exporter configuration
+  become: true
+  template:
+    src: "{{ playbook_dir }}/roles/prometheus/templates/gitlab_ci_pipelines_exporter.yml.j2"
+    dest: /etc/gitlab_ci_pipelines_exporter.yml
+    force: true
+    owner: "{{ localuser }}"
+    group: "{{ localuser }}"
+    mode: 0755
+
+- name: Pull gitlab-ci-pipelines-exporter image {{ prometheus_gitlab_ci_pipelines_exporter_tags }}
+  docker_image:
+    name: mvisonneau/gitlab-ci-pipelines-exporter
+    tag: "{{ prometheus_gitlab_ci_pipelines_exporter_tags }}"
+
+- name: Stop prometheus container
+  docker_container:
+    name: prometheus
+    state: absent
+
+- name: Start prometheus container
+  docker_container:
+    name: prometheus
+    image: "prom/prometheus:{{ prometheus_docker_tags }}"
+    state: started
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+      - "--web.console.templates=/usr/share/prometheus/consoles"
+      - "--web.external-url={{ prometheus_url | default('http://'+ansible_default_ipv4.address+':9090') }}"
+    user: root
+    restart: yes
+    restart_policy: on-failure
+    ports:
+     - "9090:9090"
+    volumes:
+      - "{{ prometheus_config_dir }}:/etc/prometheus:ro"
+      - "/etc/hosts:/etc/hosts:ro"
+      - "{{ prometheus_data_dir }}:/prometheus"

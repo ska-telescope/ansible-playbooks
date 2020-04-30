@@ -73,7 +73,7 @@
       touch prometheus_node_metric_relabel_configs.yaml &&
       git pull &&
       ansible-playbook deploy_prometheus.yml -i hosts --tags "cron"
-      --extra-vars "password='{{ password }}' slack_api_url='{{ slack_api_url }}'"
+      --extra-vars "prometheus_gitlab_ci_pipelines_exporter_token='{{ prometheus_gitlab_ci_pipelines_exporter_token }}' password='{{ password }}' slack_api_url='{{ slack_api_url }}'"
       -e 'ansible_python_interpreter=/usr/bin/python3'
       -e @prometheus_node_metric_relabel_configs.yaml
   become: yes
