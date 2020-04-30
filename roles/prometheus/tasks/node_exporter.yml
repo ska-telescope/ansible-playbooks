@@ -1,33 +1,56 @@
 ---
-- name: install prometheus-node-exporter
-  shell: |
-    curl -s https://packagecloud.io/install/repositories/prometheus-rpm/release/script.rpm.sh | sudo bash && sudo yum install node_exporter-0.18.1-1.el7.centos.x86_64 -y && sudo service node_exporter start && sudo service node_exporter status
+- name: Install node_exporter for RedHat/CentOS
+  block:
+    - name: Download node exporter install script
+      get_url:
+        url: https://packagecloud.io/install/repositories/prometheus-rpm/release/script.rpm.sh
+        dest: /tmp/script.rpm.sh
+
+    - name: install prometheus-node-exporter
+      shell: |
+        bash /tmp/script.rpm.sh
+      become: yes
+
+    - name: "install node_exporter-{{ node_exporter_version }}.centos.x86_64"
+      yum:
+        name: "node_exporter-{{ node_exporter_version }}.centos.x86_64"
+        state: present
+      become: yes
+      notify: restart node_exporter
+
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat'
 
-- name: Configure /etc/apt/sources.list
-  blockinfile:
-    path: /etc/apt/sources.list
-    block: |
-      deb http://it.archive.ubuntu.com/ubuntu/ focal main universe restricted multiverse
-      deb-src http://it.archive.ubuntu.com/ubuntu/ focal main universe restricted multiverse
+- name: Install node_exporter for Debian
+  block:
 
-      deb http://security.ubuntu.com/ubuntu focal-security main universe restricted multiverse
-      deb-src http://security.ubuntu.com/ubuntu focal-security main universe restricted multiverse
+    - name: Configure /etc/apt/sources.list.d/sources.list
+      blockinfile:
+        path: /etc/apt/sources.list.d/sources.list
+        create: yes
+        block: |
+          deb http://it.archive.ubuntu.com/ubuntu/ focal main universe restricted multiverse
+          deb-src http://it.archive.ubuntu.com/ubuntu/ focal main universe restricted multiverse
 
-      deb http://it.archive.ubuntu.com/ubuntu/ focal-updates main universe restricted multiverse
-      deb-src http://it.archive.ubuntu.com/ubuntu/ focal-updates main universe restricted multiverse
+          deb http://security.ubuntu.com/ubuntu focal-security main universe restricted multiverse
+          deb-src http://security.ubuntu.com/ubuntu focal-security main universe restricted multiverse
+
+          deb http://it.archive.ubuntu.com/ubuntu/ focal-updates main universe restricted multiverse
+          deb-src http://it.archive.ubuntu.com/ubuntu/ focal-updates main universe restricted multiverse
+      become: yes
+
+    - name: Install prometheus-node-exporter
+      become: yes
+      apt:
+        name: prometheus-node-exporter
+        state: present
+        force: yes
+        update_cache: yes
+      notify: restart prometheus-node-exporter
+
   when:
     - ansible_distribution == 'Ubuntu'
 
-- name: Install prometheus-node-exporter
-  become: yes
-  apt:
-    name: prometheus-node-exporter
-    state: present
-    force: yes
-    update_cache: yes
-  when:
-    - ansible_distribution == 'Ubuntu'
+# - name: Reboot
+#   reboot:
 
-- name: Reboot
-  reboot:
+- meta: flush_handlers

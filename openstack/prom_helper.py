@@ -20,7 +20,7 @@ EXPORTERS = {'gitlab_exporter': {'name': 'runner', 'port': 9252},
              'elasticsearch_exporter': {'name': 'elasticsearch', 'port': 9114},
              'ceph-mgr': {'name': 'ceph_cluster', 'port': 9283},
              'docker_exporter': {'name': 'docker', 'port': 9323},
-             'kubernetes_exporter': {'name': 'k8smetrics', 'port': 32080},
+             'kubernetes_exporter': {'name': 'kube-state-metrics', 'port': 32080},
              'kubernetes_telemetry': {'name': 'k8stelemetry', 'port': 32081}
              }
 RELABEL_KEY = 'prometheus_node_metric_relabel_configs'

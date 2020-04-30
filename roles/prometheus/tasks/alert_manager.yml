@@ -36,6 +36,9 @@
   docker_container:
     name: alertmanager
     image: "quay.io/prometheus/alertmanager:{{ prometheus_alertmanager_docker_tags }}"
+    command:
+      - "--config.file=/etc/alertmanager/alertmanager.yml"
+      - "--web.external-url={{ prometheus_alertmanager_url | default('http://'+ansible_default_ipv4.address+':9093') }}"
     state: started
     user: root
     restart: yes
