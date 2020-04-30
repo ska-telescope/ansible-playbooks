@@ -74,3 +74,5 @@ minikube_environment_vars: {}
   # http_proxy: http://my.proxy.server:8888
   # https_proxy: http://my.proxy.server:8888
   # no_proxy: 1.2.3.4,10.96.0.0/12
+
+kube_state_metrics: false
