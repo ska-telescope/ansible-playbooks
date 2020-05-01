@@ -2,6 +2,8 @@
 # vars file for prometheus
 
 node_exporter_version: 0.18.1-1.el7
+prometheus_gitlab_ci_pipelines_exporter_tags: 0.3.1
+prometheus_gitlab_ci_pipelines_exporter_token: ""
 
 prometheus_binary_dir: /usr/local/bin
 prometheus_config_dir: /etc/prometheus
@@ -36,6 +38,7 @@ grafana_dashboard_files:
 grafana_plugins:
   - vonage-status-panel
   - grafana-piechart-panel
+  - grafana-polystat-panel
 
 # Alert Manager
 # slack_api_url has to be set in the command line
@@ -103,6 +106,11 @@ prometheus_scrape_configs:
           - "{{ ansible_fqdn | default(ansible_host) | default('localhost') }}:9090"
           - "192.168.93.208:9090" #controller1-1
           - "192.168.93.209:9090" #controller1-2
+
+  - job_name: "gitlab_ci_pipelines_exporter"
+    static_configs:
+      - targets:
+          - "{{ ansible_fqdn | default(ansible_host) | default('localhost') }}:8080"
 
   - job_name: "node"
     static_configs:
