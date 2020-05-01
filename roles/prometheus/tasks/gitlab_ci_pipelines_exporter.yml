@@ -1,4 +1,6 @@
 ---
+# GitLab API exporter
+# https://github.com/mvisonneau/gitlab-ci-pipelines-exporter
 
 - name: Generate gitlab_ci_pipelines_exporter configuration
   become: true
