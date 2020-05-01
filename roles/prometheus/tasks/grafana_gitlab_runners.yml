@@ -17,6 +17,7 @@
   with_items:
     - simple.json
     - gitlab-runner-service_rev2.json
+    - gitlab-ci-pipelines-statuses_rev1.json
 
 - name: gitlab-runners Write dashboards provisioning config file
   template:

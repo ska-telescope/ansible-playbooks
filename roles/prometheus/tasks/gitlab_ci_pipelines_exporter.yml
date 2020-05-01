@@ -1,0 +1,37 @@
+---
+# GitLab API exporter
+# https://github.com/mvisonneau/gitlab-ci-pipelines-exporter
+
+- name: Generate gitlab_ci_pipelines_exporter configuration
+  become: true
+  template:
+    src: "{{ playbook_dir }}/roles/prometheus/templates/gitlab_ci_pipelines_exporter.yml.j2"
+    dest: /etc/gitlab_ci_pipelines_exporter.yml
+    force: true
+    owner: "{{ localuser }}"
+    group: "{{ localuser }}"
+    mode: 0755
+
+- name: Pull gitlab-ci-pipelines-exporter image {{ prometheus_gitlab_ci_pipelines_exporter_tags }}
+  docker_image:
+    name: mvisonneau/gitlab-ci-pipelines-exporter
+    tag: "{{ prometheus_gitlab_ci_pipelines_exporter_tags }}"
+
+- name: Stop gitlab_ci_pipelines_exporter container
+  docker_container:
+    name: gitlab_ci_pipelines_exporter
+    state: absent
+
+- name: Start gitlab_ci_pipelines_exporter container
+  docker_container:
+    name: gitlab_ci_pipelines_exporter
+    image: "mvisonneau/gitlab-ci-pipelines-exporter:{{ prometheus_gitlab_ci_pipelines_exporter_tags }}"
+    state: started
+    command:
+      - "--config /etc/config.yml"
+    restart: yes
+    restart_policy: on-failure
+    ports:
+     - "8080:8080"
+    volumes:
+      - "/etc/gitlab_ci_pipelines_exporter.yml:/etc/config.yml:ro"
