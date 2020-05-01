@@ -38,6 +38,7 @@ grafana_dashboard_files:
 grafana_plugins:
   - vonage-status-panel
   - grafana-piechart-panel
+  - grafana-polystat-panel
 
 # Alert Manager
 # slack_api_url has to be set in the command line
