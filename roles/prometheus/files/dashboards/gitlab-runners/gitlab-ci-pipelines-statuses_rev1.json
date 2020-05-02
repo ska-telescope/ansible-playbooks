@@ -14,7 +14,7 @@
     "editable": true,
     "gnetId": 10620,
     "graphTooltip": 0,
-    "iteration": 1588377686515,
+    "iteration": 1588377909606,
     "links": [],
     "panels": [{
             "cacheTimeout": null,
@@ -75,7 +75,7 @@
             },
             "tableColumn": "",
             "targets": [{
-                "expr": "count(gitlab_ci_pipeline_status{status=\"failed\"} > 0) or vector(0)",
+                "expr": "count(gitlab_ci_pipeline_last_run_status{status=\"failed\"} > 0) or vector(0)",
                 "format": "time_series",
                 "instant": false,
                 "intervalFactor": 1,
@@ -693,5 +693,5 @@
     "timezone": "",
     "title": "GitLab CI Pipelines Statuses",
     "uid": "gitlab_ci_pipeline_statuses",
-    "version": 5
+    "version": 6
 }
