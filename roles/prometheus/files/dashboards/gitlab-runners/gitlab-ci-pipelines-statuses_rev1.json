@@ -14,7 +14,7 @@
     "editable": true,
     "gnetId": 10620,
     "graphTooltip": 0,
-    "iteration": 1588471876008,
+    "iteration": 1588472601219,
     "links": [],
     "panels": [{
             "cacheTimeout": null,
@@ -115,7 +115,7 @@
             },
             "gridPos": {
                 "h": 3,
-                "w": 4,
+                "w": 5,
                 "x": 2,
                 "y": 0
             },
@@ -161,7 +161,7 @@
             "thresholds": "5184000,15552000",
             "timeFrom": null,
             "timeShift": null,
-            "title": "Average Pipeline Run Frequency",
+            "title": "Avg Pipeline Run Freq. (60/180 days)",
             "type": "singlestat",
             "valueFontSize": "80%",
             "valueMaps": [{
@@ -192,8 +192,8 @@
             },
             "gridPos": {
                 "h": 3,
-                "w": 4,
-                "x": 6,
+                "w": 5,
+                "x": 7,
                 "y": 0
             },
             "id": 106,
@@ -235,10 +235,10 @@
                 "intervalFactor": 1,
                 "refId": "A"
             }],
-            "thresholds": "180,300",
+            "thresholds": "900,1800",
             "timeFrom": null,
             "timeShift": null,
-            "title": "Average Pipeline Duration",
+            "title": "Avg Pipeline Duration (15/30 mins)",
             "type": "singlestat",
             "valueFontSize": "80%",
             "valueMaps": [{
@@ -407,7 +407,7 @@
                     }]
                 },
                 {
-                    "alias": "Last run",
+                    "alias": "Last run (2/5 d)",
                     "align": "auto",
                     "colorMode": "cell",
                     "colors": [
@@ -427,7 +427,7 @@
                     "unit": "s"
                 },
                 {
-                    "alias": "Duration",
+                    "alias": "Duration (15/30 m)",
                     "align": "auto",
                     "colorMode": "cell",
                     "colors": [
@@ -441,7 +441,7 @@
                     "pattern": "Value #C",
                     "thresholds": [
                         "900",
-                        "1200"
+                        "1800"
                     ],
                     "type": "number",
                     "unit": "dtdurations"
@@ -533,8 +533,8 @@
             "scroll": true,
             "showHeader": true,
             "sort": {
-                "col": 4,
-                "desc": true
+                "col": null,
+                "desc": false
             },
             "styles": [{
                     "alias": "Time",
@@ -574,7 +574,7 @@
                     ]
                 },
                 {
-                    "alias": "Last run",
+                    "alias": "Last run (60/180 d)",
                     "align": "auto",
                     "colorMode": "cell",
                     "colors": [
@@ -594,7 +594,7 @@
                     "unit": "s"
                 },
                 {
-                    "alias": "Duration",
+                    "alias": "Duration (15/30 m)",
                     "align": "auto",
                     "colorMode": "cell",
                     "colors": [
@@ -608,7 +608,7 @@
                     "pattern": "Value #C",
                     "thresholds": [
                         "900",
-                        "1200"
+                        "1800"
                     ],
                     "type": "number",
                     "unit": "dtdurations"
@@ -738,5 +738,5 @@
     "timezone": "",
     "title": "GitLab CI Pipelines Statuses",
     "uid": "gitlab_ci_pipeline_statuses",
-    "version": 8
+    "version": 9
 }
