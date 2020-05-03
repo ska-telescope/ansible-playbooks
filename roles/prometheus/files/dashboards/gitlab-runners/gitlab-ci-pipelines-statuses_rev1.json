@@ -14,7 +14,7 @@
     "editable": true,
     "gnetId": 10620,
     "graphTooltip": 0,
-    "iteration": 1588377909606,
+    "iteration": 1588378097009,
     "links": [],
     "panels": [{
             "cacheTimeout": null,
@@ -446,6 +446,27 @@
                     "unit": "dtdurations"
                 },
                 {
+                    "alias": "Project",
+                    "align": "auto",
+                    "colorMode": null,
+                    "colors": [
+                        "rgba(245, 54, 54, 0.9)",
+                        "rgba(237, 129, 40, 0.89)",
+                        "rgba(50, 172, 45, 0.97)"
+                    ],
+                    "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                    "decimals": 2,
+                    "link": true,
+                    "linkTargetBlank": true,
+                    "linkTooltip": "Jump to repository ${__cell}",
+                    "linkUrl": "https://gitlab.com/${__cell:raw}/pipelines",
+                    "mappingType": 1,
+                    "pattern": "project",
+                    "thresholds": [],
+                    "type": "string",
+                    "unit": "short"
+                },
+                {
                     "alias": "",
                     "align": "auto",
                     "colorMode": null,
@@ -455,6 +476,8 @@
                         "rgba(50, 172, 45, 0.97)"
                     ],
                     "decimals": 2,
+                    "link": true,
+                    "linkUrl": "",
                     "pattern": "/.*/",
                     "thresholds": [],
                     "type": "number",
@@ -509,8 +532,8 @@
             "scroll": true,
             "showHeader": true,
             "sort": {
-                "col": 3,
-                "desc": false
+                "col": 4,
+                "desc": true
             },
             "styles": [{
                     "alias": "Time",
@@ -588,6 +611,27 @@
                     ],
                     "type": "number",
                     "unit": "dtdurations"
+                },
+                {
+                    "alias": "Project",
+                    "align": "auto",
+                    "colorMode": null,
+                    "colors": [
+                        "rgba(245, 54, 54, 0.9)",
+                        "rgba(237, 129, 40, 0.89)",
+                        "rgba(50, 172, 45, 0.97)"
+                    ],
+                    "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                    "decimals": 2,
+                    "link": true,
+                    "linkTargetBlank": true,
+                    "linkTooltip": "Jump to repository ${__cell:raw}",
+                    "linkUrl": "https://gitlab.com/${__cell:raw}/pipelines",
+                    "mappingType": 1,
+                    "pattern": "project",
+                    "thresholds": [],
+                    "type": "number",
+                    "unit": "short"
                 },
                 {
                     "alias": "",
@@ -693,5 +737,5 @@
     "timezone": "",
     "title": "GitLab CI Pipelines Statuses",
     "uid": "gitlab_ci_pipeline_statuses",
-    "version": 6
+    "version": 7
 }
