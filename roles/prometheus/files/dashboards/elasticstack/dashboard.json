@@ -1,30 +1,4 @@
 {
-    "__inputs": [],
-    "__requires": [{
-            "type": "grafana",
-            "id": "grafana",
-            "name": "Grafana",
-            "version": "5.4.0"
-        },
-        {
-            "type": "panel",
-            "id": "graph",
-            "name": "Graph",
-            "version": "5.0.0"
-        },
-        {
-            "type": "datasource",
-            "id": "prometheus",
-            "name": "Prometheus",
-            "version": "5.0.0"
-        },
-        {
-            "type": "panel",
-            "id": "singlestat",
-            "name": "Singlestat",
-            "version": "5.0.0"
-        }
-    ],
     "annotations": {
         "list": [{
             "builtIn": 1,
@@ -39,10 +13,10 @@
     "editable": true,
     "gnetId": null,
     "graphTooltip": 1,
-    "id": null,
-    "iteration": 1549021227642,
+    "iteration": 1588540072004,
     "links": [],
     "panels": [{
+            "datasource": null,
             "gridPos": {
                 "h": 1,
                 "w": 24,
@@ -64,6 +38,7 @@
                 "rgba(237, 129, 40, 0.89)",
                 "#d44a3a"
             ],
+            "datasource": null,
             "format": "none",
             "gauge": {
                 "maxValue": 100,
@@ -94,6 +69,7 @@
             "maxDataPoints": 100,
             "nullPointMode": "connected",
             "nullText": null,
+            "options": {},
             "postfix": "",
             "postfixFontSize": "50%",
             "prefix": "",
@@ -109,7 +85,7 @@
                 "lineColor": "rgb(31, 120, 193)",
                 "show": false
             },
-            "tableColumn": "Value",
+            "tableColumn": "",
             "targets": [{
                 "expr": "scalar(elasticsearch_cluster_health_status{color=\"green\",cluster=~\"$cluster\"}) + scalar(elasticsearch_cluster_health_status{color=\"yellow\",cluster=~\"$cluster\"}) * 2 + scalar(elasticsearch_cluster_health_status{color=\"red\",cluster=~\"$cluster\"}) * 3",
                 "format": "time_series",
@@ -187,6 +163,7 @@
             "maxDataPoints": 100,
             "nullPointMode": "connected",
             "nullText": null,
+            "options": {},
             "postfix": "",
             "postfixFontSize": "50%",
             "prefix": "",
@@ -235,6 +212,7 @@
                 "rgba(237, 129, 40, 0.89)",
                 "#d44a3a"
             ],
+            "datasource": null,
             "format": "none",
             "gauge": {
                 "maxValue": 100,
@@ -265,6 +243,7 @@
             "maxDataPoints": 100,
             "nullPointMode": "connected",
             "nullText": null,
+            "options": {},
             "postfix": "",
             "postfixFontSize": "50%",
             "prefix": "",
@@ -307,6 +286,7 @@
                 "rgba(237, 129, 40, 0.89)",
                 "#d44a3a"
             ],
+            "datasource": null,
             "format": "none",
             "gauge": {
                 "maxValue": 100,
@@ -337,6 +317,7 @@
             "maxDataPoints": 100,
             "nullPointMode": "connected",
             "nullText": null,
+            "options": {},
             "postfix": "",
             "postfixFontSize": "50%",
             "prefix": "",
@@ -372,6 +353,7 @@
         },
         {
             "collapsed": false,
+            "datasource": null,
             "gridPos": {
                 "h": 1,
                 "w": 24,
@@ -392,6 +374,7 @@
                 "rgba(237, 129, 40, 0.89)",
                 "#d44a3a"
             ],
+            "datasource": null,
             "format": "none",
             "gauge": {
                 "maxValue": 100,
@@ -422,6 +405,7 @@
             "maxDataPoints": 100,
             "nullPointMode": "connected",
             "nullText": null,
+            "options": {},
             "postfix": "",
             "postfixFontSize": "50%",
             "prefix": "",
@@ -446,7 +430,6 @@
             }],
             "thresholds": "",
             "title": "Active Shards",
-            "transparent": false,
             "type": "singlestat",
             "valueFontSize": "120%",
             "valueMaps": [{
@@ -465,6 +448,7 @@
                 "rgba(237, 129, 40, 0.89)",
                 "#d44a3a"
             ],
+            "datasource": null,
             "format": "none",
             "gauge": {
                 "maxValue": 100,
@@ -495,6 +479,7 @@
             "maxDataPoints": 100,
             "nullPointMode": "connected",
             "nullText": null,
+            "options": {},
             "postfix": "",
             "postfixFontSize": "50%",
             "prefix": "",
@@ -537,6 +522,7 @@
                 "rgba(237, 129, 40, 0.89)",
                 "#d44a3a"
             ],
+            "datasource": null,
             "format": "none",
             "gauge": {
                 "maxValue": 100,
@@ -567,6 +553,7 @@
             "maxDataPoints": 100,
             "nullPointMode": "connected",
             "nullText": null,
+            "options": {},
             "postfix": "",
             "postfixFontSize": "50%",
             "prefix": "",
@@ -609,6 +596,7 @@
                 "rgba(237, 129, 40, 0.89)",
                 "#d44a3a"
             ],
+            "datasource": null,
             "format": "none",
             "gauge": {
                 "maxValue": 100,
@@ -639,6 +627,7 @@
             "maxDataPoints": 100,
             "nullPointMode": "connected",
             "nullText": null,
+            "options": {},
             "postfix": "",
             "postfixFontSize": "50%",
             "prefix": "",
@@ -681,6 +670,7 @@
                 "rgba(237, 129, 40, 0.89)",
                 "#d44a3a"
             ],
+            "datasource": null,
             "format": "none",
             "gauge": {
                 "maxValue": 100,
@@ -711,6 +701,7 @@
             "maxDataPoints": 100,
             "nullPointMode": "connected",
             "nullText": null,
+            "options": {},
             "postfix": "",
             "postfixFontSize": "50%",
             "prefix": "",
@@ -753,6 +744,7 @@
                 "rgba(237, 129, 40, 0.89)",
                 "#d44a3a"
             ],
+            "datasource": null,
             "format": "none",
             "gauge": {
                 "maxValue": 100,
@@ -783,6 +775,7 @@
             "maxDataPoints": 100,
             "nullPointMode": "connected",
             "nullText": null,
+            "options": {},
             "postfix": "",
             "postfixFontSize": "50%",
             "prefix": "",
@@ -818,6 +811,7 @@
         },
         {
             "collapsed": false,
+            "datasource": null,
             "gridPos": {
                 "h": 1,
                 "w": 24,
@@ -838,6 +832,7 @@
             "editable": true,
             "error": false,
             "fill": 1,
+            "fillGradient": 0,
             "grid": {},
             "gridPos": {
                 "h": 9,
@@ -845,6 +840,7 @@
                 "x": 0,
                 "y": 9
             },
+            "hiddenSeries": false,
             "id": 3,
             "legend": {
                 "alignAsTable": true,
@@ -860,6 +856,9 @@
             "linewidth": 2,
             "links": [],
             "nullPointMode": "connected",
+            "options": {
+                "dataLinks": []
+            },
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -924,6 +923,7 @@
             "editable": true,
             "error": false,
             "fill": 1,
+            "fillGradient": 0,
             "grid": {},
             "gridPos": {
                 "h": 9,
@@ -931,6 +931,7 @@
                 "x": 12,
                 "y": 9
             },
+            "hiddenSeries": false,
             "id": 4,
             "legend": {
                 "alignAsTable": true,
@@ -946,6 +947,9 @@
             "linewidth": 2,
             "links": [],
             "nullPointMode": "connected",
+            "options": {
+                "dataLinks": []
+            },
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -1006,13 +1010,16 @@
             "bars": false,
             "dashLength": 10,
             "dashes": false,
+            "datasource": null,
             "fill": 1,
+            "fillGradient": 0,
             "gridPos": {
                 "h": 9,
                 "w": 12,
                 "x": 0,
                 "y": 18
             },
+            "hiddenSeries": false,
             "id": 72,
             "legend": {
                 "alignAsTable": true,
@@ -1028,6 +1035,9 @@
             "linewidth": 1,
             "links": [],
             "nullPointMode": "null",
+            "options": {
+                "dataLinks": []
+            },
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -1088,13 +1098,16 @@
             "bars": false,
             "dashLength": 10,
             "dashes": false,
+            "datasource": null,
             "fill": 1,
+            "fillGradient": 0,
             "gridPos": {
                 "h": 9,
                 "w": 12,
                 "x": 12,
                 "y": 18
             },
+            "hiddenSeries": false,
             "id": 74,
             "legend": {
                 "alignAsTable": true,
@@ -1110,6 +1123,9 @@
             "linewidth": 1,
             "links": [],
             "nullPointMode": "null",
+            "options": {
+                "dataLinks": []
+            },
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -1174,6 +1190,7 @@
             "editable": true,
             "error": false,
             "fill": 1,
+            "fillGradient": 0,
             "grid": {},
             "gridPos": {
                 "h": 8,
@@ -1182,6 +1199,7 @@
                 "y": 27
             },
             "height": "",
+            "hiddenSeries": false,
             "id": 64,
             "legend": {
                 "avg": false,
@@ -1196,6 +1214,9 @@
             "linewidth": 2,
             "links": [],
             "nullPointMode": "connected",
+            "options": {
+                "dataLinks": []
+            },
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -1253,6 +1274,7 @@
         },
         {
             "collapsed": false,
+            "datasource": null,
             "gridPos": {
                 "h": 1,
                 "w": 24,
@@ -1307,6 +1329,7 @@
             "maxDataPoints": 100,
             "nullPointMode": "connected",
             "nullText": null,
+            "options": {},
             "postfix": "",
             "postfixFontSize": "50%",
             "prefix": "",
@@ -1324,7 +1347,7 @@
             },
             "tableColumn": "",
             "targets": [{
-                "expr": "sum(node_memory_MemTotal{cluster=~\"$cluster\"})",
+                "expr": "sum(node_memory_MemTotal_bytes{cluster=~\"$cluster\"})",
                 "intervalFactor": 2,
                 "legendFormat": "",
                 "metric": "",
@@ -1385,6 +1408,7 @@
             "maxDataPoints": 100,
             "nullPointMode": "connected",
             "nullText": null,
+            "options": {},
             "postfix": "",
             "postfixFontSize": "50%",
             "prefix": "",
@@ -1402,7 +1426,7 @@
             },
             "tableColumn": "",
             "targets": [{
-                "expr": "sum(node_memory_MemFree{cluster=~\"$cluster\"})",
+                "expr": "sum(node_memory_MemFree_bytes{cluster=~\"$cluster\"})",
                 "intervalFactor": 2,
                 "legendFormat": "",
                 "refId": "A",
@@ -1462,6 +1486,7 @@
             "maxDataPoints": 100,
             "nullPointMode": "connected",
             "nullText": null,
+            "options": {},
             "postfix": "",
             "postfixFontSize": "50%",
             "prefix": "",
@@ -1479,7 +1504,7 @@
             },
             "tableColumn": "",
             "targets": [{
-                "expr": "sum(node_memory_MemAvailable{cluster=~\"$cluster\"})",
+                "expr": "sum(node_memory_MemAvailable_bytes{cluster=~\"$cluster\"})",
                 "intervalFactor": 2,
                 "legendFormat": "",
                 "refId": "A",
@@ -1505,6 +1530,7 @@
             "editable": true,
             "error": false,
             "fill": 1,
+            "fillGradient": 0,
             "grid": {},
             "gridPos": {
                 "h": 8,
@@ -1512,6 +1538,7 @@
                 "x": 0,
                 "y": 39
             },
+            "hiddenSeries": false,
             "id": 1,
             "legend": {
                 "avg": false,
@@ -1526,6 +1553,9 @@
             "linewidth": 2,
             "links": [],
             "nullPointMode": "connected",
+            "options": {
+                "dataLinks": []
+            },
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -1591,6 +1621,7 @@
             "editable": true,
             "error": false,
             "fill": 1,
+            "fillGradient": 0,
             "grid": {},
             "gridPos": {
                 "h": 8,
@@ -1598,6 +1629,7 @@
                 "x": 12,
                 "y": 39
             },
+            "hiddenSeries": false,
             "id": 66,
             "legend": {
                 "avg": false,
@@ -1612,6 +1644,9 @@
             "linewidth": 2,
             "links": [],
             "nullPointMode": "connected",
+            "options": {
+                "dataLinks": []
+            },
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -1674,12 +1709,14 @@
             "dashes": false,
             "datasource": "$server",
             "fill": 1,
+            "fillGradient": 0,
             "gridPos": {
                 "h": 9,
                 "w": 12,
                 "x": 0,
                 "y": 47
             },
+            "hiddenSeries": false,
             "id": 57,
             "legend": {
                 "avg": false,
@@ -1694,6 +1731,9 @@
             "linewidth": 1,
             "links": [],
             "nullPointMode": "null",
+            "options": {
+                "dataLinks": []
+            },
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -1711,7 +1751,7 @@
                     "type": "date_histogram"
                 }],
                 "dsType": "elasticsearch",
-                "expr": "avg(irate(node_cpu{cluster=~\"$cluster\"}[10s])) by(mode) *100",
+                "expr": "avg(rate(node_cpu_seconds_total{cluster=~\"$cluster\"}[20s])) by(mode) *100",
                 "format": "time_series",
                 "intervalFactor": 2,
                 "legendFormat": "{{ mode }}",
@@ -1773,6 +1813,7 @@
             "editable": true,
             "error": false,
             "fill": 1,
+            "fillGradient": 0,
             "grid": {},
             "gridPos": {
                 "h": 9,
@@ -1780,6 +1821,7 @@
                 "x": 12,
                 "y": 47
             },
+            "hiddenSeries": false,
             "id": 28,
             "legend": {
                 "alignAsTable": true,
@@ -1796,6 +1838,9 @@
             "linewidth": 2,
             "links": [],
             "nullPointMode": "connected",
+            "options": {
+                "dataLinks": []
+            },
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -1863,6 +1908,7 @@
             "editable": true,
             "error": false,
             "fill": 1,
+            "fillGradient": 0,
             "grid": {},
             "gridPos": {
                 "h": 8,
@@ -1870,6 +1916,7 @@
                 "x": 0,
                 "y": 56
             },
+            "hiddenSeries": false,
             "id": 5,
             "legend": {
                 "alignAsTable": true,
@@ -1885,6 +1932,9 @@
             "linewidth": 2,
             "links": [],
             "nullPointMode": "connected",
+            "options": {
+                "dataLinks": []
+            },
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -1958,6 +2008,7 @@
             "editable": true,
             "error": false,
             "fill": 1,
+            "fillGradient": 0,
             "grid": {},
             "gridPos": {
                 "h": 8,
@@ -1965,6 +2016,7 @@
                 "x": 12,
                 "y": 56
             },
+            "hiddenSeries": false,
             "id": 65,
             "legend": {
                 "avg": false,
@@ -1979,6 +2031,9 @@
             "linewidth": 2,
             "links": [],
             "nullPointMode": "connected",
+            "options": {
+                "dataLinks": []
+            },
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -2036,7 +2091,7 @@
         }
     ],
     "refresh": "1m",
-    "schemaVersion": 16,
+    "schemaVersion": 22,
     "style": "dark",
     "tags": [
         "infra",
@@ -2050,7 +2105,9 @@
                     "value": "Prometheus"
                 },
                 "hide": 0,
+                "includeAll": false,
                 "label": "Server",
+                "multi": false,
                 "name": "server",
                 "options": [],
                 "query": "prometheus",
@@ -2061,7 +2118,10 @@
             },
             {
                 "allValue": null,
-                "current": {},
+                "current": {
+                    "text": "ska-systems1",
+                    "value": "ska-systems1"
+                },
                 "datasource": "$server",
                 "definition": "",
                 "hide": 0,
@@ -2083,7 +2143,10 @@
             },
             {
                 "allValue": null,
-                "current": {},
+                "current": {
+                    "text": "192.168.93.112:9114",
+                    "value": "192.168.93.112:9114"
+                },
                 "datasource": "$server",
                 "definition": "",
                 "hide": 0,
@@ -2106,7 +2169,7 @@
         ]
     },
     "time": {
-        "from": "now-12h",
+        "from": "now-1h",
         "to": "now"
     },
     "timepicker": {
@@ -2137,5 +2200,5 @@
     "timezone": "utc",
     "title": "ElasticSearch Dashboard",
     "uid": "n_nxrE_mk",
-    "version": 1
+    "version": 3
 }
