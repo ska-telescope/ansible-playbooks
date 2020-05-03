@@ -14,7 +14,7 @@
     "editable": true,
     "gnetId": 10620,
     "graphTooltip": 0,
-    "iteration": 1588378097009,
+    "iteration": 1588471876008,
     "links": [],
     "panels": [{
             "cacheTimeout": null,
@@ -304,7 +304,7 @@
             },
             "savedComposites": [],
             "savedOverrides": [{
-                "clickThrough": "",
+                "clickThrough": "https://gitlab.com/${__cell_name}/pipelines",
                 "colors": [
                     "#299c46",
                     "#e5ac0e",
@@ -315,6 +315,7 @@
                 "enabled": true,
                 "label": "OVERRIDE 1",
                 "metricName": "/.*/",
+                "newTabEnabled": true,
                 "operatorName": "current",
                 "prefix": "",
                 "sanitizeURLEnabled": true,
@@ -737,5 +738,5 @@
     "timezone": "",
     "title": "GitLab CI Pipelines Statuses",
     "uid": "gitlab_ci_pipeline_statuses",
-    "version": 7
+    "version": 8
 }
