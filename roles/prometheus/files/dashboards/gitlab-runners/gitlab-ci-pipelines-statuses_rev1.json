@@ -14,7 +14,7 @@
     "editable": true,
     "gnetId": 10620,
     "graphTooltip": 0,
-    "iteration": 1588472601219,
+    "iteration": 1588481969230,
     "links": [],
     "panels": [{
             "cacheTimeout": null,
@@ -357,7 +357,7 @@
         {
             "columns": [],
             "datasource": "${DS_PROMETHEUS}",
-            "fontSize": "100%",
+            "fontSize": "90%",
             "gridPos": {
                 "h": 22,
                 "w": 12,
@@ -371,8 +371,8 @@
             "scroll": true,
             "showHeader": true,
             "sort": {
-                "col": 3,
-                "desc": false
+                "col": 4,
+                "desc": true
             },
             "styles": [{
                     "alias": "Time",
@@ -407,7 +407,7 @@
                     }]
                 },
                 {
-                    "alias": "Last run (2/5 d)",
+                    "alias": "L.run (2/5d)",
                     "align": "auto",
                     "colorMode": "cell",
                     "colors": [
@@ -519,7 +519,7 @@
         {
             "columns": [],
             "datasource": "${DS_PROMETHEUS}",
-            "fontSize": "100%",
+            "fontSize": "90%",
             "gridPos": {
                 "h": 25,
                 "w": 12,
@@ -738,5 +738,5 @@
     "timezone": "",
     "title": "GitLab CI Pipelines Statuses",
     "uid": "gitlab_ci_pipeline_statuses",
-    "version": 9
+    "version": 10
 }
