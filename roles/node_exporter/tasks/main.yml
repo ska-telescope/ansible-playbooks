@@ -9,13 +9,11 @@
     - name: install prometheus-node-exporter
       shell: |
         bash /tmp/script.rpm.sh
-      become: yes
 
     - name: "install node_exporter-{{ node_exporter_version }}.centos.x86_64"
       yum:
         name: "node_exporter-{{ node_exporter_version }}.centos.x86_64"
         state: present
-      become: yes
       notify: restart node_exporter
 
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat'
@@ -36,10 +34,8 @@
 
           deb http://it.archive.ubuntu.com/ubuntu/ focal-updates main universe restricted multiverse
           deb-src http://it.archive.ubuntu.com/ubuntu/ focal-updates main universe restricted multiverse
-      become: yes
 
     - name: Install prometheus-node-exporter
-      become: yes
       apt:
         name: prometheus-node-exporter
         state: present
@@ -47,10 +43,22 @@
         update_cache: yes
       notify: restart prometheus-node-exporter
 
+    - name: Create node_exporter service configuration directory
+      file:
+        path: /etc/systemd/system/prometheus-node-exporter.service.d
+        state: directory
+        mode: 0755
+
+    - name: Fix node_exporter service configuration
+      become: true
+      template:
+        src: "{{ playbook_dir }}/roles/node_exporter/templates/prometheus-node-exporter.conf.j2"
+        dest: /etc/systemd/system/prometheus-node-exporter.service.d/prometheus-node-exporter.conf
+        force: true
+        mode: 0755
+      notify: restart prometheus-node-exporter
+
   when:
     - ansible_distribution == 'Ubuntu'
-
-# - name: Reboot
-#   reboot:
 
 - meta: flush_handlers

@@ -10,4 +10,5 @@
   roles:
     - updatehosts
     - docker
+    - node_exporter
     - prometheus
