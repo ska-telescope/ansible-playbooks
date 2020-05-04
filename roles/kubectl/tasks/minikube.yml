@@ -25,12 +25,6 @@
     filename: kubernetes
     state: present
 
-- name: Install kubectl
-  apt:
-    name:
-    - kubectl
-    update_cache: yes
-
 - name: Check if minikube is installed
   stat:
     path: /usr/local/bin/minikube
