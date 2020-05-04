@@ -9,6 +9,86 @@ prometheus_binary_dir: /usr/local/bin
 prometheus_config_dir: /etc/prometheus
 prometheus_data_dir: /prometheus
 prometheus_node_metric_relabel_configs: []
+prometheus_static_node_metric_relabel_configs:
+  - action: replace
+    regex: 192\.168\.93\.201 :9100
+    replacement: server3-2:9100
+    source_labels:
+    - instance
+    target_label: instance
+  - action: replace
+    regex: 192\.168\.93\.203 :9100
+    replacement: server2-1:9100
+    source_labels:
+    - instance
+    target_label: instance
+  - action: replace
+    regex: 192\.168\.93\.211 :9100
+    replacement: storage1-1:9100
+    source_labels:
+    - instance
+    target_label: instance
+  - action: replace
+    regex: 192\.168\.93\.206 :9100
+    replacement: server2-4:9100
+    source_labels:
+    - instance
+    target_label: instance
+  - action: replace
+    regex: 192\.168\.93\.212 :9100
+    replacement: storage1-2:9100
+    source_labels:
+    - instance
+    target_label: instance
+  - action: replace
+    regex: 192\.168\.93\.204 :9100
+    replacement: server2-2:9100
+    source_labels:
+    - instance
+    target_label: instance
+  - action: replace
+    regex: 192\.168\.93\.202 :9100
+    replacement: server3-3:9100
+    source_labels:
+    - instance
+    target_label: instance
+  - action: replace
+    regex: 192\.168\.93\.208 :9100
+    replacement: controller:9100
+    source_labels:
+    - instance
+    target_label: instance
+  - action: replace
+    regex: 192\.168\.93\.209 :9100
+    replacement: controller1-2:9100
+    source_labels:
+    - instance
+    target_label: instance
+  - action: replace
+    regex: 192\.168\.93\.207 :9100
+    replacement: server2-5:9100
+    source_labels:
+    - instance
+    target_label: instance
+  - action: replace
+    regex: 192\.168\.93\.210 :9100
+    replacement: storage2-1:9100
+    source_labels:
+    - instance
+    target_label: instance
+  - action: replace
+    regex: 192\.168\.93\.200 :9100
+    replacement: server3-1:9100
+    source_labels:
+    - instance
+    target_label: instance
+  - action: replace
+    regex: 192\.168\.93\.205 :9100
+    replacement: server2-3:9100
+    source_labels:
+    - instance
+    target_label: instance
+
 elasticsearch_instance_add_cluster_label:
   - regex: '^192\.168\.93\.(94|96|112):(\d+)'
     replacement: ska-systems1
@@ -132,7 +212,7 @@ prometheus_scrape_configs:
     file_sd_configs:
     - files:
       - 'node_exporter.json'
-    metric_relabel_configs: "{{ elasticsearch_instance_add_cluster_label + prometheus_node_metric_relabel_configs }}"
+    metric_relabel_configs: "{{ prometheus_static_node_metric_relabel_configs + elasticsearch_instance_add_cluster_label + prometheus_node_metric_relabel_configs }}"
 
   - job_name: "gitlab-runner"
     file_sd_configs:
