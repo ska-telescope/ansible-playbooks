@@ -13,7 +13,7 @@
     "editable": true,
     "gnetId": null,
     "graphTooltip": 1,
-    "iteration": 1588540072004,
+    "iteration": 1588543370021,
     "links": [],
     "panels": [{
             "datasource": null,
@@ -87,7 +87,7 @@
             },
             "tableColumn": "",
             "targets": [{
-                "expr": "scalar(elasticsearch_cluster_health_status{color=\"green\",cluster=~\"$cluster\"}) + scalar(elasticsearch_cluster_health_status{color=\"yellow\",cluster=~\"$cluster\"}) * 2 + scalar(elasticsearch_cluster_health_status{color=\"red\",cluster=~\"$cluster\"}) * 3",
+                "expr": "avg(elasticsearch_cluster_health_status{color=\"green\",cluster=~\"$cluster\"}) + avg(elasticsearch_cluster_health_status{color=\"yellow\",cluster=~\"$cluster\"}) * 2 + avg(elasticsearch_cluster_health_status{color=\"red\",cluster=~\"$cluster\"}) * 3",
                 "format": "time_series",
                 "instant": false,
                 "intervalFactor": 1,
@@ -2101,6 +2101,7 @@
     "templating": {
         "list": [{
                 "current": {
+                    "selected": true,
                     "text": "Prometheus",
                     "value": "Prometheus"
                 },
@@ -2144,8 +2145,9 @@
             {
                 "allValue": null,
                 "current": {
-                    "text": "192.168.93.112:9114",
-                    "value": "192.168.93.112:9114"
+                    "selected": true,
+                    "text": "192.168.93.94:9114",
+                    "value": "192.168.93.94:9114"
                 },
                 "datasource": "$server",
                 "definition": "",
@@ -2200,5 +2202,5 @@
     "timezone": "utc",
     "title": "ElasticSearch Dashboard",
     "uid": "n_nxrE_mk",
-    "version": 3
+    "version": 4
 }
