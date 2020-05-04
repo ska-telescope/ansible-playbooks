@@ -22,10 +22,10 @@
   args:
     executable: /bin/bash
 
-- name: Add /usr/local/bin and minikube binaries to system path in bashrc
+- name: Add /usr/local/bin to system path in bashrc
   lineinfile:
     path: "{{localhome}}/.bashrc"
-    line: export PATH=$PATH:{{ minikube_binaries_dir}}:/usr/local/bin
+    line: export PATH=$PATH:/usr/local/bin
 
 - name: Install Helm
   shell: "/tmp/get_helm.sh -v {{ helm_version }}"

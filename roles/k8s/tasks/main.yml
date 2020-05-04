@@ -117,7 +117,6 @@
         --extra-config=kubeadm.pod-network-cidr=10.200.0.0/16
         --network-plugin=cni
         --vm-driver={{ minikube_driver }}
-        --vm-driver={{ minikube_driver }}
         --kubernetes-version={{ k8s_version }}
       environment:
         MINIKUBE_WANTUPDATENOTIFICATION: false
@@ -137,6 +136,7 @@
         --cpus {{ minikube_cpus }}
         --extra-config=kubelet.resolv-conf={{ minikube_resolver }}
         --vm-driver={{ minikube_driver }}
+        --kubernetes-version={{ k8s_version }}
       environment:
         MINIKUBE_WANTUPDATENOTIFICATION: false
         MINIKUBE_WANTREPORTERRORPROMPT: false
@@ -157,6 +157,11 @@
       until: "'minikube-vm' and 'host: Running' and 'kubelet: Running' and 'apiserver: Running' in minikube_status.stdout"
       delay: 30
       retries: 10
+
+    - name: Add minikube binaries to system path in bashrc
+      lineinfile:
+        path: "{{localhome}}/.bashrc"
+        line: export PATH=$PATH:{{ minikube_binaries_dir}}
 
     - name: Install networking
       block:
