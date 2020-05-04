@@ -117,6 +117,8 @@
         --extra-config=kubeadm.pod-network-cidr=10.200.0.0/16
         --network-plugin=cni
         --vm-driver={{ minikube_driver }}
+        --vm-driver={{ minikube_driver }}
+        --kubernetes-version={{ k8s_version }}
       environment:
         MINIKUBE_WANTUPDATENOTIFICATION: false
         MINIKUBE_WANTREPORTERRORPROMPT: false
