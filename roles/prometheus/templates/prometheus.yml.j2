@@ -25,6 +25,7 @@ alerting:
   alertmanagers:
   {{ prometheus_alertmanager_config | to_nice_yaml(indent=2) | indent(2,False) }}
   alert_relabel_configs:
+  {{ prometheus_static_node_metric_relabel_configs | to_nice_yaml(indent=2) | indent(2,False) }}
   {{ elasticsearch_instance_add_cluster_label | to_nice_yaml(indent=2) | indent(2,False) }}
   {{ prometheus_node_metric_relabel_configs | to_nice_yaml(indent=2) | indent(2,False) }}
 {% endif %}
