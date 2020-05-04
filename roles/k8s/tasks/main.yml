@@ -100,6 +100,7 @@
           export MINIKUBE_HOME=$HOME
           export CHANGE_MINIKUBE_NONE_USER=true
           export KUBECONFIG=$HOME/.kube/config
+          export PATH=$PATH:{{ minikube_binaries_dir}}
         marker: "# {mark} ANSIBLE MANAGED BLOCK for minikube"
       with_items:
         - .profile
@@ -157,11 +158,6 @@
       until: "'minikube-vm' and 'host: Running' and 'kubelet: Running' and 'apiserver: Running' in minikube_status.stdout"
       delay: 30
       retries: 10
-
-    - name: Add minikube binaries to system path in bashrc
-      lineinfile:
-        path: "{{localhome}}/.bashrc"
-        line: export PATH=$PATH:{{ minikube_binaries_dir}}
 
     - name: Install networking
       block:
