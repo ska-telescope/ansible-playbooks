@@ -18,7 +18,7 @@
   "editable": true,
   "gnetId": 2341,
   "graphTooltip": 0,
-  "iteration": 1588165252269,
+  "iteration": 1588602919173,
   "links": [],
   "panels": [
     {
@@ -396,7 +396,7 @@
       },
       "hiddenSeries": false,
       "id": 6,
-      "interval": "1s",
+      "interval": "",
       "legend": {
         "avg": false,
         "current": false,
@@ -431,12 +431,12 @@
       "steppedLine": true,
       "targets": [
         {
-          "expr": "increase(gitlab_runner_errors_total[1m])",
+          "expr": "sum by (level)(irate(gitlab_runner_errors_total[1d])) * 100",
           "format": "time_series",
           "instant": false,
           "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "{{level}}",
+          "intervalFactor": 4,
+          "legendFormat": "\"{{level}}\" on these runners: {$runner}",
           "refId": "A",
           "step": 60
         }
