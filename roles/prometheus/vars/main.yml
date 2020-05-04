@@ -212,11 +212,11 @@ prometheus_alert_rules:
     summary: "{% raw %}Ssh Service {{ $labels.target }} down{% endraw %}"
 - alert: CriticalCPULoad
   expr: 'instance:node_cpu:load > 98'
-  for: 10m
+  for: 30m
   labels:
     severity: critical
   annotations:
-    description: "{% raw %}{{ $labels.instance }} of job {{ $labels.job }} has Critical CPU load for more than 2 minutes.{% endraw %}"
+    description: "{% raw %}{{ $labels.instance }} of job {{ $labels.job }} has Critical CPU load for more than 30 minutes.{% endraw %}"
     summary: "{% raw %}Instance {{ $labels.instance }} - Critical CPU load{% endraw %}"
 - alert: CriticalRAMUsage
   expr: 'instance:node_ram:usage > 98'
@@ -259,3 +259,11 @@ prometheus_alert_rules:
   annotations:
     description: "{% raw %} Container {{ $labels.container }} of pod {{ $labels.kubernetes_pod_name }} in namespace {{ $labels.kubernetes_namespace }} keeps restarting.{% endraw %}"
     summary: "{% raw %}Container {{ $labels.container }} - Too many restarts{% endraw %}"
+- alert: PendingJobs
+  expr: 'gitlab_runner_jobs{state="pending"} > 0'
+  for: 10m
+  labels:
+    severity: critical
+  annotations:
+    description: "{% raw %}{{ $labels.instance }} of job {{ $labels.job }} has pending jobs for more than 5 minutes..{% endraw %}"
+    summary: "{% raw %}Instance {{ $labels.instance }} - Gitlab runner pending jobs{% endraw %}"
