@@ -212,11 +212,11 @@ prometheus_alert_rules:
     summary: "{% raw %}Ssh Service {{ $labels.target }} down{% endraw %}"
 - alert: CriticalCPULoad
   expr: 'instance:node_cpu:load > 98'
-  for: 10m
+  for: 30m
   labels:
     severity: critical
   annotations:
-    description: "{% raw %}{{ $labels.instance }} of job {{ $labels.job }} has Critical CPU load for more than 2 minutes.{% endraw %}"
+    description: "{% raw %}{{ $labels.instance }} of job {{ $labels.job }} has Critical CPU load for more than 30 minutes.{% endraw %}"
     summary: "{% raw %}Instance {{ $labels.instance }} - Critical CPU load{% endraw %}"
 - alert: CriticalRAMUsage
   expr: 'instance:node_ram:usage > 98'
