@@ -15,17 +15,15 @@
     update_cache: yes
 
 - name: Add kubectl GPG
-  apt_key: url=https://packages.cloud.google.com/apt/doc/apt-key.gpg
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
 
-- name: Add sources.list.d/kubernetes.list
-  shell: |
-    echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" |  tee -a /etc/apt/sources.list.d/kubernetes.list
-
-- name: Install kubectl
-  apt:
-    name:
-    - kubectl
-    update_cache: yes
+- name: add kubernetes repository
+  apt_repository:
+    repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+    filename: kubernetes
+    state: present
 
 - name: Check if minikube is installed
   stat:
