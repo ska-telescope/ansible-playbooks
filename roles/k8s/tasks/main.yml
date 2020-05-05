@@ -12,6 +12,19 @@
   loop_control:
     loop_var: docker_vars
 
+- name: install pip and dev dependencies
+  become: true
+  apt:
+    pkg:
+      - python-pip # TODO: In the future the all playbook must use Python 3
+    state: present
+
+- name: install pyhelm and dependencies
+  pip:
+    name:
+      - pyhelm
+    state: present
+
 - name: Install conntrack package ## Requirement for Kubernetes 1.18 +
   apt:
     name: conntrack
@@ -20,7 +33,7 @@
 
 - name: set facts for minikube
   set_fact:
-    "minikube_use_calico": "{{ use_calico|bool }}"
+    "minikube_use_calico": "false"
     "minikube_use_nginx": "{{ use_nginx|bool }}"
     "user_home": "{{ lookup('env','HOME') }}"
     "minikube_check": !unsafe >-
@@ -31,12 +44,9 @@
   shell: "{{ minikube_check }} | grep 'host: '"
   args:
     executable: /bin/bash
+  ignore_errors: true
   register: starting_minikube_status
-  ignore_errors: true ## is this step needed?
-
-# - debug:
-#     var: starting_minikube_status
-#     verbosity: 1
+  ignore_errors: true 
 
 - name: Install Minikube
   block:
@@ -90,6 +100,7 @@
           export MINIKUBE_HOME=$HOME
           export CHANGE_MINIKUBE_NONE_USER=true
           export KUBECONFIG=$HOME/.kube/config
+          export PATH=$PATH:{{ minikube_binaries_dir}}
         marker: "# {mark} ANSIBLE MANAGED BLOCK for minikube"
       with_items:
         - .profile
@@ -107,6 +118,7 @@
         --extra-config=kubeadm.pod-network-cidr=10.200.0.0/16
         --network-plugin=cni
         --vm-driver={{ minikube_driver }}
+        --kubernetes-version={{ k8s_version }}
       environment:
         MINIKUBE_WANTUPDATENOTIFICATION: false
         MINIKUBE_WANTREPORTERRORPROMPT: false
@@ -125,6 +137,7 @@
         --cpus {{ minikube_cpus }}
         --extra-config=kubelet.resolv-conf={{ minikube_resolver }}
         --vm-driver={{ minikube_driver }}
+        --kubernetes-version={{ k8s_version }}
       environment:
         MINIKUBE_WANTUPDATENOTIFICATION: false
         MINIKUBE_WANTREPORTERRORPROMPT: false
@@ -224,6 +237,19 @@
       shell:
         if ! helm list -n kube-system | grep -q traefik0; then \
         helm install traefik0 stable/traefik --namespace=kube-system --set externalIP={{ansible_default_ipv4.address}}; fi
+    
+    # - name: Install traefik
+    #   helm:
+    #     chart:
+    #       name: traefik
+    #       source:
+    #         type: repo
+    #         location: "{{ helm_stable_repo_url }}"
+    #     state: present
+    #     name: traefik0
+    #     namespace: kube-system
+    #     values:
+    #       externalIP: "{{ ansible_default_ipv4.address }} "
   when: "not minikube_use_nginx"
 
 # https://github.com/kubernetes/kube-state-metrics/tree/master/examples/standard

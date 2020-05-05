@@ -22,7 +22,7 @@ V_IP ?= 172.16.0.92  ## Vagrant private network IP
 
 # Minikube
 DRIVER ?= true  ## Run Minikube via 'kvm2' driver (true) or 'none' (false)
-USE_CALICO ?= true  ## Use Calico for Pod Networking
+USE_CALICO ?= false  ## Use Calico for Pod Networking
 USE_NGINX ?= false  ## Use NGINX as the Ingress Controller
 
 # Format the disk size for minikube - 999g
@@ -32,7 +32,10 @@ FORMATTED_DISK_SIZE = $(shell echo $(V_DISK_SIZE) | sed 's/[^0-9]*//g')g
 .PHONY: vars k8s minikube localip vagrantip vagrant_install vagrant_up vagrant_down help inventory kubespray cluster components reset skampi
 .DEFAULT_GOAL := help
 
+<<<<<<< HEAD
+=======
 # define private rules and additional makefiles
+>>>>>>> master
 -include PrivateRules.mak
 -include prometheus.mk
 
@@ -140,7 +143,8 @@ remove_minikube: ## Destroy minikube after removing deployments
 	sudo rm -rf ~/.kube && \
 	sudo rm -rf /var/lib/kubeadm.yaml /data/minikube /var/lib/minikube /var/lib/kubelet /etc/kubernetes && \
 	sudo rm -rf ~/.minikube && \
-	sudo rm -rf /usr/local/bin/minikube*
+	sudo rm -rf /usr/local/bin/minikube* && \
+	sudo rm -rf /usr/local/bin/kubectl*
 
 	
 ansible_install: ## Add the repository and install in the current system python

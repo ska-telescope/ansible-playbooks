@@ -18,7 +18,7 @@
   "editable": true,
   "gnetId": 2341,
   "graphTooltip": 0,
-  "iteration": 1588602919173,
+  "iteration": 1588605682954,
   "links": [],
   "panels": [
     {
@@ -118,6 +118,7 @@
       },
       "yaxes": [
         {
+          "decimals": 0,
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -245,7 +246,7 @@
           {
             "evaluator": {
               "params": [
-                10
+                0
               ],
               "type": "gt"
             },
@@ -266,10 +267,11 @@
             "type": "query"
           }
         ],
-        "executionErrorState": "alerting",
+        "executionErrorState": "keep_state",
         "for": "5m",
         "frequency": "1m",
         "handler": 1,
+        "message": "Gitlab runner job on $runner is stuck in pending state.",
         "name": "Jobs pending alert",
         "noDataState": "no_data",
         "notifications": []
@@ -319,12 +321,12 @@
       "steppedLine": true,
       "targets": [
         {
-          "expr": "sum(gitlab_runner_jobs{state=\"pending\"})",
+          "expr": "sum by (runner)(gitlab_runner_jobs{state=\"pending\"})",
           "format": "time_series",
           "instant": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "Gitlab runner jobs pending",
+          "legendFormat": "",
           "metric": "ci_runner_builds",
           "refId": "A",
           "step": 60
@@ -336,7 +338,7 @@
           "fill": true,
           "line": true,
           "op": "gt",
-          "value": 10
+          "value": 0
         }
       ],
       "timeFrom": null,
@@ -358,6 +360,7 @@
       },
       "yaxes": [
         {
+          "decimals": 0,
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -436,7 +439,7 @@
           "instant": false,
           "interval": "",
           "intervalFactor": 4,
-          "legendFormat": "\"{{level}}\" on these runners: {$runner}",
+          "legendFormat": "",
           "refId": "A",
           "step": 60
         }
@@ -550,5 +553,5 @@
   "timezone": "browser",
   "title": "Gitlab Runners Simple Dashboard",
   "uid": "gjeLVgeWk",
-  "version": 1
+  "version": 2
 }
