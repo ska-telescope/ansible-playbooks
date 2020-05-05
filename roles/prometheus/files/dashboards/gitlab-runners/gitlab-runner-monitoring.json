@@ -16,7 +16,7 @@
   "editable": true,
   "gnetId": 10156,
   "graphTooltip": 0,
-  "iteration": 1588676593207,
+  "iteration": 1588685279028,
   "links": [],
   "panels": [
     {
@@ -159,10 +159,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "irate(gitlab_runner_errors_total{level=\"error\"}[1d])",
+          "expr": "irate(gitlab_runner_errors_total{level=\"error\",instance!~\"192.168.*\"}[1d])",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "Instance={{instance}}",
+          "legendFormat": "{{instance}}",
           "refId": "A"
         }
       ],
@@ -248,7 +248,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "increase(gitlab_runner_errors_total{level=\"error\"}[1m])",
+          "expr": "increase(gitlab_runner_errors_total{level=\"error\",instance!~\"192.168.*\"}[1m])",
           "legendFormat": "{{instance}}",
           "refId": "A"
         }
@@ -350,8 +350,8 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "irate(gitlab_runner_failed_jobs_total{runner=~\"$runner\"}[1d])",
-          "legendFormat": "Instance={{instance}} Runner={{runner}}",
+          "expr": "irate(gitlab_runner_failed_jobs_total{runner=~\"$runner\",instance!~\"192.168.*\"}[1d])",
+          "legendFormat": "{{instance}}({{runner}})",
           "refId": "A"
         }
       ],
@@ -437,8 +437,8 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (instance, runner)(gitlab_runner_jobs{runner=~\"$runner\"})",
-          "legendFormat": "Instance={{instance}} Runner={{runner}}",
+          "expr": "sum by (instance, runner)(gitlab_runner_jobs{runner=~\"$runner\",instance!~\"192.168.*\"})",
+          "legendFormat": "{{instance}}({{runner}})",
           "refId": "A"
         }
       ],
@@ -525,8 +525,8 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "gitlab_runner_jobs{state=\"pending\"}",
-          "legendFormat": "Instance= {{instance}} Runner={{runner}}",
+          "expr": "gitlab_runner_jobs{state=\"pending\",instance!~\"192.168.*\"}",
+          "legendFormat": "{{instance}}({{runner}})",
           "refId": "A"
         }
       ],
@@ -613,8 +613,8 @@
       "pluginVersion": "6.6.2",
       "targets": [
         {
-          "expr": "gitlab_runner_request_concurrency{runner=~\"$runner\"}",
-          "legendFormat": "Instance={{instance}} Runner={{ runner }}",
+          "expr": "gitlab_runner_request_concurrency{runner=~\"$runner\",instance!~\"192.168.*\"}",
+          "legendFormat": "{{instance}}({{ runner }})",
           "refId": "A"
         }
       ],
@@ -664,8 +664,8 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "gitlab_runner_job_duration_seconds_sum{runner=~\"$runner\"}/gitlab_runner_job_duration_seconds_count{runner=~\"$runner\"}",
-          "legendFormat": "Instance={{instance}} Runner={{runner}}",
+          "expr": "gitlab_runner_job_duration_seconds_sum{runner=~\"$runner\",instance!~\"192.168.*\"}/gitlab_runner_job_duration_seconds_count{runner=~\"$runner\",instance!~\"192.168.*\"}",
+          "legendFormat": "{{instance}}({{runner}})",
           "refId": "A"
         }
       ],
@@ -752,8 +752,8 @@
       "pluginVersion": "6.6.2",
       "targets": [
         {
-          "expr": "irate(gitlab_runner_request_concurrency_exceeded_total{runner=~\"$runner\"}[1d])",
-          "legendFormat": "Instance={{instance}} Runner={{ runner }}",
+          "expr": "irate(gitlab_runner_request_concurrency_exceeded_total{runner=~\"$runner\",instance!~\"192.168.*\"}[1d])",
+          "legendFormat": "{{instance}}({{ runner }})",
           "refId": "A"
         }
       ],
@@ -862,7 +862,7 @@
       }
     }
   ],
-  "refresh": false,
+  "refresh": "5s",
   "schemaVersion": 22,
   "style": "dark",
   "tags": [],
@@ -871,30 +871,30 @@
       {
         "allValue": null,
         "current": {
-          "text": "CfTFzYSk + r1p9JZ4r + -DqqoA2X + 4UjtWktY + s8e4gGSj + NDnCDkCe + po84AQFu + GLvxpjXw + 1yGgnxW1 + 2TEGjneb + h3Kse6wK + uEkAJUzX + DCHdkoSw + Qy-T7XzS + o-iByeMy + zcKuumDs + _7zhBxjN + XWNXG2dN + SsX6qy-j + kCYuSNzA + bWHLkGUm + hctESy-x",
+          "text": "bWHLkGUm + _7zhBxjN + r1p9JZ4r + GLvxpjXw + po84AQFu + NDnCDkCe + CfTFzYSk + s8e4gGSj + XWNXG2dN + 1yGgnxW1 + 2TEGjneb + h3Kse6wK + DCHdkoSw + Qy-T7XzS + o-iByeMy + zcKuumDs + SsX6qy-j + hctESy-x + uEkAJUzX + -DqqoA2X + 4UjtWktY + kCYuSNzA",
           "value": [
-            "CfTFzYSk",
+            "bWHLkGUm",
+            "_7zhBxjN",
             "r1p9JZ4r",
-            "-DqqoA2X",
-            "4UjtWktY",
-            "s8e4gGSj",
-            "NDnCDkCe",
-            "po84AQFu",
             "GLvxpjXw",
+            "po84AQFu",
+            "NDnCDkCe",
+            "CfTFzYSk",
+            "s8e4gGSj",
+            "XWNXG2dN",
             "1yGgnxW1",
             "2TEGjneb",
             "h3Kse6wK",
-            "uEkAJUzX",
             "DCHdkoSw",
             "Qy-T7XzS",
             "o-iByeMy",
             "zcKuumDs",
-            "_7zhBxjN",
-            "XWNXG2dN",
             "SsX6qy-j",
-            "kCYuSNzA",
-            "bWHLkGUm",
-            "hctESy-x"
+            "hctESy-x",
+            "uEkAJUzX",
+            "-DqqoA2X",
+            "4UjtWktY",
+            "kCYuSNzA"
           ]
         },
         "datasource": "Prometheus",
@@ -919,8 +919,8 @@
     ]
   },
   "time": {
-    "from": "2020-05-05T11:13:35.957Z",
-    "to": "2020-05-05T12:25:20.763Z"
+    "from": "now-1h",
+    "to": "now"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -950,5 +950,5 @@
   "timezone": "browser",
   "title": "Gitlab Runner monitoring",
   "uid": "jTW2jWQmz",
-  "version": 17
+  "version": 18
 }
