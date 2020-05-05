@@ -2,8 +2,10 @@
 
 - name: deploy_node_exporter
   hosts: nodexporter
+  vars:
+    mode: "exporter"
   become: true
   become_method: sudo
   become_flags: '-E -S -n'
-  tasks:
-    - include: roles/prometheus/tasks/node_exporter.yml
+  roles:
+    - node_exporter

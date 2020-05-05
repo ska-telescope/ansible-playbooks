@@ -14,7 +14,7 @@ The variable file include an example configuration made for testing purpose whic
 Call the playbook with the following command to install the prometheus server (which includes the db, the alert manager, the black box exporter and grafana): 
 
 ```
-    ansible-playbook deploy_prometheus.yaml --extra-vars "mode='server'" \
+    ansible-playbook deploy_prometheus.yml --extra-vars "mode='server'" \
            -i hosts \
            -e 'ansible_python_interpreter=/usr/bin/python3' \
            -e @/path/to/prometheus_node_metric_relabel_configs.yaml
@@ -23,7 +23,7 @@ Call the playbook with the following command to install the prometheus server (w
 Call the playbook with the following command to install the node-exporter: 
 
 ```
-    ansible-playbook deploy_prometheus.yaml --extra-vars "mode='exporter'" \
+    ansible-playbook deploy_prometheus.yml --extra-vars "mode='exporter'" \
            -i hosts \
            -e 'ansible_python_interpreter=/usr/bin/python3'
 ```
@@ -31,7 +31,7 @@ Call the playbook with the following command to install the node-exporter:
 Call the playbook with the following command to install both server and exporter: 
 
 ```
-    ansible-playbook deploy_prometheus.yaml -i hosts \
+    ansible-playbook deploy_prometheus.yml -i hosts \
            -e 'ansible_python_interpreter=/usr/bin/python3' \
            -e @/path/to/prometheus_node_metric_relabel_configs.yaml
 ```

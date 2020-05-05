@@ -1,0 +1,20 @@
+---
+
+# https://github.com/mvisonneau/gitlab-ci-pipelines-exporter/blob/master/docs/configuration_syntax.md
+
+gitlab:
+  url: https://gitlab.com
+  # You can also configure the token using --gitlab-token
+  # or the  environment variable
+  token: {{ prometheus_gitlab_ci_pipelines_exporter_token }}
+projects:
+  - name: piersharding/dask-operator
+wildcards:
+  - owner:
+      name: ska-telescope
+      kind: group
+      include_subgroups: true
+      # Fetch merge request pipelines refs (optional, default: false)
+      fetch_merge_request_pipelines_refs: true
+      # get the latest status
+      output_sparse_status_metrics: false

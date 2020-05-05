@@ -51,7 +51,7 @@ helm_stable_repo_url: https://kubernetes-charts.storage.googleapis.com
 # Traefik vars
 traefik_url: https://containous.github.io/traefik-helm-chart
 
-# development environment 
+# development environment
 pycharm_version: 'community-2018.3.3'
 PYTHON_VERSION: '3.7.3'
 TANGO_VERSION: '9.3.3'
@@ -63,7 +63,9 @@ docker_compose_version: '1.23.2'
 start_mysql_server: 'no'
 install_mysql: 'no'
 
+prometheus_url: https://alerts.engageska-portugal.pt
 prometheus_docker_tags: 'v2.16.0'
+prometheus_alertmanager_url: http://192.168.93.26:9093
 prometheus_alertmanager_docker_tags: 'v0.20.0'
 prometheus_bleckbox_exporter_docker_tags: 'v0.16.0'
 grafana_docker_tags: '6.6.2'
@@ -74,3 +76,5 @@ minikube_environment_vars: {}
   # http_proxy: http://my.proxy.server:8888
   # https_proxy: http://my.proxy.server:8888
   # no_proxy: 1.2.3.4,10.96.0.0/12
+
+kube_state_metrics: false

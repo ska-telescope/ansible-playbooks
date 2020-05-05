@@ -1,5 +1,4 @@
 ---
-
 - name: deploy_prometheus_server
   hosts: prometheus
   vars:
@@ -7,6 +6,10 @@
   become: true
   become_method: sudo
   become_flags: '-E -S -n'
+  tasks:
+    - include_role:
+        name: node_exporter
+      when: mode == "exporter" or mode == "all"
   roles:
     - updatehosts
     - docker

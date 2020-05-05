@@ -1,0 +1,26 @@
+---
+
+- name: gitlab-runners Make sure grafana configuration directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    recurse: yes
+  with_items:
+    - "/etc/grafana/provisioning/datasources"
+    - "/etc/grafana/provisioning/dashboards/gitlab-runners-dashboard"
+    - "/etc/grafana/provisioning/notifiers"
+
+- name: gitlab-runners Copy up resource files
+  copy:
+    src: "{{ role_path }}/files/dashboards/gitlab-runners/{{ item }}"
+    dest: "/etc/grafana/provisioning/dashboards/gitlab-runners-dashboard/{{ item }}"
+  with_items:
+    - gitlab-runner-simple.json
+    - gitlab-ci-pipelines-statuses_rev1.json
+    - gitlab-runner-monitoring.json
+
+- name: gitlab-runners Write dashboards provisioning config file
+  template:
+    src: dashboards-gitlab-runners-dashboard.yml.j2
+    dest: /etc/grafana/provisioning/dashboards/gitlab-runners-dashboard.yml
+    mode: 0640

@@ -1,0 +1,64 @@
+---
+- name: Install node_exporter for RedHat/CentOS
+  block:
+    - name: Download node exporter install script
+      get_url:
+        url: https://packagecloud.io/install/repositories/prometheus-rpm/release/script.rpm.sh
+        dest: /tmp/script.rpm.sh
+
+    - name: install prometheus-node-exporter
+      shell: |
+        bash /tmp/script.rpm.sh
+
+    - name: "install node_exporter-{{ node_exporter_version }}.centos.x86_64"
+      yum:
+        name: "node_exporter-{{ node_exporter_version }}.centos.x86_64"
+        state: present
+      notify: restart node_exporter
+
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat'
+
+- name: Install node_exporter for Debian
+  block:
+
+    - name: Configure /etc/apt/sources.list.d/sources.list
+      blockinfile:
+        path: /etc/apt/sources.list.d/sources.list
+        create: yes
+        block: |
+          deb http://it.archive.ubuntu.com/ubuntu/ focal main universe restricted multiverse
+          deb-src http://it.archive.ubuntu.com/ubuntu/ focal main universe restricted multiverse
+
+          deb http://security.ubuntu.com/ubuntu focal-security main universe restricted multiverse
+          deb-src http://security.ubuntu.com/ubuntu focal-security main universe restricted multiverse
+
+          deb http://it.archive.ubuntu.com/ubuntu/ focal-updates main universe restricted multiverse
+          deb-src http://it.archive.ubuntu.com/ubuntu/ focal-updates main universe restricted multiverse
+
+    - name: Install prometheus-node-exporter
+      apt:
+        name: prometheus-node-exporter
+        state: present
+        force: yes
+        update_cache: yes
+      notify: restart prometheus-node-exporter
+
+    - name: Create node_exporter service configuration directory
+      file:
+        path: /etc/systemd/system/prometheus-node-exporter.service.d
+        state: directory
+        mode: 0755
+
+    - name: Fix node_exporter service configuration
+      become: true
+      template:
+        src: "{{ playbook_dir }}/roles/node_exporter/templates/prometheus-node-exporter.conf.j2"
+        dest: /etc/systemd/system/prometheus-node-exporter.service.d/prometheus-node-exporter.conf
+        force: true
+        mode: 0755
+      notify: restart prometheus-node-exporter
+
+  when:
+    - ansible_distribution == 'Ubuntu'
+
+- meta: flush_handlers
