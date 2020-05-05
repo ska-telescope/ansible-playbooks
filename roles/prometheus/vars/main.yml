@@ -218,6 +218,7 @@ prometheus_scrape_configs:
     file_sd_configs:
     - files:
       - 'gitlab_exporter.json'
+    metric_relabel_configs: "{{ prometheus_static_node_metric_relabel_configs + elasticsearch_instance_add_cluster_label + prometheus_node_metric_relabel_configs }}"
 
   - job_name: "elasticsearch"
     file_sd_configs:
