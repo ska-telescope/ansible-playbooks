@@ -55,7 +55,11 @@ def get_address(server):
             break
     return address
 
-def update_openstack_metadata():
+def update_openstack_metadata(update_metadata):
+    inventory = ""
+    with open(update_metadata, 'r') as file:
+        inventory = file.read().replace('\n', '')
+
     proj_list = os.environ["project_name"].split(';')
 
     runners = []
@@ -69,8 +73,8 @@ def update_openstack_metadata():
         for server in novac.servers.list():
             server_name = str(server.to_dict()['name']).lower()
             address = get_address(server)
-            print("Server " + server_name + " address " + str(address))
-            if address == "-":
+            print("Processing server " + server_name + " address " + str(address))
+            if address == "-" or str(address) not in inventory:
                 continue
 
             updated_metadata = False
@@ -78,6 +82,7 @@ def update_openstack_metadata():
                 result_of_check = check_port(address, details['port'])
                 if result_of_check == 0:
                     try:
+                        print("Update metadata on server " + server_name + " address " + str(address))
                         novac.servers.set_meta_item(server.id, NAMESPACE_PREFIX + exporter_name, address+":"+str(details['port']))
                         if exporter_name == 'gitlab_exporter':
                             runners.append(address)
@@ -175,7 +180,7 @@ if (os.environ.get('auth_url') is None) or (os.environ.get('username') is None) 
     sys.exit(1)
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-u', '--update_metadata', help='update metadata on openstack and generate ansible hosts inventory file',action='store_true')
+parser.add_argument('-u', '--update_metadata', help='update metadata on openstack according to an hosts inventory file')
 parser.add_argument('-g', '--generate_targets', help='generate targets file',action='store_true')
 
 args = parser.parse_args()
@@ -185,6 +190,6 @@ if len(sys.argv)==1:
     sys.exit(1)
 
 if(args.update_metadata):
-    update_openstack_metadata()
+    update_openstack_metadata(args.update_metadata)
 if(args.generate_targets):
     generate_targets_from_metadata()

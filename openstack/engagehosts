@@ -1,0 +1,52 @@
+[runner]
+192.168.93.19 # runner-3
+192.168.93.30 # runner-2
+192.168.93.20 # runner-1
+192.168.93.62 # generic-runner-3
+192.168.93.90 # perentie-runner
+192.168.93.84 # generic-runner
+192.168.93.65 # docker-executor-tmc-2
+192.168.93.77 # tmc-runner-1-gitlabrunnernode-msmhbqxbx3dh
+192.168.93.50 # docker-executor-tmc
+192.168.100.39 # tango-runner-1-gitlabrunnernode-icxoio6lzkhw
+192.168.100.29 # skampi-runner-1-gitlabrunnernode-72crkj33gy5i
+192.168.93.68 # escapee-team-runner-1-gitlabrunnernode-i3l6nwkniefz
+192.168.93.11 # gitlab-docker-runner-3
+192.168.93.35 # gitlab-docker-runner-2
+192.168.93.31 # gitlab-docker-runner-1
+192.168.93.59 # helm-runner
+
+[prometheus]
+192.168.93.26 # prometheus
+
+[ceph]
+192.168.93.103 # ceph_system_core-master-0
+192.168.93.107 # ceph_system_core-master-2
+192.168.93.88 # ceph_system_core-master-1
+
+[elastic]
+192.168.93.94 # elastic_system_core-master-0
+192.168.93.112 # elastic_system_core-master-2
+192.168.93.96 # elastic_system_core-master-1
+
+[k8s]
+192.168.93.46 # cipro-master
+192.168.100.36 # cipro-node-2
+192.168.100.51 # cipro-node-1
+
+192.168.93.47 # k8s-master
+192.168.93.40 # k8s-node-2
+192.168.93.37 # k8s-node-1
+192.168.93.74 # k8s-node-3
+192.168.93.38 # k8s-node-4
+
+192.168.93.34 # k8s-v2-master
+192.168.93.16 # k8s-v2-node-2
+192.168.93.39 # k8s-v2-node-1
+
+[other]
+192.168.93.45 # engageska-website
+192.168.93.42 # public-ingress
+192.168.93.23 # backup-vpn
+192.168.93.25 # ska-hdd
+192.168.93.12 # nexus3
