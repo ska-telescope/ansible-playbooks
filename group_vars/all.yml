@@ -68,6 +68,7 @@ prometheus_docker_tags: 'v2.16.0'
 prometheus_alertmanager_url: http://192.168.93.26:9093
 prometheus_alertmanager_docker_tags: 'v0.20.0'
 prometheus_bleckbox_exporter_docker_tags: 'v0.16.0'
+cadvisor_docker_tags: 'v0.35.0'
 grafana_docker_tags: '6.6.2'
 
 # Environment variables to pass into Minikube deployment

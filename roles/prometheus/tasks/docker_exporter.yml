@@ -61,3 +61,42 @@
         state: restarted
 
   when: check_port.failed
+
+- name: Check if cadvisor exporter is already set
+  wait_for:
+    port: 9324
+    timeout: 3
+  register: check_port_cadvisor
+  ignore_errors: true
+
+- name: activate cadvisor metrics
+  block:
+    - name: Pull cadvisor image {{ cadvisor_docker_tags }}
+      docker_image:
+        name: gcr.io/google-containers/cadvisor
+        tag: "{{ cadvisor_docker_tags }}"
+
+    - name: Stop cadvisor container
+      docker_container:
+        name: cadvisor
+        state: absent
+
+    - name: Start cadvisor container
+      docker_container:
+        name: cadvisor
+        image: "gcr.io/google-containers/cadvisor:{{ cadvisor_docker_tags }}"
+        state: started
+        user: root
+        restart: yes
+        restart_policy: on-failure
+        ports:
+        - "9324:8080"
+        volumes:
+          - "/:/rootfs:ro"
+          - "/var/run:/var/run:ro"
+          - "/sys:/sys:ro"
+          - "/var/lib/docker/:/var/lib/docker:ro"
+          - "/dev/disk/:/dev/disk:ro"
+
+
+  when: check_port_cadvisor.failed
