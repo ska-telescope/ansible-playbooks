@@ -230,7 +230,7 @@ prometheus_scrape_configs:
     - files:
       - 'docker_exporter.json'
 
-  - job_name: "cadvisor"
+  - job_name: "docker_cadvisor"
     file_sd_configs:
     - files:
       - 'docker_cadvisor.json'
