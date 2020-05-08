@@ -230,6 +230,11 @@ prometheus_scrape_configs:
     - files:
       - 'docker_exporter.json'
 
+  - job_name: "cadvisor"
+    file_sd_configs:
+    - files:
+      - 'docker_cadvisor.json'
+
   - job_name: "kube-state-metrics"
     file_sd_configs:
     - files:
