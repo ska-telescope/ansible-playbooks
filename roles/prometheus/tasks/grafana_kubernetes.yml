@@ -15,6 +15,7 @@
     src: "{{ role_path }}/files/dashboards/kubernetes/{{ item }}"
     dest: "/etc/grafana/provisioning/dashboards/kubernetes-dashboard/{{ item }}"
   with_items:
+    - cluster-summary.json
     - apiserver.json
     - cluster-total.json
     - controller-manager.json
