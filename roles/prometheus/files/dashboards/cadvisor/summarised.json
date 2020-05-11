@@ -1120,6 +1120,26 @@
         "tagsQuery": "",
         "type": "query",
         "useTags": true
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "Prometheus",
+          "value": "Prometheus"
+        },
+        "hide": 2,
+        "label": null,
+        "name": "DS_PROMETHEUS",
+        "options": [
+          {
+            "selected": true,
+            "text": "Prometheus",
+            "value": "Prometheus"
+          }
+        ],
+        "query": "Prometheus",
+        "skipUrlSync": false,
+        "type": "constant"
       }
     ]
   },
