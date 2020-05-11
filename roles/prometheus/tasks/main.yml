@@ -56,6 +56,9 @@
 - include: grafana_gitlab_runners.yml
   when: mode == "server" or mode == "all"
 
+- include: grafana_cadvisor.yml
+  when: mode == "server" or mode == "all"
+
 - include: grafana_nodexporter.yml
   when: mode == "server" or mode == "all"
 
