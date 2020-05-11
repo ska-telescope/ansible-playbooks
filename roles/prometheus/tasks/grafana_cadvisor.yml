@@ -16,7 +16,7 @@
     dest: "/etc/grafana/provisioning/dashboards/cadvisor-dashboard/{{ item }}"
   with_items:
     - cadvisor.json
-    - summarized.json
+    - summarised.json
 
 - name: cadvisor-dashboard Write dashboards provisioning config file
   template:
