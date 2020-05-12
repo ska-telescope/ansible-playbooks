@@ -65,6 +65,9 @@
 - include: gitlab_ci_pipelines_exporter.yml
   when: mode == "server" or mode == "all"
 
+- include: grafana_alerts.yml
+  when: mode == "server" or mode == "all"
+
 # launch prom/alert/grafana after configuration
 - include: server.yml
   when: mode == "server" or mode == "all"

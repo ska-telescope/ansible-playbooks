@@ -1,0 +1,24 @@
+---
+
+- name: alerts overview - make sure grafana configuration directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    recurse: yes
+  with_items:
+    - "/etc/grafana/provisioning/datasources"
+    - "/etc/grafana/provisioning/dashboards/alerts-dashboard"
+    - "/etc/grafana/provisioning/notifiers"
+
+- name: alerts-dashboard Copy up resource files
+  copy:
+    src: "{{ role_path }}/files/dashboards/alerts/{{ item }}"
+    dest: "/etc/grafana/provisioning/dashboards/alerts-dashboard/{{ item }}"
+  with_items:
+    - alerts.json
+
+- name: cadvisor-dashboard Write dashboards provisioning config file
+  template:
+    src: dashboards-alerts-dashboard.yml.j2
+    dest: /etc/grafana/provisioning/dashboards/alerts-dashboard.yml
+    mode: 0640
