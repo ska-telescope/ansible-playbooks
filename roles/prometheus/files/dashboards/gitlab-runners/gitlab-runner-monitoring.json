@@ -16,7 +16,8 @@
   "editable": true,
   "gnetId": 10156,
   "graphTooltip": 0,
-  "iteration": 1588685279028,
+  "id": 57,
+  "iteration": 1589353143649,
   "links": [],
   "panels": [
     {
@@ -351,7 +352,7 @@
       "targets": [
         {
           "expr": "irate(gitlab_runner_failed_jobs_total{runner=~\"$runner\",instance!~\"192.168.*\"}[1d])",
-          "legendFormat": "{{instance}}({{runner}})",
+          "legendFormat": "{{failure_reason}} in {{instance}}({{runner}})",
           "refId": "A"
         }
       ],
@@ -871,30 +872,9 @@
       {
         "allValue": null,
         "current": {
-          "text": "bWHLkGUm + _7zhBxjN + r1p9JZ4r + GLvxpjXw + po84AQFu + NDnCDkCe + CfTFzYSk + s8e4gGSj + XWNXG2dN + 1yGgnxW1 + 2TEGjneb + h3Kse6wK + DCHdkoSw + Qy-T7XzS + o-iByeMy + zcKuumDs + SsX6qy-j + hctESy-x + uEkAJUzX + -DqqoA2X + 4UjtWktY + kCYuSNzA",
+          "text": "",
           "value": [
-            "bWHLkGUm",
-            "_7zhBxjN",
-            "r1p9JZ4r",
-            "GLvxpjXw",
-            "po84AQFu",
-            "NDnCDkCe",
-            "CfTFzYSk",
-            "s8e4gGSj",
-            "XWNXG2dN",
-            "1yGgnxW1",
-            "2TEGjneb",
-            "h3Kse6wK",
-            "DCHdkoSw",
-            "Qy-T7XzS",
-            "o-iByeMy",
-            "zcKuumDs",
-            "SsX6qy-j",
-            "hctESy-x",
-            "uEkAJUzX",
-            "-DqqoA2X",
-            "4UjtWktY",
-            "kCYuSNzA"
+            ""
           ]
         },
         "datasource": "Prometheus",
@@ -919,7 +899,7 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {
@@ -950,5 +930,5 @@
   "timezone": "browser",
   "title": "Gitlab Runner monitoring",
   "uid": "jTW2jWQmz",
-  "version": 18
+  "version": 19
 }
