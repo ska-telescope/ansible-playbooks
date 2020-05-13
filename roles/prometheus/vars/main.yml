@@ -142,7 +142,7 @@ alerts_inhibit_rules: []
 #     severity: 'warning'
 
 # can only do one cluster - v1
-k8s_api_server_addr: "192.168.93.47"
+k8s_api_server_addr: "192.168.93.102"
 k8s_api_server_port: "6443"
 k8s_api_server: "https://{{ k8s_api_server_addr }}:{{ k8s_api_server_port }}"
 k8s_certificate_authority: ""
