@@ -1,0 +1,25 @@
+
+[k8s]
+192.168.93.46 # cipro-master
+192.168.100.36 # cipro-node-2
+192.168.100.51 # cipro-node-1
+
+#192.168.93.47 # k8s-master
+192.168.93.40 # k8s-node-2
+192.168.93.37 # k8s-node-1
+192.168.93.74 # k8s-node-3
+192.168.93.38 # k8s-node-4
+
+192.168.93.34 # k8s-v2-master
+192.168.93.16 # k8s-v2-node-2
+192.168.93.39 # k8s-v2-node-1
+
+192.168.93.92 	 #k8s-system-core-master-0
+192.168.93.105   #k8s-system-core-master-1
+192.168.93.36    #k8s-system-core-master-2
+192.168.93.73    #k8s-system-core-worker-0
+192.168.93.85    #k8s-system-core-worker-1
+192.168.93.120   #k8s-system-core-worker-2
+192.168.93.99    #k8s-system-core-worker-3
+192.168.93.106   #k8s-system-core-worker-4
+192.168.93.102   #k8s-system-core-loadbalancer-0
