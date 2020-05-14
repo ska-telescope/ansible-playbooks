@@ -20,9 +20,9 @@
   apt:
     name: minikube
     state: absent
-  when: "ansible_facts.packages['minikube'][0].version != minikube_version[1:]"
+  when: "ansible_os_family == 'Debian' and 'minikube' in ansible_facts.packages and ansible_facts.packages['minikube'][0].version != minikube_version[1:]"
 
 - name: install minikube
   apt:
     deb: '{{ minikube_deb_url }}'
-  when: "ansible_facts.packages['minikube'][0].version != minikube_version[1:]"
+  when: "ansible_os_family == 'Debian'"
