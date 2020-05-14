@@ -16,13 +16,19 @@
   package_facts:
     manager: auto
 
-- name: uninstall minikube if needed
+- name: uninstall minikube if needed (Debian)
   apt:
     name: minikube
     state: absent
   when: "ansible_os_family == 'Debian' and 'minikube' in ansible_facts.packages and ansible_facts.packages['minikube'][0].version != minikube_version[1:]"
 
-- name: install minikube
+- name: install minikube (Debian)
   apt:
     deb: '{{ minikube_deb_url }}'
   when: "ansible_os_family == 'Debian'"
+
+- name: install minikube (Dawin)
+  homebrew:
+    name: 'minikube@{{ minikube_version[1:] }}'
+    state: present
+  when: "ansible_os_family == 'Darwin'"
