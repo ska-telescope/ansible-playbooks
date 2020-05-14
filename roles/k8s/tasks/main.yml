@@ -12,19 +12,6 @@
   loop_control:
     loop_var: docker_vars
 
-- name: install pip and dev dependencies
-  become: true
-  apt:
-    pkg:
-      - python-pip # TODO: In the future the all playbook must use Python 3
-    state: present
-
-- name: install pyhelm and dependencies
-  pip:
-    name:
-      - pyhelm
-    state: present
-
 - name: Install conntrack package ## Requirement for Kubernetes 1.18 +
   apt:
     name: conntrack
