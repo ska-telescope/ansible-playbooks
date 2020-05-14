@@ -32,3 +32,9 @@
     name: 'minikube@{{ minikube_version[1:] }}'
     state: present
   when: "ansible_os_family == 'Darwin'"
+
+- name: install minikube (CentOS)
+  yum:
+    name: '{{ minikube_rpm_url }}'
+    state: present
+  when: "ansible_os_family == 'RedHat'"
