@@ -31,7 +31,7 @@
     command:
       - "--config /etc/config.yml"
     restart: yes
-    restart_policy: on-failure
+    restart_policy: always
     ports:
      - "8080:8080"
     volumes:

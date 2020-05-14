@@ -180,7 +180,7 @@
       - "--web.external-url={{ prometheus_url | default('http://'+ansible_default_ipv4.address+':9090') }}"
     user: root
     restart: yes
-    restart_policy: on-failure
+    restart_policy: always
     ports:
      - "9090:9090"
     volumes:

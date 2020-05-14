@@ -85,6 +85,11 @@
       docker_container:
         name: cadvisor
         image: "gcr.io/google-containers/cadvisor:{{ cadvisor_docker_tags }}"
+        args:
+          - /usr/bin/cadvisor
+          - -logtostderr
+          - --docker_only
+          - --disable_metrics=disk,tcp,udp
         state: started
         user: root
         restart: yes
