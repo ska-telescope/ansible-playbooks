@@ -12,21 +12,17 @@
   loop_control:
     loop_var: docker_vars
 
-- name: ensure target directory
-  file:
-    path: '{{ minikube_install_dir }}'
-    state: directory
-    mode: '0755'
+- name: Gather the os package facts
+  package_facts:
+    manager: auto
 
-- name: download minikube
-  get_url:
-    url: '{{ minikube_url }}'
-    dest: '{{ minikube_install_target }}'
-    mode: 0755
-    validate_certs: "{{ 'no' if ansible_os_family == 'Darwin' else 'yes' }}"
+- name: uninstall minikube if needed
+  apt:
+    name: minikube
+    state: absent
+  when: "ansible_facts.packages['minikube'][0].version != minikube_version[1:]"
 
-- name: link installed minikube
-  file:
-    src: '{{ minikube_install_target }}'
-    dest: '{{ minikube_install_dir }}/minikube'
-    state: link
+- name: install minikube
+  apt:
+    deb: '{{ minikube_deb_url }}'
+  when: "ansible_facts.packages['minikube'][0].version != minikube_version[1:]"
