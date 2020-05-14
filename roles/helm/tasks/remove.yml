@@ -4,15 +4,33 @@
   set_fact:
     "user_home": "{{ lookup('env','HOME') }}"
 
+- name: check helm installed
+  stat:
+    path: /usr/local/bin
+  register: helm_binary
+
+- name: check installed helm version
+  shell: helm version --short
+  register: helm_installed_version
+  when: helm_binary.stat.exists == False
+
 - name: Reset Helm
-  shell: helm reset
+  shell: helm reset --force
   become: yes
   ignore_errors: yes
+  when:
+    - helm_binary.stat.exists 
+    - helm_installed_version.stdout is defined and helm_installed_version.stdout[1] < 3
 
-- name: uninstall Tiller # should be unnecessary, but let's double-check
-  shell: kubectl delete deployment.apps/tiller-deploy  service/tiller-deploy -n kube-system
-  # become: yes
-  ignore_errors: yes
+- name: uninstall Tiller
+  k8s:
+    state: absent
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: tiller
+        namespace: kube-system
     
 - name: Find all helm-related files in previously known locations
   find:

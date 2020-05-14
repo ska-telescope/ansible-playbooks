@@ -12,5 +12,15 @@
   loop_control:
     loop_var: docker_vars
 
+- name: install python3-pip
+  apt:
+    name:
+      - python3-pip
+
+- name: install openshift in pip3
+  pip:
+    name: openshift
+    executable: pip3
+
 - include: remove.yml
 - include: install.yml
