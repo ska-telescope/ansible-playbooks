@@ -65,6 +65,8 @@ install_mysql: 'no'
 
 prometheus_url: https://alerts.engageska-portugal.pt
 prometheus_docker_tags: 'v2.16.0'
+prometheus_title: SKA DevOps Prometheus Server
+prometheus_memory: 4096M
 prometheus_alertmanager_url: http://192.168.93.26:9093
 prometheus_alertmanager_docker_tags: 'v0.20.0'
 prometheus_bleckbox_exporter_docker_tags: 'v0.16.0'

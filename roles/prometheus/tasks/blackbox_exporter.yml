@@ -11,7 +11,7 @@
     state: started
     user: root
     restart: yes
-    restart_policy: on-failure
+    restart_policy: always
     ports:
      - "9115:9115"
     volumes:

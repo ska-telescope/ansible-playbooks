@@ -71,23 +71,36 @@
 
 - name: activate cadvisor metrics
   block:
-    - name: Pull and start cadvisor
-      shell: |
-        docker pull gcr.io/google-containers/cadvisor:{{ cadvisor_docker_tags }} || true
-        docker stop cadvisor || true
-        docker rm cadvisor || true
-        docker run \
-          --volume=/:/rootfs:ro \
-          --volume=/var/run:/var/run:ro \
-          --volume=/sys:/sys:ro \
-          --volume=/var/lib/docker/:/var/lib/docker:ro \
-          --volume=/dev/disk/:/dev/disk:ro \
-          --publish=9324:8080 \
-          --detach=true \
-          --restart=always \
-          --name=cadvisor \
-          gcr.io/google-containers/cadvisor:{{ cadvisor_docker_tags }} \
-          --disable_metrics=disk,udp,percpu \
-          --docker_only 
+    - name: Pull cadvisor image {{ cadvisor_docker_tags }}
+      docker_image:
+        name: gcr.io/google-containers/cadvisor
+        tag: "{{ cadvisor_docker_tags }}"
+
+    - name: Stop cadvisor container
+      docker_container:
+        name: cadvisor
+        state: absent
+
+    - name: Start cadvisor container
+      docker_container:
+        name: cadvisor
+        image: "gcr.io/google-containers/cadvisor:{{ cadvisor_docker_tags }}"
+        args:
+          - /usr/bin/cadvisor
+          - -logtostderr
+          - --docker_only
+          - --disable_metrics=disk,udp,percpu
+        state: started
+        user: root
+        restart: yes
+        restart_policy: always
+        ports:
+        - "9324:8080"
+        volumes:
+          - "/:/rootfs:ro"
+          - "/var/run:/var/run:ro"
+          - "/sys:/sys:ro"
+          - "/var/lib/docker/:/var/lib/docker:ro"
+          - "/dev/disk/:/dev/disk:ro"
 
   when: check_port_cadvisor.failed

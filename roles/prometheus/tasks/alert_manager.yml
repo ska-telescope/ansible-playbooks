@@ -42,7 +42,7 @@
     state: started
     user: root
     restart: yes
-    restart_policy: on-failure
+    restart_policy: always
     ports:
      - "9093:9093"
     volumes:
