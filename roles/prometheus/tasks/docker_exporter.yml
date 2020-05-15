@@ -89,7 +89,7 @@
           - /usr/bin/cadvisor
           - -logtostderr
           - --docker_only
-          - --disable_metrics=disk,tcp,udp
+          - --disable_metrics=disk,udp,percpu
         state: started
         user: root
         restart: yes
@@ -102,6 +102,5 @@
           - "/sys:/sys:ro"
           - "/var/lib/docker/:/var/lib/docker:ro"
           - "/dev/disk/:/dev/disk:ro"
-
 
   when: check_port_cadvisor.failed
