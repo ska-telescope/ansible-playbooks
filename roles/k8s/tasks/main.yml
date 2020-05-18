@@ -33,7 +33,6 @@
     executable: /bin/bash
   ignore_errors: true
   register: starting_minikube_status
-  ignore_errors: true 
 
 - name: Install Minikube
   block:
@@ -224,27 +223,14 @@
       shell:
         if ! helm list -n kube-system | grep -q traefik0; then \
         helm install traefik0 stable/traefik --namespace=kube-system --set externalIP={{ansible_default_ipv4.address}}; fi
-    
-    # - name: Install traefik
-    #   helm:
-    #     chart:
-    #       name: traefik
-    #       source:
-    #         type: repo
-    #         location: "{{ helm_stable_repo_url }}"
-    #     state: present
-    #     name: traefik0
-    #     namespace: kube-system
-    #     values:
-    #       externalIP: "{{ ansible_default_ipv4.address }} "
   when: "not minikube_use_nginx"
 
 # https://github.com/kubernetes/kube-state-metrics/tree/master/examples/standard
 - name: Check if "kube-state-metrics is active"
   shell: kubectl get deployment kube-state-metrics --namespace kube-system
-  changed_when: False
+  changed_when: false
   register: kubectl_metrics
-  ignore_errors: true
+  failed_when: kubectl_metrics.rc not in [0,1]
 
 - name: Activate kube-state-metrics
   block:
