@@ -12,21 +12,21 @@
   loop_control:
     loop_var: docker_vars
 
-- name: ensure target directory
-  file:
-    path: '{{ minikube_install_dir }}'
-    state: directory
-    mode: '0755'
+- name: install minikube (Debian)
+  apt:
+    deb: '{{ minikube_deb_url }}'
+    force: yes
+  when: "ansible_os_family == 'Debian'"
 
-- name: download minikube
-  get_url:
-    url: '{{ minikube_url }}'
-    dest: '{{ minikube_install_target }}'
-    mode: 0755
-    validate_certs: "{{ 'no' if ansible_os_family == 'Darwin' else 'yes' }}"
+- name: install minikube (Darwin)
+  homebrew:
+    name: 'minikube@{{ minikube_version[1:] }}'
+    state: present
+  when: "ansible_os_family == 'Darwin'"
 
-- name: link installed minikube
-  file:
-    src: '{{ minikube_install_target }}'
-    dest: '{{ minikube_install_dir }}/minikube'
-    state: link
+- name: install minikube (CentOS)
+  yum:
+    name: '{{ minikube_rpm_url }}'
+    state: present
+    allow_downgrade: yes
+  when: "ansible_os_family == 'RedHat'"
