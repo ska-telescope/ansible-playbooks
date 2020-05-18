@@ -46,38 +46,35 @@
   become: yes
   with_items: "{{ files_to_delete.files }}"
 
-- name: Find alternative locations also
+- name: Find alternative locations
   shell: which helm
   register: helm_path
-  ignore_errors: yes
-
-- debug:
-    msg: '{{ helm_path.stdout }}'
-    verbosity: 1
+  changed_when: false
+  failed_when: helm_path.rc not in [0,1]
 
 - name: Remove if any helm executable still exists
+  become: yes
   file:
     path: '{{ helm_path.stdout }}'
     state: absent
-  become: yes
   
 - name: Remove symlink
+  become: yes
   file:
     path: '{{ minikube_install_dir }}/{{ helm_name }}'
     state: absent
-  become: yes
 
 - name: Remove config files
+  become: yes
   file:
     path: '{{ user_home }}/.config/{{ helm_name }}'
     state: absent
-  become: yes
 
 - name: Remove plugin files
+  become: yes
   file:
     path: "{{ item }}"
     state: absent
-  become: yes
   with_items:
     - '{{ user_home }}/.local/share/{{ helm_name }}'
     - '{{ user_home }}/.helm'
