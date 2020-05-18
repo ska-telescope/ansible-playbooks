@@ -1,19 +1,19 @@
 ---
 - name: Setup cluster
-  hosts: kubernetes-worker-nodes kubernetes-master-nodes
+  hosts: kubernetes_worker_nodes kubernetes_master_nodes
   become: yes
   tasks:
     - include: roles/k8s/tasks/openstack_prerequisites.yml
     - include: roles/k8s/tasks/setting_up_nodes.yml
 
 - name: Setup master node
-  hosts: kubernetes-master-nodes
+  hosts: kubernetes_master_nodes
   become: yes
   tasks:
     - include: roles/k8s/tasks/configure_master_node.yml
 
 - name: Join to the cluster
-  hosts: kubernetes-worker-nodes kubernetes-master-nodes
+  hosts: kubernetes_worker_nodes kubernetes_master_nodes
   become: yes
   tasks:
     - include: roles/k8s/tasks/configure_worker_nodes.yml

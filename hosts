@@ -13,9 +13,9 @@ localhost ansible_user=$USER ansible_connection=local
 [runners]
 localhost ansible_user=$USER ansible_connection=local ansible_python_interpreter=python3
 
-[kubernetes-master-nodes]
+[kubernetes_master_nodes]
 192.168.93.62 ansible_user=centos node_role=master hostname=k8s-master dns=kubernetes-v3.engageska-portugal.pt
 
-[kubernetes-worker-nodes]
+[kubernetes_worker_nodes]
 192.168.93.60 ansible_user=centos node_role=worker hostname=k8s-node-1
 192.168.93.26 ansible_user=centos node_role=worker hostname=k8s-node-2

@@ -9,5 +9,5 @@
   when: node_role == 'worker'
 
 - name: Joining worker nodes with kubernetes master
-  shell: "{{ hostvars[groups['kubernetes-master-nodes'][0]]['k8s_token'].stdout }}"
+  shell: "{{ hostvars[groups['kubernetes_master_nodes'][0]]['k8s_token'].stdout }}"
   when: node_role == 'worker'
