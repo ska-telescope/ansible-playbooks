@@ -21,31 +21,9 @@
 - name: Install node_exporter for Debian
   block:
 
-    # - name: Configure /etc/apt/sources.list.d/sources.list
-    #   blockinfile:
-    #     path: /etc/apt/sources.list.d/sources.list
-    #     create: yes
-    #     block: |
-    #       deb http://it.archive.ubuntu.com/ubuntu/ focal main universe restricted multiverse
-    #       deb-src http://it.archive.ubuntu.com/ubuntu/ focal main universe restricted multiverse
-
-    #       deb http://security.ubuntu.com/ubuntu focal-security main universe restricted multiverse
-    #       deb-src http://security.ubuntu.com/ubuntu focal-security main universe restricted multiverse
-
-    #       deb http://it.archive.ubuntu.com/ubuntu/ focal-updates main universe restricted multiverse
-    #       deb-src http://it.archive.ubuntu.com/ubuntu/ focal-updates main universe restricted multiverse
-
     - name: Install prometheus-node-exporter
       apt:
         deb: "{{ node_exporter_apt_package }}"
-
-    # - name: Install prometheus-node-exporter
-    #   apt:
-    #     name: prometheus-node-exporter
-    #     state: present
-    #     force: yes
-    #     update_cache: yes
-    #   notify: restart prometheus-node-exporter
 
     - name: Create node_exporter service configuration directory
       file:
