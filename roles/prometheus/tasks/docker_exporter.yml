@@ -71,6 +71,14 @@
 
 - name: activate cadvisor metrics
   block:
+    - name: Set a fact containing the original python interpreter
+      set_fact:
+        old_python_interpreter: "{{ ansible_python_interpreter | default('python') }}"
+
+    - name: Set a fact to use the python3 interpreter
+      set_fact:
+        ansible_python_interpreter: "python3"
+
     - name: Pull cadvisor image {{ cadvisor_docker_tags }}
       docker_image:
         name: gcr.io/google-containers/cadvisor
@@ -81,11 +89,15 @@
         name: cadvisor
         state: absent
 
+    - name: volumes for cadvisor
+      set_fact:
+        cadvisor_vols: "{{ ['/:/rootfs:ro', '/sys:/sys:ro', '/var/lib/docker/:/var/lib/docker:ro', '/dev/disk/:/dev/disk:ro'] + ([] if ansible_distribution == 'CentOS' else ['/var/run:/var/run:ro']) }}"
+
     - name: Start cadvisor container
       docker_container:
         name: cadvisor
         image: "gcr.io/google-containers/cadvisor:{{ cadvisor_docker_tags }}"
-        args:
+        command:
           - /usr/bin/cadvisor
           - -logtostderr
           - --docker_only
@@ -96,11 +108,10 @@
         restart_policy: always
         ports:
         - "9324:8080"
-        volumes:
-          - "/:/rootfs:ro"
-          - "/var/run:/var/run:ro"
-          - "/sys:/sys:ro"
-          - "/var/lib/docker/:/var/lib/docker:ro"
-          - "/dev/disk/:/dev/disk:ro"
+        volumes: "{{ cadvisor_vols }}"
+
+    - name: Reset the python interpreter
+      set_fact:
+        ansible_python_interpreter: "{{ old_python_interpreter }}"
 
   when: check_port_cadvisor.failed

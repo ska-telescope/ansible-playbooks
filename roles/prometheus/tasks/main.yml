@@ -8,27 +8,55 @@
       - python3-requests
     state: present
     update_cache: yes
+  when: ansible_os_family == "Debian" and (mode == "server" or mode == "all" or mode == "docker")
+
+- name: Fix pip
+  block:
+
+  - name: Install packages required for docker (apt)
+    apt:
+      name: ['python3-pip']
+      state: present
+    when: ansible_os_family == "Debian"
+
+  - name: Ensure dnf installed
+    yum:
+      name: "dnf"
+      state: present
+    when: ansible_distribution == "CentOS"
+
+  - name: Install packages required for docker (dnf)
+    dnf:
+      name: ['python-pip', 'python3-pip']
+      state: present
+    when: ansible_os_family == "RedHat"
+
+  - name: uninstall docker dependencies
+    pip:
+      name: ['docker-py', 'docker-pycreds']
+      executable: pip3
+      state: absent
+
+  - name: install docker dependencies
+    pip:
+      executable: pip3
+      name: docker
+
   when: mode == "server" or mode == "all" or mode == "docker"
 
-- name: Download get-pip.py
-  get_url:
-    url: https://bootstrap.pypa.io/get-pip.py
-    dest: /tmp/get-pip.py
-    mode: '0744'
-  when: mode == "server" or mode == "all" or mode == "docker"
-
-- name: get-pip # noqa 301 Commands should not change things if nothing needs doing
-  shell: |
-    python3 /tmp/get-pip.py
+- name: pip self-update
+  pip:
+    name: pip
+    state: latest
   when: mode == "server" or mode == "all" or mode == "docker"
 
 - name: install certain python modules for docker
   pip:
     name: "{{ item.name }}"
     version: "{{ item.version }}"
+    executable: pip3
     state: present
   with_items:
-  - { name: docker, version: 4.2.0 }
   - { name: keystoneauth1, version: 3.1.0 }
   - { name: python-novaclient, version: 2.27.0 }
   - { name: rackspace-novaclient, version: 2.1 }
