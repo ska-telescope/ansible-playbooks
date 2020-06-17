@@ -16,3 +16,4 @@
     - pytango
     - ska-docker
     - updatehosts
+  environment: "{{ minikube_environment_vars }}"

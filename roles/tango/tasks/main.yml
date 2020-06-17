@@ -3,11 +3,35 @@
 - name: create directory /usr/share/man/man1 (bugs.debian=863199)
   shell: mkdir -p /usr/share/man/man1
   when: ansible_distribution == 'Debian'
-  
+
+# - name: Add Java APT repository Ubuntu
+#   apt_repository:
+#     repo: ppa:openjdk-r/ppa
+#   when:
+#     - build_tango == 'yes'
+#     - ansible_distribution == 'Ubuntu'
+
+- name: Add key for openjdk-r/ppa
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: DA1A4A13543B466853BAF164EB9B1D8886F44E2A
+
 - name: Add Java APT repository Ubuntu
-  apt_repository:
-    repo: ppa:openjdk-r/ppa
-  when: 
+  lineinfile:
+    line: 'deb http://ppa.launchpad.net/openjdk-r/ppa/ubuntu xenial main'
+    dest: /etc/apt/sources.list.d/openjdk.list
+    create: yes
+    owner: root
+    group: root
+    mode: 0644
+  when:
+    - build_tango == 'yes'
+    - ansible_distribution == 'Ubuntu'
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+  when:
     - build_tango == 'yes'
     - ansible_distribution == 'Ubuntu'
 
@@ -16,7 +40,7 @@
     name:
         - openjdk-8-jdk
         - openjdk-8-jre
-  when: 
+  when:
     - build_tango == 'yes'
     - ansible_distribution == 'Ubuntu'
 
@@ -25,7 +49,7 @@
     name:
         - default-jdk
         - default-jre-headless
-  when: 
+  when:
     - build_tango == 'yes'
     - ansible_distribution == 'Debian'
 
@@ -33,16 +57,16 @@
   apt:
     name:
         - python
-        - python-dev 
+        - python-dev
         - python-pkgconfig
-        - autoconf 
-        - automake 
-        - build-essential 
-        - ca-certificates 
-        - curl 
-        - libkrb5-dev 
-        - libtool 
-        - pkg-config 
+        - autoconf
+        - automake
+        - build-essential
+        - ca-certificates
+        - curl
+        - libkrb5-dev
+        - libtool
+        - pkg-config
         - unzip
         - file
         - cmake
@@ -50,9 +74,9 @@
     state: latest
     update_cache: yes
   when: build_tango == 'yes'
-  
+
 - name: Build lib zeromq
-  shell: |   
+  shell: |
     ZEROMQ_DOWNLOAD_URL=https://github.com/zeromq/libzmq/archive/v{{LIBZEROMQ_VERSION}}.tar.gz \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir -p /usr/src/zeromq \
@@ -67,7 +91,7 @@
   when: build_tango == 'yes'
 
 - name: Build cpp zeromq
-  shell: |   
+  shell: |
     CPPZMQ_DOWNLOAD_URL=https://github.com/zeromq/cppzmq/archive/v{{CPPZEROMQ_VERSION}}.tar.gz \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir -p /usr/src/cppzmq \
@@ -95,7 +119,7 @@
       && rm -r /usr/src/omniorb
   when: build_tango == 'yes'
 
-- name: Build TANGO 
+- name: Build TANGO
   shell: |
     update-java-alternatives -s java-1.8.0-openjdk-amd64
     TANGO_DOWNLOAD_URL=https://nexus.engageska-portugal.pt/repository/raw/tango-cs/tango-{{TANGO_VERSION}}-rc2.tar.gz \
