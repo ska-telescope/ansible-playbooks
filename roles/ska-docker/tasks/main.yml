@@ -1,20 +1,24 @@
+
+# note: work around for proxy
 - name: Add Docker GPG key Ubuntu
-  apt_key: url=https://download.docker.com/linux/ubuntu/gpg
-  when: 
+  apt_key:
+    data: "{{ lookup('url', 'https://download.docker.com/linux/ubuntu/gpg', split_lines=False) }}"
+  when:
     - ansible_distribution == 'Ubuntu'
     - install_ska_docker == 'yes'
 
 - name: Add Docker GPG key Debian
-  apt_key: url=https://download.docker.com/linux/debian/gpg
-  when: 
+  apt_key:
+    data: "{{ lookup('url', 'https://download.docker.com/linux/debian/gpg', split_lines=False) }}"
+  when:
     - ansible_distribution == 'Debian'
     - install_ska_docker == 'yes'
 
-- name: Install apt-transport-https 
+- name: Install apt-transport-https
   apt:
     name:
     - apt-transport-https
-  when: 
+  when:
   - install_ska_docker == 'yes'
 
 - name: Install ca-certificates curl software-properties-common
@@ -25,25 +29,25 @@
     - software-properties-common
     - make
     update_cache: yes
-  when: 
+  when:
   - install_ska_docker == 'yes'
 
 - name: Add Docker APT repository Ubuntu
   apt_repository:
     repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ansible_distribution_release}} stable
-  when: 
+  when:
     - ansible_distribution == 'Ubuntu'
     - install_ska_docker == 'yes'
 
 - name: Add Docker APT repository Debian
   apt_repository:
     repo: deb [arch=amd64] https://download.docker.com/linux/debian {{ansible_distribution_release}} stable
-  when: 
+  when:
     - ansible_distribution == 'Debian'
     - install_ska_docker == 'yes'
 
 - file:
-    path: 
+    path:
       - /var/lib/apt/lists/lock
       - /var/cache/apt/archives/lock
       - /var/lib/dpkg/lock
@@ -54,22 +58,22 @@
     name:
     - gnupg-agent
     update_cache: yes
-  when: 
+  when:
     - ansible_distribution == 'Ubuntu'
     - install_ska_docker == 'yes'
 
 - name: Install list of packages Debian
   apt:
-    name: 
+    name:
       - gnupg2
     update_cache: yes
-  when: 
+  when:
     - ansible_distribution == 'Debian'
     - install_ska_docker == 'yes'
 
 - name: Install docker
   apt:
-    name: 
+    name:
       - docker-ce
       - docker-ce-cli
       - containerd.io
@@ -77,34 +81,53 @@
   when:
     - install_ska_docker == 'yes'
 
+- name: Create /etc/systemd/system/docker.service.d
+  file:
+    path: "/etc/systemd/system/docker.service.d"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  become: true
+  when: ansible_os_family == "RedHat" or ansible_os_family == "Debian" and install_ska_docker == 'yes'
+
+- name: Configure docker server
+  template: src="{{ ansible_os_family }}-docker.conf.j2" dest="/etc/systemd/system/docker.service.d/docker.conf"
+  notify:
+    - restart and docker
+  become: true
+  when: ansible_os_family == "RedHat" or ansible_os_family == "Debian" and install_ska_docker == 'yes'
+
+- meta: flush_handlers
+
 - name: Post installation Docker
   shell: |
-    groupadd -f docker 
+    groupadd -f docker
     getent passwd vagrant  > /dev/null
     if [ $? -eq 0 ]; then
-      usermod -a -G docker vagrant 
-      if [ -e '/home/vagrant/.docker/config.json' ]; then 
-        chmod 0744 '/home/vagrant/.docker/config.json' 
+      usermod -a -G docker vagrant
+      if [ -e '/home/vagrant/.docker/config.json' ]; then
+        chmod 0744 '/home/vagrant/.docker/config.json'
       fi
-    fi 
+    fi
     getent passwd tango  > /dev/null
     if [ $? -eq 0 ]; then
-      usermod -a -G docker tango 
+      usermod -a -G docker tango
       if [ -e '/home/tango/.docker/config.json' ]; then
-        chmod 0744 '/home/tango/.docker/config.json' 
+        chmod 0744 '/home/tango/.docker/config.json'
       fi
-    fi 
-    usermod -a -G docker {{ ansible_user_id }} 
-    if [ -e '/home/{{ ansible_user_id }}/.docker/config.json' ]; then  
-      chmod 0744 '/home/{{ ansible_user_id }}/.docker/config.json' 
     fi
-  when: 
+    usermod -a -G docker {{ ansible_user_id }}
+    if [ -e '/home/{{ ansible_user_id }}/.docker/config.json' ]; then
+      chmod 0744 '/home/{{ ansible_user_id }}/.docker/config.json'
+    fi
+  when:
     - install_ska_docker == 'yes'
-    
+
 - name: Post installation Docker (ansible_ssh_user)
   shell: |
     usermod -a -G docker {{ ansible_ssh_user }}
-  when: 
+  when:
     - ansible_ssh_user is defined
     - install_ska_docker == 'yes'
 
@@ -112,14 +135,14 @@
   file:
     path: /usr/src/ska-docker
     state: absent
-  when: 
+  when:
     - install_ska_docker == 'yes'
 
 - name: Creates directory /usr/src/ska-docker
   file:
     path: /usr/src/ska-docker
     state: directory
-  when: 
+  when:
     - install_ska_docker == 'yes'
 
 - git:
@@ -127,7 +150,7 @@
     dest: /usr/src/ska-docker
     update: yes
     ssh_opts: "-o StrictHostKeyChecking=no"
-  when: 
+  when:
     - install_ska_docker == 'yes'
 
 - name: Install Docker Compose
@@ -136,7 +159,7 @@
     dest: "/usr/local/bin/docker-compose"
     mode: 0755
     validate_certs: no
-  when: 
+  when:
     - install_ska_docker == 'yes'
 
 - name: Copy environment_tango.sh
@@ -145,20 +168,20 @@
     dest: /etc/profile.d/environment_tango.sh
     mode: 0755
     force: yes
-  when: 
+  when:
     - install_ska_docker == 'yes'
 
 - name: Stop MySql Server (if running)
-  service: 
-    name: mysql 
+  service:
+    name: mysql
     state: stopped
     enabled: no
-  when: 
+  when:
     - start_mysql_server == 'yes'
 
 - name: Start the tango system
   shell: |
-    cd /usr/src/ska-docker/docker-compose 
+    cd /usr/src/ska-docker/docker-compose
     make up
     make start tangotest
   when:
