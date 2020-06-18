@@ -23,6 +23,7 @@
     - helm_installed_version.stdout is defined and helm_installed_version.stdout[1] < 3
 
 - name: uninstall Tiller
+  ignore_errors: yes
   k8s:
     state: absent
     definition:

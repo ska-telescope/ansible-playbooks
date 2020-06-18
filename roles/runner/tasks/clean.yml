@@ -1,7 +1,7 @@
 ---
 # tasks file for runner
 - name: stop all docker containers
-  shell: docker stop $(docker ps -a -q)
+  shell: docker stop $(docker ps -aq | grep -v -E $(docker ps -aq --filter='name=filebeat|journalbeat|cadvisor'  | paste -sd "|" -))
   ignore_errors: true
 
 - name: Remove all stopped containers, all networks not used by at least one container, all dangling images, all dangling build cache
@@ -11,3 +11,6 @@
 - name: Remove all docker images
   shell: docker rmi $(docker images -q) -f
   ignore_errors: true
+
+
+  
