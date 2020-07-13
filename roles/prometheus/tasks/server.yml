@@ -165,6 +165,7 @@
 - name: Stop prometheus container
   docker_container:
     name: prometheus
+    stop_timeout: 180
     state: absent
 
 - name: Start prometheus container
