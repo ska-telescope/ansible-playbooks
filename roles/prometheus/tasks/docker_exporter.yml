@@ -83,6 +83,7 @@
       docker_image:
         name: gcr.io/google-containers/cadvisor
         tag: "{{ cadvisor_docker_tags }}"
+        source: pull
 
     - name: Stop cadvisor container
       docker_container:
