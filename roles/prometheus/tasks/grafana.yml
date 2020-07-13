@@ -55,3 +55,4 @@
       - "/etc/hosts:/etc/hosts:ro"
     env:
       GF_INSTALL_PLUGINS: "{{ grafana_plugins|join(',') }}"
+      GF_SECURITY_ADMIN_PASSWORD: "{{ grafana_admin_password }}"

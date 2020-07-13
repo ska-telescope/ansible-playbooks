@@ -64,14 +64,14 @@ start_mysql_server: 'no'
 install_mysql: 'no'
 
 prometheus_url: https://alerts.engageska-portugal.pt
-prometheus_docker_tags: 'v2.16.0'
+prometheus_docker_tags: 'v2.19.2'
 prometheus_title: SKA DevOps Prometheus Server
 prometheus_memory: 4096M
 prometheus_alertmanager_url: http://192.168.93.26:9093
-prometheus_alertmanager_docker_tags: 'v0.20.0'
-prometheus_bleckbox_exporter_docker_tags: 'v0.16.0'
+prometheus_alertmanager_docker_tags: 'v0.21.0'
+prometheus_bleckbox_exporter_docker_tags: 'v0.17.0'
 cadvisor_docker_tags: 'v0.35.0'
-grafana_docker_tags: '6.6.2'
+grafana_docker_tags: '7.0.6'
 
 # Environment variables to pass into Minikube deployment
 # use for http_proxy requirements
