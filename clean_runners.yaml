@@ -1,7 +1,7 @@
 ---
 
 - name: clean_runners
-  hosts: localhost
+  hosts: runners
   become: true
   become_method: sudo
   become_flags: '-E -S -n'

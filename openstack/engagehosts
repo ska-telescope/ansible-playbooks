@@ -1,4 +1,4 @@
-[runner]
+[runners]
 192.168.93.19 # runner-3
 192.168.93.30 # runner-2
 192.168.93.20 # runner-1
