@@ -120,6 +120,9 @@ grafana_plugins:
   - grafana-piechart-panel
   - grafana-polystat-panel
 grafana_admin_password: admin
+grafana_auth_gitlab_client_id: ""
+grafana_auth_gitlab_client_secret: ""
+grafana_server_root_url: ""
 
 # Alert Manager
 # slack_api_url has to be set in the command line

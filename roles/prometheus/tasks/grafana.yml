@@ -56,3 +56,14 @@
     env:
       GF_INSTALL_PLUGINS: "{{ grafana_plugins|join(',') }}"
       GF_SECURITY_ADMIN_PASSWORD: "{{ grafana_admin_password }}"
+      GF_AUTH_GITLAB_ENABLED: True
+      GF_AUTH_GITLAB_ALLOW_SIGN_UP: True
+      GF_AUTH_GITLAB_CLIENT_ID: "{{ grafana_auth_gitlab_client_id }}"
+      GF_AUTH_GITLAB_CLIENT_SECRET: "{[{ grafana_auth_gitlab_client_secret }}"
+      GF_AUTH_GITLAB_scopes: api
+      GF_AUTH_GITLAB_AUTH_URL: https://gitlab.com/oauth/authorize
+      GF_AUTH_GITLAB_TOKEN_URL: https://gitlab.com/oauth/token
+      GF_AUTH_GITLAB_API_URL: https://gitlab.com/api/v4
+      GF_AUTH_GITLAB_ALLOWED_GROUPS: ska-telescope
+      GF_SERVER_ROOT_URL: "{{ grafana_server_root_url }}"
+      GF_USERS_AUTO_ASSIGN_ORG_ROLE: Editor
