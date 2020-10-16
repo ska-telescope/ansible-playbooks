@@ -190,3 +190,55 @@
       - "{{ prometheus_config_dir }}:/etc/prometheus:ro"
       - "/etc/hosts:/etc/hosts:ro"
       - "{{ prometheus_data_dir }}:/prometheus"
+
+
+
+
+- name: Check for swap file
+  shell: test -f {{ swapfile_path }}
+  changed_when: False
+  register: is_swapfile
+
+- name: Create swap file
+  command: |
+    {% if swapfile_fallocate %}
+    fallocate -l {{ ((swapfile_size) | int * 1024 * 1024) }} {{ swapfile_path }}
+    {% else %}
+    dd if=/dev/zero of={{ swapfile_path }} bs=1M count={{ swapfile_size }}
+    {% endif %}
+  args:
+    creates: "{{ swapfile_path }}"
+  register: swapfile_register_create
+  when: not is_swapfile.rc == 0
+
+- name: Set swap file permissions
+  file:
+    path: "{{ swapfile_path }}"
+    state: "file"
+    owner: "root"
+    group: "root"
+    mode: "0600"
+  when: not is_swapfile.rc == 0
+
+- name: Initialize swap file
+  command: mkswap {{ swapfile_path }}
+  when: not is_swapfile.rc == 0
+
+- name: Enable swap file
+  command: swapon {{ swapfile_path }}
+  when: not is_swapfile.rc == 0
+
+- name: Manage swap file in /etc/fstab
+  mount:
+    src: "{{ swapfile_path }}"
+    name: "none"
+    fstype: "swap"
+    opts: "sw,nofail"
+    dump: "0"
+    passno: "0"
+    state: present
+
+
+# docker run --rm -ti -v /etc/hosts:/etc/hosts:ro -v /etc/prometheus:/etc/prometheus:ro -v /prometheus:/prometheus prom/prometheus:v2.19.2 bash
+
+# /bin/prometheus --config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/prometheus --web.console.libraries=/usr/share/prometheus/console_libraries --web.console.templates=/usr/share/prometheus/consoles
