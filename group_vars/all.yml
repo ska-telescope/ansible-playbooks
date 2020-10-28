@@ -81,3 +81,5 @@ minikube_environment_vars: {}
   # no_proxy: 1.2.3.4,10.96.0.0/12
 
 kube_state_metrics: false
+
+swapfile_path: /swapfile
