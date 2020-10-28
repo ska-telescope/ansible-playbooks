@@ -253,11 +253,7 @@ prometheus_scrape_configs:
       - 'ceph-mgr.json'
 
 blackbox_ssh_targets:
-  - "{{ ansible_fqdn | default(ansible_host) | default('localhost') }}:22" #matteo devenv
-  - "192.168.93.37:22" #ssh skampi pipeline cluster node1
-  - "192.168.93.40:22" #ssh skampi pipeline cluster node2
-  - "192.168.93.74:22" #ssh skampi pipeline cluster node3
-  - "192.168.93.38:22" #ssh skampi pipeline cluster node4
+  - "{{ ansible_fqdn | default(ansible_host) | default('localhost') }}:22" 
 
 prometheus_record_rules:
   - record: instance:node_cpu:load
