@@ -64,7 +64,7 @@ start_mysql_server: 'no'
 install_mysql: 'no'
 
 prometheus_url: https://alerts.engageska-portugal.pt
-prometheus_docker_tags: 'v2.19.2'
+prometheus_docker_tags: 'v2.22.0'
 prometheus_title: SKA DevOps Prometheus Server
 prometheus_memory: 4096M
 prometheus_alertmanager_url: http://192.168.93.26:9093
@@ -81,3 +81,5 @@ minikube_environment_vars: {}
   # no_proxy: 1.2.3.4,10.96.0.0/12
 
 kube_state_metrics: false
+
+swapfile_path: /swapfile
