@@ -29,18 +29,5 @@ This is the README that you can also find on the `Gitlab repository <https://git
    :caption: Readme
 
 
-   ../../README
+   README
 
-.. COMMUNITY SECTION ==================================================
-
-..
-
-.. toctree::
-  :maxdepth: 2
-  :caption: Documentation
-
-  playbooks/kubernetes
-  playbooks/runners
-  playbooks/prometheus
-  playbooks/upgrade_helm
-  playbooks/all
