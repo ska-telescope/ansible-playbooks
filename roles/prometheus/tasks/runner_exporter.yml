@@ -1,8 +1,0 @@
-- name: Add listen_address to config file
-  lineinfile:
-    path: /etc/gitlab-runner/config.toml
-    insertafter: "check_interval = 0"
-    line: listen_address = ":9252"
-
-- name: Restart gitlab-runner service # noqa 301 305
-  shell: "gitlab-runner restart"
