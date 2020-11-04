@@ -1,5 +1,5 @@
 # DEPRECATION NOTICE
-This repository is now archived an no longer supported. The Ansible roles generated in this repository have been moved to single-purpose repositories on the SKA Gitlab repository.
+This repository is no longer supported. The Ansible roles generated in this repository have been moved to single-purpose repositories on the SKA Gitlab repository.
 
 ## Common roles for Docker, Kubernetes and OpenStack Heat Clusters
 Common Ansible roles that are frequently used are hosted in the [Systems Common Roles](https://gitlab.com/ska-telescope/sdi/systems-common-roles) repository.
