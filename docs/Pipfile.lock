@@ -10,12 +10,12 @@
         "sources": [
             {
                 "name": "nexus-proxy",
-                "url": "https://nexus.engageska-portugal.pt/repository/pypi-proxy/simple",
+                "url": "https://artefact.skao.int/repository/pypi-proxy/simple",
                 "verify_ssl": true
             },
             {
                 "name": "nexus-hosted",
-                "url": "https://nexus.engageska-portugal.pt/repository/pypi/simple",
+                "url": "https://artefact.skao.int/repository/pypi-internal/simple",
                 "verify_ssl": true
             }
         ]
