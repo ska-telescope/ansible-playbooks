@@ -1,10 +1,10 @@
 [[source]]
-url = "https://nexus.engageska-portugal.pt/repository/pypi-proxy/simple"
+url = "https://artefact.skao.int/repository/pypi-proxy/simple"
 verify_ssl = true
 name = "nexus-proxy"
 
 [[source]]
-url = "https://nexus.engageska-portugal.pt/repository/pypi/simple"
+url = "https://artefact.skao.int/repository/pypi-internal/simple"
 verify_ssl = true
 name = "nexus-hosted"
 
