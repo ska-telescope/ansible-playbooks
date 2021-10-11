@@ -107,7 +107,7 @@
 
 - name: Build omniorb
   shell: |
-    OMNIORB_DOWNLOAD_URL=https://nexus.engageska-portugal.pt/repository/raw/omniorb/omniORB-{{OMNIORB_VERSION}}.tar.bz2 \
+    OMNIORB_DOWNLOAD_URL=https://artefact.skao.int/repository/raw-internal/ska-tango-images/libraries/omniORB-4.2.3.tar.bz2 \
       && rm -rf /var/lib/apt/lists/* \
       && mkdir -p /usr/src/omniorb \
       && cd /usr/src/omniorb \
@@ -122,7 +122,7 @@
 - name: Build TANGO
   shell: |
     update-java-alternatives -s java-1.8.0-openjdk-amd64
-    TANGO_DOWNLOAD_URL=https://nexus.engageska-portugal.pt/repository/raw/tango-cs/tango-{{TANGO_VERSION}}-rc2.tar.gz \
+    TANGO_DOWNLOAD_URL=https://artefact.skao.int/repository/raw-internal/ska-tango-images/libraries/tango-9.3.4.tar.gz \
     && mkdir -p /usr/share/man/man1 \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir -p /usr/src/tango \
